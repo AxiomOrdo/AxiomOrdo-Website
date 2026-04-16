@@ -1,14 +1,1 @@
-export function Footer() {
-  return (
-    <footer className="footer">
-      <div className="container narrow footer-inner">
-        <h2>pfas@axiomordo.com</h2>
-        <p>
-          For organisations that need a clear, defensible PFAS position before
-          customers, regulators, or internal stakeholders ask harder questions.
-        </p>
-        <small>© {new Date().getFullYear()} AxiomOrdo. All rights reserved.</small>
-      </div>
-    </footer>
-  );
-}
+
