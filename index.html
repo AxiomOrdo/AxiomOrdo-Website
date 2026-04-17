@@ -6,267 +6,108 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#0b0f14">
   <link rel="icon" href="/favicon.ico" sizes="any">
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      background: #0b0f14;
-      color: #e6edf3;
+ <style>
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(280px, 1fr));
+    gap: 28px;
+    margin-top: 24px;
+  }
+
+  .service-card {
+    background: #161b22;
+    padding: 24px;
+    border-radius: 14px;
+    border: 1px solid #222a33;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    min-height: 640px;
+  }
+
+  .service-card.entry {
+    border: 1px solid #3fb950;
+    box-shadow: 0 0 0 1px rgba(63, 185, 80, 0.15);
+  }
+
+  .service-card.featured {
+    border: 1px solid #2f81f7;
+    box-shadow: 0 0 0 1px rgba(47, 129, 247, 0.15);
+  }
+
+  .service-title {
+    margin: 0 0 8px 0;
+    font-size: 1.25em;
+    font-weight: bold;
+    color: #ffffff;
+  }
+
+  .service-subtitle {
+    margin: 0 0 18px 0;
+    color: #c9d1d9;
+    font-size: 1.02em;
+    min-height: 48px;
+  }
+
+  .price {
+    font-size: 2.2em;
+    font-weight: bold;
+    color: #ffffff;
+    margin: 8px 0 10px 0;
+    line-height: 1.2;
+  }
+
+  .turnaround {
+    margin: 0 0 20px 0;
+    color: #c9d1d9;
+    font-size: 0.98em;
+    line-height: 1.5;
+  }
+
+  .tier-block {
+    margin: 10px 0 18px 0;
+  }
+
+  .tier-line {
+    font-size: 1.05em;
+    color: #ffffff;
+    font-weight: bold;
+    margin-bottom: 10px;
+    line-height: 1.5;
+  }
+
+  .service-list {
+    margin: 18px 0 0 0;
+    padding-left: 0;
+    list-style: none;
+  }
+
+  .service-list li {
+    margin-bottom: 10px;
+    color: #e6edf3;
+    line-height: 1.5;
+  }
+
+  .pricing-note {
+    margin-top: 26px;
+    background: #161b22;
+    border: 1px solid #222a33;
+    border-radius: 12px;
+    padding: 18px 20px;
+    color: #e6edf3;
+    font-weight: bold;
+  }
+
+  @media (max-width: 980px) {
+    .services-grid {
+      grid-template-columns: 1fr;
     }
 
-    .container {
-      max-width: 1120px;
-      margin: auto;
-      padding: 40px 20px 60px 20px;
+    .service-card {
+      min-height: auto;
     }
-
-    h1 {
-      font-size: 2.8em;
-      margin: 0 0 14px 0;
-      color: #ffffff;
-    }
-
-    h2 {
-      margin-top: 55px;
-      margin-bottom: 16px;
-      color: #58a6ff;
-      font-size: 2em;
-    }
-
-    h3 {
-      margin-top: 0;
-      margin-bottom: 10px;
-      color: #ffffff;
-      font-size: 1.25em;
-    }
-
-    p {
-      line-height: 1.65;
-      color: #c9d1d9;
-      margin: 0 0 14px 0;
-    }
-
-    a {
-      color: #58a6ff;
-    }
-
-    .hero-copy {
-      max-width: 860px;
-      margin: 0 auto;
-      text-align: center;
-    }
-
-    .cta {
-      margin-top: 24px;
-      padding: 16px 28px;
-      background: #238636;
-      color: white;
-      text-decoration: none;
-      display: inline-block;
-      border-radius: 8px;
-      font-weight: bold;
-      font-size: 1rem;
-    }
-
-    .cta:hover {
-      background: #2ea043;
-    }
-
-    .secondary-cta {
-      margin-top: 16px;
-      margin-left: 12px;
-      padding: 16px 28px;
-      background: transparent;
-      color: #e6edf3;
-      text-decoration: none;
-      display: inline-block;
-      border-radius: 8px;
-      font-weight: bold;
-      font-size: 1rem;
-      border: 1px solid #30363d;
-    }
-
-    .secondary-cta:hover {
-      border-color: #58a6ff;
-      color: #ffffff;
-    }
-
-    .box {
-      background: #161b22;
-      padding: 22px;
-      border-radius: 10px;
-      margin-top: 18px;
-      border: 1px solid #222a33;
-    }
-
-    .highlight {
-      color: #3fb950;
-      font-weight: bold;
-    }
-
-    .timeline-grid,
-    .services-grid,
-    .check-grid {
-      display: flex;
-      justify-content: center;
-      gap: 28px;
-      flex-wrap: wrap;
-      margin-top: 24px;
-    }
-
-    .timeline-card,
-    .service-card,
-    .example-card {
-      background: #161b22;
-      padding: 24px;
-      border-radius: 12px;
-      min-width: 280px;
-      max-width: 340px;
-      flex: 1 1 300px;
-      text-align: left;
-      border: 1px solid #222a33;
-    }
-
-    .service-card.featured {
-      border: 1px solid #2f81f7;
-      box-shadow: 0 0 0 1px rgba(47, 129, 247, 0.15);
-    }
-
-    .service-card.entry {
-      border: 1px solid #3fb950;
-      box-shadow: 0 0 0 1px rgba(63, 185, 80, 0.15);
-    }
-
-    .timer {
-      font-size: 1.55em;
-      margin: 14px 0;
-      color: #ffffff;
-      font-weight: bold;
-    }
-
-    .price {
-      font-size: 1.9em;
-      font-weight: bold;
-      color: #ffffff;
-      margin: 14px 0 10px 0;
-    }
-
-    .muted {
-      font-size: 0.96em;
-      color: #c9d1d9;
-    }
-
-    .service-title {
-      margin: 0;
-      font-weight: bold;
-      font-size: 1.3em;
-      color: #ffffff;
-    }
-
-    .service-subtitle {
-      margin-top: 8px;
-      color: #c9d1d9;
-      min-height: 48px;
-    }
-
-    .service-list {
-      margin-top: 18px;
-      padding-left: 0;
-      list-style: none;
-    }
-
-    .service-list li {
-      margin-bottom: 10px;
-      color: #e6edf3;
-    }
-
-    .best-for {
-      margin-top: 18px;
-      font-size: 0.95em;
-      color: #c9d1d9;
-    }
-
-    .roi-line {
-      font-size: 1.05em;
-      color: #ffffff;
-      font-weight: bold;
-      margin-top: 10px;
-    }
-
-    .section-intro {
-      max-width: 860px;
-    }
-
-    .logo-wrap {
-      text-align: center;
-      margin-bottom: 48px;
-    }
-
-    .logo-wrap img {
-      max-width: 260px;
-      opacity: 0.95;
-    }
-
-    .example-output {
-      background: #11161d;
-      border: 1px solid #30363d;
-      border-radius: 12px;
-      padding: 24px;
-      margin-top: 20px;
-    }
-
-    .example-output table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 16px;
-      margin-bottom: 18px;
-    }
-
-    .example-output th,
-    .example-output td {
-      text-align: left;
-      padding: 10px 12px;
-      border-bottom: 1px solid #222a33;
-      color: #e6edf3;
-    }
-
-    .example-output th {
-      color: #58a6ff;
-      font-weight: bold;
-    }
-
-    footer {
-      margin-top: 60px;
-      padding-top: 25px;
-      border-top: 1px solid #222a33;
-      text-align: center;
-    }
-
-    @media (max-width: 700px) {
-      h1 {
-        font-size: 2.15em;
-      }
-
-      h2 {
-        font-size: 1.6em;
-      }
-
-      .cta,
-      .secondary-cta {
-        display: block;
-        text-align: center;
-        margin-left: 0;
-      }
-
-      .secondary-cta {
-        margin-top: 12px;
-      }
-
-      .service-subtitle {
-        min-height: auto;
-      }
-    }
-  </style>
+  }
+</style>
 </head>
 <body>
   <div class="container">
@@ -352,138 +193,113 @@
       <span class="highlight">Reputational damage</span>
     </div>
 
-    <h2>The AxiomOrdo Approach</h2>
-    <p class="section-intro">
-      We do not guess. We do not rely on vague supplier claims.
+ <h2 id="services">Choose the Level of Control You Need</h2>
+<p class="section-intro">
+  Start with fast insight. Move to structured clarity, operational control, and defensible outputs as needed.
+</p>
+<p class="roi-line">
+  The cost of proving your position is usually far lower than the cost of getting it wrong.
+</p>
+
+<div class="services-grid">
+
+  <div class="service-card entry">
+    <p class="service-title">PFAS Exposure Check</p>
+    <p class="price">€3,000</p>
+    <p class="turnaround"><strong>Turnaround:</strong> 12–24 hours</p>
+
+    <p class="service-subtitle">
+      Fast structured screening to show whether you are likely safe, exposed, or operating with unknown risk.
     </p>
 
-    <div class="box">
-      Deterministic compliance logic with no hidden assumptions<br />
-      Evidence-linked decision outputs<br />
-      Explicit data gap identification<br />
-      Audit-ready reporting structure
+    <ul class="service-list">
+      <li>✔ Portfolio-level screening</li>
+      <li>✔ Risk pattern review by product type</li>
+      <li>✔ PFAS indicator scan across available documents</li>
+      <li>✔ Evidence gap identification</li>
+      <li>✔ Confidence level and risk signal</li>
+      <li>✔ 1-page PDF output</li>
+    </ul>
+  </div>
+
+  <div class="service-card">
+    <p class="service-title">PFAS Exposure Snapshot</p>
+    <p class="service-subtitle">Know your PFAS position</p>
+
+    <div class="tier-block">
+      <div class="tier-line">Up to 500 SKUs → €10,000</div>
+      <div class="tier-line">501–1,000 SKUs → €15,000</div>
+      <div class="tier-line">1,000+ SKUs → Custom scope</div>
     </div>
 
-    <h2>Start with a Fast Exposure Check</h2>
-    <p class="section-intro">
-      This is a rapid, structured screening designed to answer one question:
-      <strong>based on what you currently have, are you likely safe, exposed, or operating with unknown risk?</strong>
+    <p class="turnaround">
+      <strong>Turnaround:</strong> Initial findings within 24 hours.<br />
+      Full results within 24–72 hours.
     </p>
 
-    <div class="check-grid">
-      <div class="example-card" style="max-width: 520px; flex: 1 1 460px;">
-        <h3>PFAS Exposure Check</h3>
-        <p class="price">€3,000</p>
-        <p class="muted"><strong>Turnaround:</strong> 12–24 hours</p>
-        <p class="muted">
-          A fast way to find out if you have a PFAS problem worth investigating before committing to a full analysis.
-        </p>
-        <ul class="service-list">
-          <li>✔ Rapid structured screening</li>
-          <li>✔ Product list required</li>
-          <li>✔ Send what you have — no formatting required</li>
-          <li>✔ Screens risk patterns, document signals, and evidence gaps</li>
-          <li>✔ 1-page PDF output</li>
-          <li>✔ Clear next-step recommendation</li>
-        </ul>
-        <p class="best-for">
-          <strong>Best for:</strong><br />
-          Fast initial visibility with minimal friction
-        </p>
-      </div>
+    <ul class="service-list">
+      <li>✔ Product-level classification</li>
+      <li>✔ Evidence review</li>
+      <li>✔ Structured output</li>
+      <li>✔ Highest-risk products surfaced clearly</li>
+      <li>✔ Immediate next actions</li>
+    </ul>
+  </div>
 
-      <div class="example-card" style="max-width: 520px; flex: 1 1 460px;">
-        <h3>What we need from you</h3>
-        <ul class="service-list">
-          <li>✔ Product list (Excel or CSV)</li>
-          <li>✔ SKU list, product names, or categories</li>
-          <li>✔ Optional documents such as SDS sheets, supplier declarations, product specs, or material descriptions</li>
-          <li>✔ Incomplete or messy files are acceptable</li>
-        </ul>
-        <p class="muted">
-          Send what you have. We’ll work with it.
-        </p>
-      </div>
+  <div class="service-card featured">
+    <p class="service-title">PFAS Risk &amp; Action Pack</p>
+    <p class="service-subtitle">Take control of your PFAS risk</p>
+
+    <div class="tier-block">
+      <div class="tier-line">Up to 500 SKUs → €20,000</div>
+      <div class="tier-line">501–1,000 SKUs → €25,000</div>
+      <div class="tier-line">1,000+ SKUs → Custom scope</div>
     </div>
 
-    <h2 id="services">Choose the Level of Control You Need</h2>
-    <p class="section-intro">
-      Start with fast insight. Move to structured clarity, operational control, and defensible outputs as needed.
-    </p>
-    <p class="roi-line">
-      The cost of proving your position is usually far lower than the cost of getting it wrong.
+    <p class="turnaround">
+      <strong>Turnaround:</strong> Initial findings within 24 hours.<br />
+      Full action plan within 48–96 hours.
     </p>
 
-    <div class="services-grid">
+    <ul class="service-list">
+      <li>✔ Prioritisation</li>
+      <li>✔ Supplier actions</li>
+      <li>✔ Escalation logic</li>
+      <li>✔ Quick wins and blockers clearly identified</li>
+      <li>✔ Action-focused management output</li>
+    </ul>
+  </div>
 
-      <div class="service-card entry">
-        <p class="service-title">PFAS Exposure Check</p>
-        <p class="price">€3,000</p>
-        <p class="muted"><strong>Turnaround:</strong> 12–24 hours</p>
-        <p class="service-subtitle">
-          Fast structured screening to show whether you are likely safe, exposed, or operating with unknown risk.
-        </p>
+  <div class="service-card">
+    <p class="service-title">PFAS Defence Pack</p>
+    <p class="service-subtitle">Defend your PFAS position</p>
 
-        <ul class="service-list">
-          <li>✔ Portfolio-level screening</li>
-          <li>✔ Risk pattern review by product type</li>
-          <li>✔ PFAS indicator scan across available documents</li>
-          <li>✔ Evidence gap identification</li>
-          <li>✔ Confidence level and risk signal</li>
-          <li>✔ 1-page PDF output</li>
-        </ul>
-      </div>
-
-      <div class="service-card">
-        <p class="service-title">PFAS Exposure Snapshot</p>
-        <p class="service-subtitle">Know your PFAS position</p>
-        <p class="price">Up to 500 SKUs → €10,000<br />501–1,000 SKUs → €15,000<br />1,000+ SKUs → Custom scope</p>
-        <p class="muted"><strong>Turnaround:</strong> Initial findings within 24 hours. Full results within 24–72 hours.</p>
-
-        <ul class="service-list">
-          <li>✔ Product-level classification</li>
-          <li>✔ Evidence review</li>
-          <li>✔ Structured output</li>
-          <li>✔ Highest-risk products surfaced clearly</li>
-          <li>✔ Immediate next actions</li>
-        </ul>
-      </div>
-
-      <div class="service-card featured">
-        <p class="service-title">PFAS Risk &amp; Action Pack</p>
-        <p class="service-subtitle">Take control of your PFAS risk</p>
-        <p class="price">Up to 500 SKUs → €20,000<br />501–1,000 SKUs → €25,000<br />1,000+ SKUs → Custom scope</p>
-        <p class="muted"><strong>Turnaround:</strong> Initial findings within 24 hours. Full action plan within 48–96 hours.</p>
-
-        <ul class="service-list">
-          <li>✔ Prioritisation</li>
-          <li>✔ Supplier actions</li>
-          <li>✔ Escalation logic</li>
-          <li>✔ Quick wins and blockers clearly identified</li>
-          <li>✔ Action-focused management output</li>
-        </ul>
-      </div>
-
-      <div class="service-card">
-        <p class="service-title">PFAS Defence Pack</p>
-        <p class="service-subtitle">Defend your PFAS position</p>
-        <p class="price">Up to 500 SKUs → €30,000<br />501–750 SKUs → €35,000<br />751–1,000 SKUs → €40,000<br />1,000+ SKUs → Custom scope</p>
-        <p class="muted"><strong>Turnaround:</strong> Initial findings within 24–48 hours. Full defensibility output within 3–5 working days.</p>
-
-        <ul class="service-list">
-          <li>✔ Trace-backed reasoning</li>
-          <li>✔ Structured challenge responses</li>
-          <li>✔ Product-by-product defensibility view</li>
-          <li>✔ Trace-linked justification to source evidence</li>
-          <li>✔ Audit-grade output under higher scrutiny</li>
-        </ul>
-      </div>
-
+    <div class="tier-block">
+      <div class="tier-line">Up to 500 SKUs → €30,000</div>
+      <div class="tier-line">501–750 SKUs → €35,000</div>
+      <div class="tier-line">751–1,000 SKUs → €40,000</div>
+      <div class="tier-line">1,000+ SKUs → Custom scope</div>
     </div>
 
-    <div class="box">
-      <p><strong>Pricing reflects portfolio size and the complexity of building a defensible evidence position.</strong></p>
-    </div>
+    <p class="turnaround">
+      <strong>Turnaround:</strong> Initial findings within 24–48 hours.<br />
+      Full defensibility output within 3–5 working days.
+    </p>
+
+    <ul class="service-list">
+      <li>✔ Trace-backed reasoning</li>
+      <li>✔ Structured challenge responses</li>
+      <li>✔ Product-by-product defensibility view</li>
+      <li>✔ Trace-linked justification to source evidence</li>
+      <li>✔ Audit-grade output under higher scrutiny</li>
+    </ul>
+  </div>
+
+</div>
+
+<div class="pricing-note">
+  Pricing reflects portfolio size and the complexity of building a defensible evidence position.
+</div>
 
     <h2>Worked Example: PFAS Exposure Check</h2>
     <p class="section-intro">
