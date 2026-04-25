@@ -1,6 +1,10 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 
 type FormState = {
   status: "idle" | "submitting" | "success" | "error";
@@ -70,24 +74,24 @@ export function ContactSection() {
         </div>
 
         <form className="contact-form" onSubmit={handleSubmit}>
-          <label>
+          <Label>
             Your name<span>*</span>
-            <input name="name" type="text" required placeholder="Enter your name" />
-          </label>
+            <Input name="name" type="text" required placeholder="Enter your name" />
+          </Label>
 
-          <label>
+          <Label>
             Email<span>*</span>
-            <input name="email" type="email" required placeholder="Enter your email" />
-          </label>
+            <Input name="email" type="email" required placeholder="Enter your email" />
+          </Label>
 
-          <label>
+          <Label>
             Company
-            <input name="company" type="text" placeholder="Enter your company name" />
-          </label>
+            <Input name="company" type="text" placeholder="Enter your company name" />
+          </Label>
 
-          <label>
+          <Label>
             What do you need to understand or defend?<span>*</span>
-            <textarea
+            <Textarea
               name="scope"
               rows={6}
               required
@@ -97,17 +101,16 @@ export function ContactSection() {
                 "e.g. Need a defensible position before internal approval"
               }
             />
-          </label>
+          </Label>
 
-          <button
-            className="button button-primary"
+          <Button
             type="submit"
             disabled={formState.status === "submitting"}
           >
             {formState.status === "submitting"
               ? "Submitting…"
               : "Request PFAS Review"}
-          </button>
+          </Button>
 
           {formState.status !== "idle" ? (
             <p

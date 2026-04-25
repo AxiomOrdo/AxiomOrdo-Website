@@ -270,6 +270,31 @@ textarea {
   min-height: 124px;
 }
 
+.card-header {
+  padding: 1.4rem 1.4rem 0;
+}
+
+.card-content {
+  padding: 1.4rem;
+  flex-grow: 1;
+}
+
+.card-footer {
+  padding: 0 1.4rem 1.4rem;
+}
+
+.card-title {
+  margin: 0;
+  font-weight: 800;
+  font-size: 1.5rem;
+  line-height: 1.2;
+}
+
+.card-description {
+  margin: 0.5rem 0 0;
+  color: var(--ink-muted);
+}
+
 .pricing-grid {
   align-items: stretch;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -376,29 +401,24 @@ textarea {
   gap: 1rem;
 }
 
-.contact-form label {
+.label {
   display: grid;
   gap: 0.55rem;
   font-weight: 700;
 }
 
-.contact-form span {
+.label span {
   color: var(--accent);
 }
 
-.contact-form input,
-.contact-form textarea {
+.input {
   width: 100%;
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 14px;
   background: rgba(255, 255, 255, 0.96);
   color: #10151a;
   padding: 0.95rem 1rem;
-}
-
-.contact-form textarea {
   resize: vertical;
-  min-height: 160px;
 }
 
 .contact-form button[disabled] {
