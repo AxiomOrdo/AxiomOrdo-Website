@@ -1,700 +1,242 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>AxiomOrdo – PFAS Compliance Intelligence</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#0b0f14">
-  <link rel="icon" href="/favicon.ico" sizes="any">
-  <style>
-    body {
-      font-family: Arial, sans-serif;
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AxiomOrdo — PFAS Assurance</title>  <meta name="description" content="Know where you stand on PFAS — and prove it. AxiomOrdo delivers deterministic, audit-ready regulatory assurance."/>  <style>
+    :root {
+      --bg: #0b0f14;
+      --card: #121821;
+      --text: #e6edf3;
+      --muted: #9da7b3;
+      --accent: #3aa6ff;
+      --border: #1f2630;
+    }
+
+    * {
+      box-sizing: border-box;
       margin: 0;
-      background: #0b0f14;
-      color: #e6edf3;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
     }
 
     .container {
-      max-width: 1120px;
+      max-width: 1100px;
       margin: auto;
-      padding: 40px 20px 60px 20px;
+      padding: 60px 20px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 60px;
+    }
+
+    .logo {
+      height: 40px;
     }
 
     h1 {
-      font-size: 2.8em;
-      margin: 0 0 14px 0;
-      color: #ffffff;
+      font-size: 2.8rem;
+      line-height: 1.2;
+      margin-bottom: 20px;
+    }
+
+    .lead {
+      font-size: 1.2rem;
+      color: var(--muted);
+      max-width: 650px;
+    }
+
+    .hero-points {
+      margin: 30px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    .buttons {
+      margin-top: 30px;
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 12px 20px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+      border: 1px solid var(--border);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #000;
+    }
+
+    .btn-secondary {
+      color: var(--text);
+    }
+
+    .section {
+      border-top: 1px solid var(--border);
     }
 
     h2 {
-      margin-top: 55px;
-      margin-bottom: 16px;
-      color: #58a6ff;
-      font-size: 2em;
+      font-size: 2rem;
+      margin-bottom: 20px;
     }
 
-    h3 {
-      margin-top: 0;
-      margin-bottom: 10px;
-      color: #ffffff;
-      font-size: 1.25em;
+    .grid {
+      display: grid;
+      gap: 20px;
     }
 
-    p {
-      line-height: 1.65;
-      color: #c9d1d9;
-      margin: 0 0 14px 0;
+    .grid-3 {
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     }
 
-    a {
-      color: #58a6ff;
-    }
-
-    .hero-copy {
-      max-width: 860px;
-      margin: 0 auto;
-      text-align: center;
-    }
-
-    .cta {
-      margin-top: 24px;
-      padding: 16px 28px;
-      background: #238636;
-      color: white;
-      text-decoration: none;
-      display: inline-block;
-      border-radius: 8px;
-      font-weight: bold;
-      font-size: 1rem;
-    }
-
-    .cta:hover {
-      background: #2ea043;
-    }
-
-    .secondary-cta {
-      margin-top: 16px;
-      margin-left: 12px;
-      padding: 16px 28px;
-      background: transparent;
-      color: #e6edf3;
-      text-decoration: none;
-      display: inline-block;
-      border-radius: 8px;
-      font-weight: bold;
-      font-size: 1rem;
-      border: 1px solid #30363d;
-    }
-
-    .secondary-cta:hover {
-      border-color: #58a6ff;
-      color: #ffffff;
-    }
-
-    .box {
-      background: #161b22;
-      padding: 22px;
+    .card {
+      background: var(--card);
+      padding: 20px;
       border-radius: 10px;
-      margin-top: 18px;
-      border: 1px solid #222a33;
+      border: 1px solid var(--border);
     }
 
-    .highlight {
-      color: #3fb950;
-      font-weight: bold;
-    }
-
-    .timeline-grid,
-    .services-grid,
-    .check-grid {
-      display: flex;
-      justify-content: center;
-      gap: 28px;
-      flex-wrap: wrap;
-      margin-top: 24px;
-    }
-
-    .timeline-card,
-    .service-card,
-    .example-card {
-      background: #161b22;
-      padding: 24px;
-      border-radius: 12px;
-      min-width: 280px;
-      max-width: 340px;
-      flex: 1 1 300px;
-      text-align: left;
-      border: 1px solid #222a33;
-    }
-
-    .service-card.featured {
-      border: 1px solid #2f81f7;
-      box-shadow: 0 0 0 1px rgba(47, 129, 247, 0.15);
-    }
-
-    .service-card.entry {
-      border: 1px solid #3fb950;
-      box-shadow: 0 0 0 1px rgba(63, 185, 80, 0.15);
-    }
-
-    .timer {
-      font-size: 1.55em;
-      margin: 14px 0;
-      color: #ffffff;
-      font-weight: bold;
-    }
-
-    .price {
-      font-size: 1.9em;
-      font-weight: bold;
-      color: #ffffff;
-      margin: 14px 0 10px 0;
-    }
-
-    .muted {
-      font-size: 0.96em;
-      color: #c9d1d9;
-    }
-
-    .service-title {
-      margin: 0;
-      font-weight: bold;
-      font-size: 1.3em;
-      color: #ffffff;
-    }
-
-    .service-subtitle {
-      margin-top: 8px;
-      color: #c9d1d9;
-      min-height: 72px;
-    }
-
-    .service-list {
-      margin-top: 18px;
-      padding-left: 0;
-      list-style: none;
-    }
-
-    .service-list li {
+    .card h3 {
       margin-bottom: 10px;
-      color: #e6edf3;
     }
 
-    .best-for {
-      margin-top: 18px;
-      font-size: 0.95em;
-      color: #c9d1d9;
+    .card p {
+      color: var(--muted);
     }
 
-    .roi-line {
-      font-size: 1.05em;
-      color: #ffffff;
-      font-weight: bold;
-      margin-top: 10px;
-    }
-
-    .section-intro {
-      max-width: 860px;
-    }
-
-    .logo-wrap {
-      text-align: center;
-      margin-bottom: 48px;
-    }
-
-    .logo-wrap img {
-      max-width: 260px;
-      opacity: 0.95;
-    }
-
-    .example-output {
-      background: #11161d;
-      border: 1px solid #30363d;
-      border-radius: 12px;
-      padding: 24px;
+    .contact {
       margin-top: 20px;
     }
 
-    .example-output table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 16px;
-      margin-bottom: 18px;
-    }
-
-    .example-output th,
-    .example-output td {
-      text-align: left;
-      padding: 10px 12px;
-      border-bottom: 1px solid #222a33;
-      color: #e6edf3;
-    }
-
-    .example-output th {
-      color: #58a6ff;
-      font-weight: bold;
+    .contact a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
     }
 
     footer {
-      margin-top: 60px;
-      padding-top: 25px;
-      border-top: 1px solid #222a33;
+      border-top: 1px solid var(--border);
       text-align: center;
+      padding: 30px 20px;
+      color: var(--muted);
+      font-size: 0.9rem;
     }
 
-    @media (max-width: 700px) {
-      h1 {
-        font-size: 2.15em;
-      }
-
-      h2 {
-        font-size: 1.6em;
-      }
-
-      .cta,
-      .secondary-cta {
-        display: block;
-        text-align: center;
-        margin-left: 0;
-      }
-
-      .secondary-cta {
-        margin-top: 12px;
-      }
-
-      .service-subtitle {
-        min-height: auto;
-      }
+    footer a {
+      color: var(--accent);
+      margin: 0 10px;
+      text-decoration: none;
     }
-  </style>
-</head>
-<body>
-  <div class="container">
+  </style></head><body>  <!-- HERO -->  <div class="container">
+    <div class="topbar">
+      <img src="/logo.png" class="logo" alt="AxiomOrdo logo"/>
+      <strong>AxiomOrdo</strong>
+    </div><h1>Know where you stand on PFAS — and prove it.</h1>
 
-    <div class="logo-wrap">
-      <img src="Logo.png" alt="AxiomOrdo Logo" />
-    </div>
-
-    <div class="hero-copy">
-      <h1>PFAS Compliance You Can Defend Under Audit</h1>
-      <p>
-        Deterministic, audit-defensible PFAS decisions built on evidence, not assumptions.
-      </p>
-
-      <a
-        class="cta"
-        href="mailto:pfas@axiomordo.com?subject=PFAS Exposure Check Request&body=Company Name:%0AProducts / Categories:%0ANumber of SKUs:%0AWhat documents do you have available?%0AKey Concern:%0A"
-      >
-        Request PFAS Exposure Check
-      </a>
-
-      <a class="secondary-cta" href="#services">
-        View Services
-      </a>
-    </div>
-
-    <div style="margin-top: 52px; text-align: center;">
-      <h2 style="margin-bottom: 20px;">Regulatory Timeline</h2>
-
-      <div class="timeline-grid">
-
-        <div class="timeline-card">
-          <p style="margin: 0; font-weight: bold; font-size: 1.1em; color: #ffffff;">
-            EU PFHxA Restrictions Begin
-          </p>
-
-          <p id="timer1" class="timer">Loading...</p>
-
-          <p class="muted">
-            From October 2026, PFHxA restrictions apply to consumer clothing, footwear,
-            and certain food-contact paper and cardboard in the EU.
-            <br /><br />
-            If you cannot demonstrate compliance, market access risk becomes immediate.
-          </p>
-        </div>
-
-        <div class="timeline-card">
-          <p style="margin: 0; font-weight: bold; font-size: 1.1em; color: #ffffff;">
-            Restrictions Expand Further
-          </p>
-
-          <p id="timer2" class="timer">Loading...</p>
-
-          <p class="muted">
-            From October 2027, the restriction extends to additional general-public textile
-            applications beyond the first 2026 categories.
-            <br /><br />
-            The scope increases, but most organisations are already behind today.
-          </p>
-        </div>
-
-      </div>
-    </div>
-
-    <h2>The Reality</h2>
-    <div class="box">
-      You cannot prove PFAS compliance across your supply chain.<br />
-      Supplier declarations are vague or incomplete.<br />
-      Regulations are tightening faster than your data improves.<br />
-      Audit exposure is increasing.
-    </div>
-
-    <p style="margin-top: 18px;">
-      Most companies are not non-compliant. They are unable to prove compliance.
-      That is where regulatory and commercial risk begins.
-    </p>
-
-    <h2>The Risk</h2>
-    <div class="box">
-      <span class="highlight">Blocked market access</span><br />
-      <span class="highlight">Regulatory enforcement</span><br />
-      <span class="highlight">Product withdrawal</span><br />
-      <span class="highlight">Reputational damage</span>
-    </div>
-
-    <h2>The AxiomOrdo Approach</h2>
-    <p class="section-intro">
-      We do not guess. We do not rely on vague supplier claims.
-    </p>
-
+<p class="lead">
+  AxiomOrdo gives you a defensible, audit-ready position across your products:
+  what’s exposed, what’s supported, and what cannot be safely claimed — based
+  on deterministic regulatory evaluation, not interpretation.
 </p>
 
-<div class="box">
-  Deterministic compliance logic with no hidden assumptions<br />
-  Evidence-linked decision outputs<br />
-  Explicit data gap identification<br />
-  Audit-ready reporting structure
+<div class="hero-points">
+  <span>Where are we exposed?</span>
+  <span>What can we actually defend?</span>
+  <span>What will fail under scrutiny?</span>
 </div>
 
-<h2>Why This Is Different</h2>
-<p class="section-intro">
-  Traditional compliance relies on interpretation. AxiomOrdo produces
-  defensible outputs with traceable evidence.
-</p>
-
-<div class="box">
-  Every conclusion is traceable to source evidence<br />
-  No hidden assumptions or expert-judgement shortcuts<br />
-  Built for regulatory scrutiny, not internal comfort
+<div class="buttons">
+  <a href="mailto:pfas@axiomordo.com" class="btn btn-primary">
+    Request PFAS Review
+  </a>
+  <a href="#how" class="btn btn-secondary">
+    How it works
+  </a>
 </div>
 
-<h2>Why AxiomOrdo Is Different</h2>
-<div class="box">
-  <p><strong>PFAS software shows you data. AxiomOrdo shows you what you can defend.</strong></p>
-  <p>
-    Most systems improve visibility. AxiomOrdo tests whether your position is actually supportable under regulatory scrutiny.
-  </p>
-  <p><a href="methodology.html">See how AxiomOrdo works →</a></p>
-</div>
-
-    <div class="check-grid">
-      <div class="example-card" style="max-width: 520px; flex: 1 1 460px;">
-        <h3>PFAS Exposure Check</h3>
-    
-    <h2>Start with a Fast Exposure Check</h2>
-    <p class="section-intro">
-      This is a rapid, structured screening designed to answer one question:
-      <strong>based on what you currently have, are you likely safe, exposed, or operating with unknown risk?</strong>
-    </p>
-
-    <div class="check-grid">
-      <div class="example-card" style="max-width: 520px; flex: 1 1 460px;">
-        <h3>PFAS Exposure Check</h3>
-        <p class="price">€2K–€3K</p>
-        <p class="muted"><strong>Turnaround:</strong> 12–24 hours</p>
-        <p class="muted">
-          A fast way to find out if you have a PFAS problem worth investigating before committing to a full analysis.
-        </p>
-        <ul class="service-list">
-          <li>✔ Rapid structured screening</li>
-          <li>✔ Product list required</li>
-          <li>✔ Send what you have — no formatting required</li>
-          <li>✔ Screens risk patterns, document signals, and evidence gaps</li>
-          <li>✔ 1-page PDF output</li>
-          <li>✔ Clear next-step recommendation</li>
-        </ul>
-        <p class="best-for">
-          <strong>Best for:</strong><br />
-          Fast initial visibility with minimal friction
-        </p>
-      </div>
-
-      <div class="example-card" style="max-width: 520px; flex: 1 1 460px;">
-        <h3>What we need from you</h3>
-        <ul class="service-list">
-          <li>✔ Product list (Excel or CSV)</li>
-          <li>✔ SKU list, product names, or categories</li>
-          <li>✔ Optional documents such as SDS sheets, supplier declarations, product specs, or material descriptions</li>
-          <li>✔ Incomplete or messy files are acceptable</li>
-        </ul>
-        <p class="muted">
-          Send what you have. We’ll work with it.
-        </p>
-      </div>
-    </div>
-
-    <h2 id="services">Choose the Level of Control You Need</h2>
-    <p class="section-intro">
-      Start with fast insight. Move to structured clarity, operational control, and defensible outputs as needed.
-    </p>
-    <p class="roi-line">
-      The cost of proving your position is usually far lower than the cost of getting it wrong.
-    </p>
-
-    <div class="services-grid">
-
-      <div class="service-card entry">
-        <p class="service-title">PFAS Exposure Check</p>
-        <p class="price">€2K–€3K</p>
-        <p class="muted"><strong>Turnaround:</strong> 12–24 hours</p>
-        <p class="service-subtitle">
-          Fast structured screening to show whether you are likely safe, exposed, or operating with unknown risk.
-        </p>
-
-        <ul class="service-list">
-          <li>✔ Portfolio-level screening</li>
-          <li>✔ Risk pattern review by product type</li>
-          <li>✔ PFAS indicator scan across available documents</li>
-          <li>✔ Evidence gap identification</li>
-          <li>✔ Confidence level and risk signal</li>
-          <li>✔ 1-page PDF output</li>
-        </ul>
-
-        <p class="best-for">
-          <strong>Best for:</strong><br />
-          Low-friction triage before committing to a full analysis
-        </p>
-      </div>
-
-      <div class="service-card">
-        <p class="service-title">PFAS Exposure Snapshot</p>
-        <p class="price">€7.5K–€20K+</p>
-        <p class="muted"><strong>Turnaround:</strong> Initial findings within 24 hours. Full results within 24–72 hours of receiving all required documents.</p>
-        <p class="service-subtitle">
-          Product-level classification with evidence review and structured output.
-        </p>
-
-        <ul class="service-list">
-          <li>✔ Product-level review</li>
-          <li>✔ Evidence gap identification</li>
-          <li>✔ Highest-risk products surfaced clearly</li>
-          <li>✔ Structured output for management review</li>
-          <li>✔ Immediate next actions</li>
-        </ul>
-
-        <p class="best-for">
-          <strong>Best for:</strong><br />
-          Fast, structured visibility across a defined product set
-        </p>
-      </div>
-
-      <div class="service-card featured">
-        <p class="service-title">PFAS Risk &amp; Action Pack</p>
-        <p class="price">€15K–€35K</p>
-        <p class="muted"><strong>Turnaround:</strong> Initial findings within 24 hours. Full action plan delivered within 48–96 hours.</p>
-        <p class="service-subtitle">
-          Turn your PFAS position into a controlled action plan with prioritisation, supplier engagement, and escalation logic.
-        </p>
-
-        <ul class="service-list">
-          <li>✔ Full portfolio priority ranking</li>
-          <li>✔ Supplier requests ready to send</li>
-          <li>✔ Escalation tracking (Day 0 / 14 / 30)</li>
-          <li>✔ Quick wins and blockers clearly identified</li>
-          <li>✔ Action-focused management output</li>
-        </ul>
-
-        <p class="best-for">
-          <strong>Best for:</strong><br />
-          Taking operational control of PFAS risk across your portfolio
-        </p>
-      </div>
-
-      <div class="service-card">
-        <p class="service-title">PFAS Defence Pack</p>
-        <p class="price">€30K–€60K+</p>
-        <p class="muted"><strong>Turnaround:</strong> Initial findings within 24–48 hours. Full defensibility output delivered within 3–5 working days.</p>
-        <p class="service-subtitle">
-          Evidence-backed defensibility output for regulatory review, client challenge, and internal sign-off.
-        </p>
-
-        <ul class="service-list">
-          <li>✔ Product-by-product defensibility view</li>
-          <li>✔ Evidence-based justification for unknown and high-risk outcomes</li>
-          <li>✔ Structured responses to regulator and client questions</li>
-          <li>✔ Trace-linked justification to source evidence</li>
-          <li>✔ Audit-grade output under higher scrutiny</li>
-        </ul>
-
-        <p class="best-for">
-          <strong>Best for:</strong><br />
-          Audit, challenge, and internal decision support where defensibility matters
-        </p>
-      </div>
-
-    </div>
-
-    <h2>Worked Example: PFAS Exposure Check</h2>
-    <p class="section-intro">
-      This is what a realistic initial screening outcome looks like. It is designed to create clarity, not false certainty.
-    </p>
-
-    <div class="example-output">
-     <h3>Client input</h3>
-<p>
-  500 SKUs submitted, 85 SDS sheets, and 40 supplier declarations.
-</p>
-
-<h3>What the screening sees</h3>
-<ul class="service-list">
-  <li>✔ 68% of products have no supporting documents</li>
-  <li>✔ Textile and coated product categories present</li>
-  <li>✔ PFAS-related terminology identified in multiple SDS sheets</li>
-  <li>✔ Supplier declarations inconsistent in format and coverage</li>
-</ul>
-
-<h3>Example output</h3>
-<p><strong>PFAS Exposure Position:</strong> UNKNOWN / POTENTIAL EXPOSURE</p>
-<p><strong>Confidence:</strong> LOW</p>
-<p><strong>Risk Signal:</strong> Immediate review recommended</p>
-
-<table>
-  <thead>
-    <tr>
-      <th>Category</th>
-      <th>Count</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>Likely compliant</td>
-      <td>96</td>
-    </tr>
-    <tr>
-      <td>Potential exposure</td>
-      <td>124</td>
-    </tr>
-    <tr>
-      <td>Unknown</td>
-      <td>280</td>
-    </tr>
-  </tbody>
-</table>
-
-<h3>Top risk drivers</h3>
-<ul class="service-list">
-  <li>✔ Missing supplier evidence across most of the portfolio</li>
-  <li>✔ Textile and coated products with potential fluorinated treatment</li>
-  <li>✔ Incomplete SDS and declaration coverage</li>
-</ul>
-
-<h3>What this means</h3>
-<p>
-  Based on the current evidence set, the portfolio cannot currently be considered defensible.
-  The primary risk is uncertainty driven by missing and inconsistent evidence, rather than confirmed PFAS presence across all flagged items.
-</p>
-
-<h3>Next step</h3>
-<p>
-  A full PFAS Exposure Snapshot is required to identify affected products, classify exposure at product level, and establish a defensible position.
-</p>
-    </div>
-
-    <h2>PFAS Monitored Portfolio</h2>
-
-    <div class="box">
-      <p><strong>€5K–€12K / month</strong></p>
-      <p><strong>Turnaround:</strong> Initial onboarding completed within 3–5 working days. Ongoing updates delivered monthly, with priority changes surfaced continuously.</p>
-      <p>
-        Move from one-off assessment to ongoing control of your PFAS position.
-      </p>
-
-      <div class="box" style="margin-top: 16px;">
-        Track your portfolio over time<br />
-        See what changed since the last review<br />
-        Track supplier responses and delays<br />
-        Receive a monthly risk and action report<br />
-        Know what needs attention next
-      </div>
-
-      <p class="best-for" style="margin-top: 18px;">
-        <strong>Best for:</strong><br />
-        Companies with ongoing product exposure<br />
-        Teams managing supplier evidence over time<br />
-        Maintaining a defensible position, not just assessing it once
-      </p>
-
-      <p class="best-for">
-        <strong>Typical path:</strong><br />
-        Most clients start with a PFAS Exposure Check, upgrade to Exposure Snapshot for product-level clarity, then move to Monitoring for ongoing control.
-      </p>
-    </div>
-
-    <h2>Credibility</h2>
-    <div class="box">
-      Built by a Marine QHSE Lead Auditor with extensive compliance experience<br />
-      Designed for audit environments where evidence must withstand scrutiny<br />
-      Structured using deterministic logic rather than subjective interpretation
-    </div>
-
-    <h2>Built for Real Compliance Environments</h2>
-    <p class="section-intro">
-      Designed for organisations operating under regulatory scrutiny, where decisions must be defensible, not just documented.
-    </p>
-
-    <div class="box">
-      Regulatory pressure on PFAS is accelerating. Most organisations are behind not because of intent, but because they cannot produce defensible evidence fast enough.
-    </div>
-
-    <h2>Next Step</h2>
-    <p class="section-intro">
-      Send a brief overview of your portfolio scope and current data position. We will confirm feasibility within 24 hours.
-    </p>
-
-    <a
-      class="cta"
-      href="mailto:pfas@axiomordo.com?subject=PFAS Exposure Check Request&body=Company Name:%0AProducts / Categories:%0ANumber of SKUs:%0AWhat documents do you have available?%0AKey Concern:%0A"
-    >
-      Request PFAS Exposure Check
-    </a>
-
-    <footer>
-      <p style="margin-bottom: 8px;">
-        <a href="privacy.html" style="color: #58a6ff; text-decoration: none; margin: 0 12px;">Privacy Notice</a>
-        <a href="terms.html" style="color: #58a6ff; text-decoration: none; margin: 0 12px;">Terms of Use</a>
-      </p>
-      <p style="font-size: 0.95em; color: #9da7b3; margin-top: 10px;">
-        © 2026 AxiomOrdo. All rights reserved.
-      </p>
-    </footer>
-
+  </div>  <!-- VALUE -->  <div class="container section">
+    <h2>Deterministic compliance, not interpretation</h2><div class="grid grid-3">
+  <div class="card">
+    <h3>Defensible Outputs</h3>
+    <p>Every conclusion is traceable, structured, and audit-ready.</p>
   </div>
 
-  <script>
-    function startCountdown(id, targetDate) {
-      const el = document.getElementById(id);
+  <div class="card">
+    <h3>Deterministic Evaluation</h3>
+    <p>No ambiguity. Same input → same outcome, every time.</p>
+  </div>
 
-      function update() {
-        const now = new Date().getTime();
-        const distance = targetDate - now;
+  <div class="card">
+    <h3>Fail-Closed Logic</h3>
+    <p>If something cannot be supported, it is surfaced clearly — not hidden.</p>
+  </div>
+</div>
 
-        if (distance < 0) {
-          el.innerHTML = "In Force";
-          return;
-        }
+  </div>  <!-- HOW IT WORKS -->  <div id="how" class="container section">
+    <h2>How it works</h2><div class="grid grid-3">
+  <div class="card">
+    <h3>1. Intake</h3>
+    <p>We collect product, supplier, and regulatory data relevant to PFAS exposure.</p>
+  </div>
 
-        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((distance / (1000 * 60 * 60)) % 24);
+  <div class="card">
+    <h3>2. Evaluation</h3>
+    <p>Deterministic rules assess exposure, support, and compliance position.</p>
+  </div>
 
-        el.innerHTML = days + " days " + hours + " hours";
-      }
+  <div class="card">
+    <h3>3. Output</h3>
+    <p>You receive a clear, defensible position with identified gaps and risks.</p>
+  </div>
+</div>
 
-      update();
-      setInterval(update, 60000);
-    }
+  </div>  <!-- USE CASES -->  <div class="container section">
+    <h2>Where this is used</h2><div class="grid grid-3">
+  <div class="card">
+    <h3>Manufacturers</h3>
+    <p>Understand PFAS exposure across product lines and suppliers.</p>
+  </div>
 
-    startCountdown("timer1", new Date("2026-10-10T00:00:00").getTime());
-    startCountdown("timer2", new Date("2027-10-10T00:00:00").getTime());
-  </script>
-</body>
+  <div class="card">
+    <h3>Compliance Teams</h3>
+    <p>Move from uncertainty to defensible regulatory positioning.</p>
+  </div>
+
+  <div class="card">
+    <h3>Market Access</h3>
+    <p>Identify what is required to support claims and avoid rejection.</p>
+  </div>
+</div>
+
+  </div>  <!-- CONTACT -->  <div class="container section">
+    <h2>Request a PFAS Review</h2><p class="lead">
+  If you need a clear, defensible position on PFAS exposure, get in touch.
+</p>
+
+<div class="contact">
+  <a href="mailto:pfas@axiomordo.com">pfas@axiomordo.com</a>
+</div>
+
+  </div>  <!-- FOOTER -->  <footer>
+    © 2026 AxiomOrdo
+    <br/><br/>
+    <a href="/privacy.html">Privacy</a>
+    <a href="/terms.html">Terms</a>
+  </footer></body>
 </html>
