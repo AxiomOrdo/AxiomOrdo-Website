@@ -1,11 +1,16 @@
+import Image from "next/image";
+
 export function HeroSection() {
   return (
     <section className="hero">
       <div className="container">
         <div className="topbar">
-          <div className="brand-mark" aria-hidden="true">
-            △
-          </div>
+          <Image
+            src="/logo.png"
+            alt="AxiomOrdo logo"
+            width={32}
+            height={32}
+          />
           <div className="brand-name">AxiomOrdo</div>
         </div>
 
