@@ -1,15 +1,27 @@
-export function ProblemSection() {
+export function Footer() {
   return (
-    <section className="problem-strip">
-      <div className="container narrow">
-        <p>
-          PFAS is no longer a niche chemical issue. It is a market access,
-          customer assurance, and defensibility problem. Many teams do not fail
-          because they ignore PFAS. They fail because they cannot prove what is
-          in scope, what is evidenced, and what position they can actually
-          defend.
-        </p>
+    <footer className="footer">
+      <div className="container">
+        <div className="footer-inner">
+          <h2>Ready to get clarity?</h2>
+          <p>
+            Request a PFAS review today and know exactly where you stand.
+            Deterministic, evidence-linked, and built for defensibility.
+          </p>
+          <div className="hero-actions" style={{ margin: "2rem 0" }}>
+            <a className="button button-primary" href="#contact">
+              Request PFAS Review
+            </a>
+          </div>
+          <small>
+            &copy; {new Date().getFullYear()} AXIOMORDO LTD. All rights reserved.
+            <br />
+            Company Number: 17179868
+            <br />
+            Registered Office: 128 City Road, London, EC1V 2NX, UNITED KINGDOM
+          </small>
+        </div>
       </div>
-    </section>
+    </footer>
   );
 }
