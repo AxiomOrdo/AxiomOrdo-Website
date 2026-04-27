@@ -1,2 +1,0 @@
-# AxiomOrdo-Website
-Website Plan

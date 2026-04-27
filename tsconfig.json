@@ -1,5 +1,0 @@
-# Optional but recommended for live email delivery from the contact form.
-# Get a key from https://resend.com and verify your sending domain.
-RESEND_API_KEY=
-PFAS_INBOX=pfas@axiomordo.com
-PFAS_FROM=PFAS Review <noreply@axiomordo.com>
