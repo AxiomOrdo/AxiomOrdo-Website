@@ -12,19 +12,22 @@ const decisions: Decision[] = [
   {
     label: "Green",
     outcome: "Clear",
-    detail: "Evidence is sufficient to defend the product family without immediate testing.",
+    detail:
+      "Evidence is sufficient to support continued sale or supply without immediate PFAS testing.",
     tone: "border-emerald-400 text-emerald-700",
   },
   {
     label: "Amber",
     outcome: "Investigate",
-    detail: "Evidence gaps remain at component, supplier, or material level and need targeted follow-up.",
+    detail:
+      "Evidence gaps remain at component, supplier, material, finish, or documentation level and require targeted follow-up.",
     tone: "border-amber-400 text-amber-700",
   },
   {
     label: "Red",
     outcome: "Restrict",
-    detail: "The product cannot currently be defended and should be held, remediated, or tested before exposure increases.",
+    detail:
+      "The product cannot currently be defended and should be held, remediated, or tested before exposure increases.",
     tone: "border-rose-400 text-rose-700",
   },
 ];
@@ -58,7 +61,7 @@ function Nav({ site }: { site: "axiomordo" | "clearline" }) {
             to={isClearLine ? "#start" : "/clearline"}
             className="rounded-full border border-white/20 px-5 py-2 text-white transition hover:border-white/40 hover:bg-white/10"
           >
-            {isClearLine ? "Start Readiness Audit" : "Explore ClearLine"}
+            {isClearLine ? "Start with your SKU list" : "Explore ClearLine"}
           </Link>
         </div>
       </nav>
@@ -195,7 +198,7 @@ function AxiomPfasPage() {
             <div className="motion-fade mt-10 flex flex-col gap-4 sm:flex-row">
               <CTA to="/clearline">Visit ClearLine</CTA>
               <CTA to="/clearline#start" secondary isExternal>
-                Start PFAS Readiness Audit
+                Start with your SKU list
               </CTA>
             </div>
           </div>
@@ -277,6 +280,11 @@ function ClearLineSite() {
           </p>
           <h2 className="mt-5 text-4xl font-semibold tracking-tight sm:text-6xl">
             Documentation fails before products.
+            <p className="problem-support">
+            The issue is rarely that documents do not exist. The issue is that nobody knows
+            whether those documents can defend the product when a retailer, customer, or
+            regulator asks.
+          </p>
           </h2>
         </div>
         <div className="space-y-8 text-lg leading-8 text-slate-700">
@@ -310,31 +318,42 @@ function ClearLineSite() {
         </div>
       </section>
 
-      <section id="offer" className="mx-auto max-w-7xl px-5 py-24 sm:px-8 lg:py-32">
-        <div className="grid gap-12 lg:grid-cols-[1fr_0.8fr] bg-slate-900 rounded-[3rem] p-8 sm:p-16 text-white">
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.26em] text-cyan-400">
-              The Entry Offer
-            </p>
-            <h2 className="mt-6 text-4xl font-semibold tracking-tight sm:text-6xl">
-              PFAS Readiness Audit
-            </h2>
-            <p className="mt-8 text-xl text-slate-300">
-              A focused first pass over your inventory to identify where PFAS exposure sits.
-            </p>
-            <div className="mt-10 flex items-baseline gap-4">
-              <span className="text-6xl font-bold tracking-tight text-white">£6,500</span>
-              <span className="text-slate-400 font-medium">starting price</span>
-            </div>
-          </div>
-          <div className="flex flex-col justify-center gap-6">
-            <CTA to="#start" isExternal>Book Your Audit Now</CTA>
-            <p className="text-sm text-slate-400 text-center">
-              Protected revenue. Reduced testing spend. Regulator readiness.
-            </p>
-          </div>
-        </div>
-      </section>
+     <section id="offer" className="mx-auto max-w-7xl px-5 py-24 sm:px-8 lg:py-32">
+  <div className="grid gap-12 lg:grid-cols-[1fr_0.8fr] bg-slate-900 rounded-[3rem] p-8 sm:p-16 text-white">
+    <div>
+      <p className="text-xs font-semibold uppercase tracking-[0.28em] text-cyan-300">
+        The Entry Offer
+      </p>
+
+      <h2 className="mt-6 text-4xl font-semibold tracking-tight sm:text-6xl">
+        PFAS Readiness Audit
+      </h2>
+
+      <p className="mt-8 max-w-xl text-xl text-slate-300">
+        A focused first pass over your inventory to identify which product families
+        need evidence review, supplier follow-up, or testing.
+      </p>
+
+      <div className="mt-10 flex flex-wrap items-baseline gap-4">
+        <span className="text-6xl font-bold tracking-tight text-white">£6,500</span>
+        <span className="text-slate-400 font-medium">fixed entry scope</span>
+      </div>
+
+      <ul className="mt-6 space-y-2 text-base text-slate-200">
+        <li>Up to 25 representative SKUs</li>
+        <li>or 250 component-level evidence checks</li>
+        <li>10-business-day turnaround</li>
+      </ul>
+    </div>
+
+    <div className="flex flex-col justify-center gap-6">
+      <CTA to="#start" isExternal>Start with your SKU list</CTA>
+      <p className="text-sm text-slate-400 text-center">
+        Protected revenue. Reduced testing spend. Regulator readiness.
+      </p>
+    </div>
+  </div>
+</section>
 
       <section id="start" className="bg-[#dfe7dc] py-24 sm:py-32">
         <div className="mx-auto grid max-w-7xl gap-16 px-5 sm:px-8 lg:grid-cols-[1fr_0.8fr]">
@@ -350,14 +369,38 @@ function ClearLineSite() {
             <div className="grid gap-4">
               <input required placeholder="Name" className="w-full rounded-2xl border border-slate-200 px-5 py-4 focus:outline-none focus:ring-2 focus:ring-slate-950" />
               <input required placeholder="Work Email" type="email" className="w-full rounded-2xl border border-slate-200 px-5 py-4 focus:outline-none focus:ring-2 focus:ring-slate-950" />
-              <select className="w-full rounded-2xl border border-slate-200 px-5 py-4 focus:outline-none focus:ring-2 focus:ring-slate-950 bg-white">
+              <select
+                required
+                defaultValue=""
+                className="w-full rounded-2xl border border-slate-200 px-5 py-4 focus:outline-none focus:ring-2 focus:ring-slate-950 bg-white"
+              >
+                <option value="" disabled>
+                  SKU volume
+                  </option>
                 <option>Under 250 SKUs</option>
-                <option>250 - 1,000 SKUs</option>
-                <option>1,000+ SKUs</option>
+                <option>250–1,000 SKUs</option>
+                <option>1,000–5,000 SKUs</option>
+                <option>5,000+ SKUs</option>
+                <option>Not sure yet</option>
+              </select>
+              <select
+                 required
+                defaultValue=""
+                className="w-full rounded-2xl border border-slate-200 px-5 py-4 focus:outline-none focus:ring-2 focus:ring-slate-950 bg-white"
+              >
+                <option value="" disabled>
+                  Main pressure
+                </option>
+                <option>Retailer request</option>
+                <option>Customer questionnaire</option>
+                <option>Regulatory concern</option>
+                <option>Supplier uncertainty</option>
+                <option>Internal review</option>
+                <option>Not sure yet</option>
               </select>
             </div>
             <button type="submit" className="w-full rounded-full bg-slate-950 py-4 text-white font-semibold hover:bg-slate-800 transition">
-              Start Readiness Audit
+              Start with your SKU list
             </button>
           </form>
         </div>
