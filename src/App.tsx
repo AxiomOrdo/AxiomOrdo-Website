@@ -129,7 +129,7 @@ function AxiomOrdoSite() {
         </div>
       </section>
 
-      <section className="mx-auto grid max-w-7xl gap-16 px-5 py-24 sm:px-8 lg:grid-cols-[0.9fr_1.1fr] lg:py-32">
+      <section className="mx-auto grid max-w-7xl gap-16 px-5 pt-24 pb-16 sm:px-8 lg:grid-cols-[0.9fr_1.1fr] lg:pt-32 lg:pb-20">
         <div>
           <p className="text-sm font-semibold uppercase tracking-[0.28em] text-cyan-400">
             AxiomOrdo Core
