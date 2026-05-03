@@ -273,30 +273,33 @@ function ClearLineSite() {
         </div>
       </section>
 
-      <section className="mx-auto grid max-w-7xl gap-16 px-5 py-24 sm:px-8 lg:grid-cols-[0.9fr_1.1fr] lg:py-32">
-        <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.26em] text-slate-500">
-            The Problem
-          </p>
-          <h2 className="mt-5 text-4xl font-semibold tracking-tight sm:text-6xl">
-            Documentation fails before products.
-            <p className="problem-support">
-            The issue is rarely that documents do not exist. The issue is that nobody knows
-            whether those documents can defend the product when a retailer, customer, or
-            regulator asks.
-          </p>
-          </h2>
-        </div>
-        <div className="space-y-8 text-lg leading-8 text-slate-700">
-          <p>
-            PFAS pressure usually arrives as a short deadline: a retailer questionnaire or a regulator request. The risk is not knowing which SKUs are defensible.
-          </p>
-          <p className="text-2xl font-bold text-slate-950">
-            1,000 SKUs does not mean 1,000 PFAS problems. You need a way to group, triage, and defend decisions fast.
-          </p>
-        </div>
-      </section>
-
+       <section className="mx-auto grid max-w-7xl gap-16 px-5 py-24 sm:px-8 lg:grid-cols-[0.9fr_1.1fr] lg:py-32">
+      <div>
+        <p className="text-sm font-semibold uppercase tracking-[0.26em] text-slate-500">
+          The Problem
+        </p>
+    
+        <h2 className="mt-5 text-4xl font-semibold tracking-tight sm:text-6xl">
+          Documentation fails before products.
+        </h2>
+    
+        <p className="mt-8 max-w-xl text-xl leading-8 text-slate-600">
+          The issue is rarely that documents do not exist. The issue is that nobody knows
+          whether those documents can defend the product when a retailer, customer, or
+          regulator asks.
+        </p>
+      </div>
+    
+      <div className="space-y-8 text-lg leading-8 text-slate-700">
+        <p>
+          PFAS pressure usually arrives as a short deadline: a retailer questionnaire or a regulator request. The risk is not knowing which SKUs are defensible.
+        </p>
+    
+        <p className="text-2xl font-bold text-slate-950">
+          1,000 SKUs does not mean 1,000 PFAS problems. You need a way to group, triage, and defend decisions fast.
+        </p>
+      </div>
+    </section>
       <section className="bg-white py-24 sm:py-32">
         <div className="mx-auto max-w-7xl px-5 sm:px-8">
           <h2 className="text-4xl font-semibold tracking-tight sm:text-6xl mb-16">
