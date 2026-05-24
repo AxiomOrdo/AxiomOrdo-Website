@@ -102,7 +102,7 @@ function Nav({
           <img
             src="/images/axiomordo-logo.png"
             alt="AxiomOrdo Logo"
-            className="h-8 w-auto brightness-0 invert"
+            className="h-8 w-auto object-contain"
           />
           <div className="leading-tight">
             <span className="block text-lg font-semibold tracking-tight">
@@ -183,7 +183,7 @@ function Footer({ accent = "#22d3ee" }: { accent?: string }) {
             <img
               src="/images/axiomordo-logo.png"
               alt="AxiomOrdo"
-              className="h-7 w-auto brightness-0 invert opacity-70"
+              className="h-7 w-auto object-contain opacity-90"
             />
             <div className="leading-tight">
               <span className="block text-sm font-semibold text-white/80">
@@ -253,7 +253,7 @@ function AxiomOrdoSite() {
             <img
               src="/images/axiomordo-logo.png"
               alt="AxiomOrdo"
-              className="motion-fade h-16 w-auto brightness-0 invert"
+              className="motion-fade h-16 w-auto object-contain"
             />
             <h1 className="motion-fade mt-10 text-5xl font-semibold tracking-[-0.05em] text-white sm:text-7xl lg:text-8xl">
               The Authority in
