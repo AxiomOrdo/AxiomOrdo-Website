@@ -5,7 +5,7 @@ import { BrowserRouter, Routes, Route, Link, useLocation } from "react-router-do
 
 type SiteKey =
   | "axiomordo"
-  | "clearline"
+  | "clearmark"
   | "golden-thread"
   | "meriden"
   | "ards"
@@ -16,14 +16,14 @@ type SiteKey =
 
 const products = [
   {
-    key: "clearline",
-    name: "ClearLine",
-    tagline: "PFAS Product Evidence",
+    key: "clearmark",
+    name: "ClearMark",
+    tagline: "PFAS Regulatory Evidence",
     description:
       "Know your PFAS exposure before a retailer or regulator forces the timetable. SKU-level evidence classification in 10 business days.",
     accent: "#22d3ee",
     accentDark: "#0891b2",
-    href: "/clearline",
+    href: "/clearmark",
     label: "PFAS",
   },
   {
@@ -109,7 +109,7 @@ function Nav({
               {isHome ? "AxiomOrdo" : product?.name ?? site}
             </span>
             <span className="block text-[10px] font-medium uppercase tracking-[0.22em] text-white/60">
-              {isHome ? "Evidence Engine" : "Powered by AxiomOrdo"}
+              {isHome ? "Regulatory Twin Platform" : "Powered by AxiomOrdo"}
             </span>
           </div>
         </Link>
@@ -190,7 +190,7 @@ function Footer({ accent = "#22d3ee" }: { accent?: string }) {
                 AxiomOrdo
               </span>
               <span className="block text-[10px] uppercase tracking-widest text-white/40">
-                Evidence Engine
+                Regulatory Twin Platform
               </span>
             </div>
           </div>
@@ -256,56 +256,87 @@ function AxiomOrdoSite() {
               className="motion-fade h-16 w-auto object-contain"
             />
             <h1 className="motion-fade mt-10 text-5xl font-semibold tracking-[-0.05em] text-white sm:text-7xl lg:text-8xl">
-              The Authority in
+              Know your actual
               <br />
-              <span className="text-cyan-400">Product Evidence</span>
+              <span className="text-cyan-400">regulatory position.</span>
             </h1>
             <p className="motion-fade mt-6 max-w-2xl text-xl leading-8 text-slate-300 sm:text-2xl">
-              A deterministic evidence engine for product, asset, and
-              operational classification. Built for high-consequence domains
-              where every decision must be explainable.
+              AxiomOrdo converts fragmented evidence into a live regulatory
+              position — quantifying exposure and telling you what action to
+              take before failure occurs.
             </p>
             <div className="motion-fade mt-10 flex flex-col gap-4 sm:flex-row">
               <CTA to="/ards">Our Standard — ARDS</CTA>
-              <CTA to="/clearline" secondary>
-                Explore ClearLine PFAS
+              <CTA to="/clearmark" secondary>
+                Explore ClearMark PFAS
               </CTA>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Engine description */}
+      {/* Platform description */}
       <section className="mx-auto grid max-w-7xl gap-16 px-5 py-24 sm:px-8 lg:grid-cols-[1fr_1.2fr] lg:py-32">
         <div>
           <p className="text-sm font-semibold uppercase tracking-[0.28em] text-cyan-400">
-            The Engine
+            The Platform
           </p>
           <h2 className="mt-5 text-4xl font-semibold tracking-tight sm:text-5xl">
-            Structured inputs.
+            Structured evidence.
             <br />
-            Fixed reasoning.
+            Calculated exposure.
             <br />
-            Defensible outputs.
+            Defensible decisions.
           </h2>
         </div>
         <div className="space-y-7 text-lg leading-8 text-slate-300">
           <p>
-            AxiomOrdo converts fragmented product, supplier, component, and
-            operational evidence into structured decision records. Every
-            classification is produced from explicit rules applied to versioned
-            evidence.
+            AxiomOrdo maps your obligations against your actual evidence —
+            product records, supplier declarations, operational data, audit
+            trails — and produces a live regulatory position. Not a document
+            checklist. A calculated state.
           </p>
           <p>
-            The engine is deterministic by design. No probabilistic guessing.
-            No AI black boxes. Every output carries its source trail — what
-            evidence was used, what was missing, what rule applied, and why the
-            conclusion was reached.
+            Every output carries its source trail: what evidence was used, what
+            was missing, what rule applied, and why the conclusion was reached.
+            When a regulator or auditor asks, the answer is already there.
           </p>
           <p className="border-l-2 border-cyan-400 pl-6 text-xl font-semibold text-white">
             If you cannot explain a decision, you cannot defend it. AxiomOrdo
-            makes every decision explainable.
+            makes every regulatory decision explainable.
           </p>
+        </div>
+      </section>
+
+      {/* Founder credentials */}
+      <section className="border-t border-white/10 bg-white/3 py-16 sm:py-20">
+        <div className="mx-auto max-w-7xl px-5 sm:px-8">
+          <div className="grid gap-10 lg:grid-cols-[1fr_1.4fr]">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.28em] text-cyan-400">
+                Built from operational reality
+              </p>
+              <h2 className="mt-5 text-3xl font-semibold tracking-tight sm:text-4xl">
+                20+ years in the domain.
+                <br />
+                Not consulting it.
+              </h2>
+            </div>
+            <div className="space-y-5 text-lg leading-8 text-slate-300">
+              <p>
+                AxiomOrdo was built by an ISM Lead Auditor and OOW Certificate
+                of Competency holder with over two decades of maritime QHSE
+                experience spanning ISM Code, STCW, Port State Control, and MLC
+                2006. The compliance tools that exist were built by people who
+                have never faced a flag-state inspection, a PSC detention, or a
+                vetting failure.
+              </p>
+              <p>
+                That's the gap AxiomOrdo closes — regulatory intelligence built
+                by someone who knows what scrutiny actually looks like.
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -393,7 +424,7 @@ function AxiomOrdoSite() {
   );
 }
 
-// ─── 2. ClearLine PFAS ───────────────────────────────────────────────────────
+// ─── 2. ClearMark PFAS ───────────────────────────────────────────────────────
 
 const pfasDecisions = [
   {
@@ -419,18 +450,18 @@ const pfasDecisions = [
   },
 ];
 
-function ClearLineSite() {
+function ClearMarkSite() {
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     e.currentTarget.reset();
     window.alert(
-      "Thanks. ClearLine will follow up with SKU list instructions and the audit scope."
+      "Thanks. ClearMark will follow up with SKU list instructions and the audit scope."
     );
   }
 
   return (
     <main className="bg-[#070b12] text-white">
-      <Nav site="clearline" accent="#22d3ee" />
+      <Nav site="clearmark" accent="#22d3ee" />
 
       {/* Hero */}
       <section className="relative min-h-screen overflow-hidden">
@@ -454,7 +485,7 @@ function ClearLineSite() {
               <span className="text-cyan-400">before someone asks.</span>
             </h1>
             <p className="mt-8 max-w-xl text-xl leading-8 text-slate-300">
-              ClearLine turns SKU lists and supplier evidence into clear PFAS
+              ClearMark turns SKU lists and supplier evidence into clear PFAS
               decisions — before retailers or regulators force the timetable.
             </p>
             <div className="mt-10 flex flex-col gap-4 sm:flex-row">
@@ -503,7 +534,7 @@ function ClearLineSite() {
       <section className="border-y border-white/10 bg-white/3 py-24 sm:py-32">
         <div className="mx-auto max-w-7xl px-5 sm:px-8">
           <h2 className="mb-16 text-4xl font-semibold tracking-tight sm:text-5xl">
-            The ClearLine Decision System
+            The ClearMark Decision System
           </h2>
           <div className="divide-y divide-white/10">
             {pfasDecisions.map((d) => (
@@ -569,7 +600,7 @@ function ClearLineSite() {
               Start with your SKU list.
             </h2>
             <p className="mt-8 text-xl leading-8 text-slate-400">
-              Leave with a defensible PFAS action map. ClearLine is PFAS
+              Leave with a defensible PFAS action map. ClearMark is PFAS
               exposure readiness, powered by AxiomOrdo.
             </p>
           </div>
@@ -688,8 +719,8 @@ function ARDSSite() {
               <CTA to="/" accentColor="#a78bfa">
                 Explore All Verticals
               </CTA>
-              <CTA to="/clearline" secondary>
-                See ARDS in ClearLine
+              <CTA to="/clearmark" secondary>
+                See ARDS in ClearMark
               </CTA>
             </div>
           </div>
@@ -1557,14 +1588,15 @@ export default function App() {
       <ScrollToTop />
       <Routes>
         <Route path="/" element={<AxiomOrdoSite />} />
-        <Route path="/clearline" element={<ClearLineSite />} />
+        <Route path="/clearmark" element={<ClearMarkSite />} />
         <Route path="/ards" element={<ARDSSite />} />
         <Route path="/golden-thread" element={<GoldenThreadSite />} />
         <Route path="/meriden" element={<MeridenComplianceSite />} />
         <Route path="/cbam" element={<CBAMSite />} />
         <Route path="/fueleu" element={<FuelEUSite />} />
-        {/* Legacy redirect */}
-        <Route path="/pfas" element={<ClearLineSite />} />
+        {/* Legacy redirects */}
+        <Route path="/clearline" element={<ClearMarkSite />} />
+        <Route path="/pfas" element={<ClearMarkSite />} />
       </Routes>
     </BrowserRouter>
   );
