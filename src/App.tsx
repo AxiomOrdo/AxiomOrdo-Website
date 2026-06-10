@@ -486,10 +486,8 @@ function GroupNav() {
           <img
             src="/images/axiomordo-logo.png"
             alt="AxiomOrdo"
-            className="h-8 w-auto brightness-0 invert"
-            onError={(e) => {
-              (e.target as HTMLImageElement).style.display = "none";
-            }}
+            className="h-8 w-auto"
+            style={{ mixBlendMode: "screen" }}
           />
           <div className="leading-tight">
             <span className="block text-lg font-semibold tracking-tight">AxiomOrdo</span>
