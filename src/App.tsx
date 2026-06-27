@@ -921,7 +921,7 @@ function ClearMarkPage() {
                 <span className="text-5xl font-bold tracking-tight text-white">
                   £6,500
                 </span>
-                <span className="text-white/40 font-medium">starting price</span>
+                <span className="font-medium text-white/40">starting price</span>
               </div>
             </div>
             <div className="flex flex-col items-start gap-4">
