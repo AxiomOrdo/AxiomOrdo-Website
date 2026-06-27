@@ -328,7 +328,10 @@ const brands: Brand[] = [
 // ARDS — The Standard (standalone site, separate from axiomordo.com)
 // ─────────────────────────────────────────────────────────────────────────────
 
-const ARDS_URL = "https://axiomordo-ards-lulc0xzaw-inzaghiphil-creators-projects.vercel.app/";
+const ARDS_URL =
+  (process.env.REACT_APP_ARDS_URL &&
+    process.env.REACT_APP_ARDS_URL.trim()) ||
+  "https://ards.axiomordo.com/";
 
 const ards = {
   name: "ARDS",
