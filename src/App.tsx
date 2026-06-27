@@ -1,4 +1,5 @@
-import { FormEvent, useEffect } from "react";
+import { useEffect } from "react";
+import type { FormEvent } from "react";
 import {
   BrowserRouter,
   Routes,
