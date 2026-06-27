@@ -1,4 +1,5 @@
-import { FormEvent, useEffect } from "react";
+import { useEffect } from "react";
+import type { FormEvent } from "react";
 import {
   BrowserRouter,
   Routes,
@@ -328,7 +329,10 @@ const brands: Brand[] = [
 // ARDS — The Standard (standalone site, separate from axiomordo.com)
 // ─────────────────────────────────────────────────────────────────────────────
 
-const ARDS_URL = "https://axiomordo-ards-lulc0xzaw-inzaghiphil-creators-projects.vercel.app/";
+const ARDS_URL =
+  (process.env.REACT_APP_ARDS_URL &&
+    process.env.REACT_APP_ARDS_URL.trim()) ||
+  "https://ards.axiomordo.com/";
 
 const ards = {
   name: "ARDS",
@@ -921,7 +925,7 @@ function ClearMarkPage() {
                 <span className="text-5xl font-bold tracking-tight text-white">
                   £6,500
                 </span>
-                <span className="text-white/40 font-medium">starting price</span>
+                <span className="font-medium text-white/40">starting price</span>
               </div>
             </div>
             <div className="flex flex-col items-start gap-4">
