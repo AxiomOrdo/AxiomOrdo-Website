@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">Free PSC Self-Inspection Checklist</title>
+  <desc id="desc">Meriden Compliance lead magnet social preview image.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0B2A4A"/>
+      <stop offset="1" stop-color="#123a63"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <text x="90" y="118" fill="#7FC7D1" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700" letter-spacing="6">MERIDEN</text>
+  <text x="265" y="118" fill="#ffffff" font-family="Arial, Helvetica, sans-serif" font-size="28" letter-spacing="6">COMPLIANCE</text>
+  <text x="90" y="260" fill="#ffffff" font-family="Arial, Helvetica, sans-serif" font-size="72" font-weight="700">Free PSC Self-Inspection</text>
+  <text x="90" y="342" fill="#ffffff" font-family="Arial, Helvetica, sans-serif" font-size="72" font-weight="700">Checklist</text>
+  <text x="90" y="420" fill="#cfe4e9" font-family="Arial, Helvetica, sans-serif" font-size="34">Catch the findings before the PSCO does.</text>
+  <rect x="90" y="492" width="850" height="68" rx="6" fill="#7FC7D1"/>
+  <text x="120" y="536" fill="#0B2A4A" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700">Download it. Use it on board. Forward it to your DPA.</text>
+</svg>
