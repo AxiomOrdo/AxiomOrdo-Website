@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Free PSC Self-Inspection Checklist | Meriden Compliance</title>
+  <meta name="description" content="A free Port State Control self-inspection checklist for maritime professionals. Catch the findings before the PSCO does." />
+  <meta property="og:title" content="Free PSC Self-Inspection Checklist" />
+  <meta property="og:description" content="Walk your ship the way the inspector will. Free, plain-English, organised by area." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://axiomordo.com/meriden" />
+  <meta property="og:image" content="https://axiomordo.com/meriden/og-image.png" />
+  <style>
+    :root{--navy:#0B2A4A;--navy2:#123a63;--teal:#1E7F8C;--tealLight:#7FC7D1;--ink:#1c2733;--muted:#4a5a6a;--line:#dce3ea;--bg:#f4f8fa;}
+    *{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;color:var(--ink);line-height:1.55;background:#fff}a{color:var(--teal)}.wrap{max-width:1060px;margin:0 auto;padding:0 22px}.hero{background:linear-gradient(160deg,var(--navy),var(--navy2));color:#fff}.hero .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:42px;padding:50px 22px 64px;align-items:center}.wordmark{font-size:13px;letter-spacing:3px;text-transform:uppercase;color:var(--tealLight);font-weight:700;margin-bottom:28px}.wordmark span{color:#fff;font-weight:400}.hero h1{font-size:42px;line-height:1.08;margin:0 0 14px}.sub{font-size:18px;color:#cfe4e9;margin-bottom:22px}.ticks{list-style:none;margin:0;padding:0}.ticks li{position:relative;padding-left:28px;margin-bottom:9px;color:#e5eef2}.ticks li:before{content:"✓";position:absolute;left:0;color:var(--tealLight);font-weight:700}.card{background:#fff;color:var(--ink);border-radius:10px;padding:26px 24px;box-shadow:0 18px 40px rgba(0,0,0,.28)}.card h2{margin:0 0 5px;color:var(--navy)}label{display:block;font-size:13px;font-weight:700;color:var(--navy);margin:13px 0 5px}input[type=text],input[type=email]{width:100%;padding:12px 13px;border:1px solid var(--line);border-radius:7px;font-size:15px}.consent{display:flex;gap:9px;align-items:flex-start;margin-top:14px;font-size:12.5px;color:var(--muted)}button,.btn{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:7px;padding:14px 18px;font-weight:700;text-decoration:none;cursor:pointer}button{width:100%;margin-top:16px;background:var(--teal);color:#fff;font-size:16px}.success{display:none;background:#eef6f8;border:1px solid var(--tealLight);border-radius:10px;padding:24px}.dl{background:var(--navy);color:#fff!important;margin-top:8px}.err{display:none;color:#b3261e;font-size:13px}.hp{position:absolute;left:-9999px}section{padding:54px 0}.alt{background:var(--bg)}h3{font-size:28px;color:var(--navy);margin:0 0 8px}.lede{max-width:760px;color:var(--muted)}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}.box{border:1px solid var(--line);border-radius:9px;padding:20px;background:#fff}.box h4{margin:0 0 6px;color:var(--navy)}.fwd{background:var(--navy);color:#fff;border-radius:10px;padding:26px;text-align:center;margin-top:28px}.fwd strong{color:var(--tealLight)}footer{background:#0a2038;color:#9fb0bf;font-size:12px;padding:28px 0}footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}@media(max-width:860px){.hero .wrap,.grid{grid-template-columns:1fr}.hero h1{font-size:32px}}
+  </style>
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <div>
+      <div class="wordmark">Meriden <span>Compliance</span></div>
+      <h1>Catch the findings before the PSCO does.</h1>
+      <p class="sub">A free Port State Control self-inspection checklist. Walk your ship the way the inspector will, and close the gaps while you still have time.</p>
+      <ul class="ticks">
+        <li>Organised by area, the way inspections actually run</li>
+        <li>Plain-English “why it matters” notes on every item</li>
+        <li>Covers certificates, LSA, fire, MARPOL, MLC, navigation and ISM</li>
+        <li>Free to use on board and free to forward to your DPA</li>
+      </ul>
+    </div>
+    <div class="card" id="formCard">
+      <h2>Get the checklist free</h2>
+      <p class="lede">Enter your email and get instant access.</p>
+      <form id="leadForm" action="https://formspree.io/f/REPLACE_WITH_FORMSPREE_ID" method="POST">
+        <label for="fname">First name</label><input id="fname" name="first_name" type="text" autocomplete="given-name" placeholder="Optional" />
+        <label for="email">Work email *</label><input id="email" name="email" type="email" required autocomplete="email" placeholder="you@company.com" />
+        <label for="role">Your role</label><input id="role" name="role" type="text" placeholder="Master / DPA / QHSE / Cadet — optional" />
+        <input class="hp" type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" />
+        <div class="consent"><input id="consent" type="checkbox" required /><label for="consent" style="margin:0;font-weight:400">I’d like the checklist and occasional maritime QHSE updates from Meriden Compliance. I can unsubscribe any time.</label></div>
+        <button type="submit" id="submitBtn">Send me the checklist →</button>
+        <p class="err" id="errMsg">Something went wrong. Try again or email phil@axiomordo.com.</p>
+        <p style="text-align:center;font-size:11.5px;color:#8a97a2">No spam. We never share your details.</p>
+      </form>
+    </div>
+    <div class="success" id="successCard">
+      <h2>Done. Access it here.</h2>
+      <p>Open the checklist now, then forward it to your DPA or QHSE lead if it is useful.</p>
+      <a class="btn dl" href="/meriden/checklist.html">Open the checklist</a>
+    </div>
+  </div>
+</header>
+<section><div class="wrap"><h3>What’s inside</h3><p class="lede">Seven sections and a final ten-point walk-round. Built for maritime QHSE practice, not generic office safety.</p><div class="grid"><div class="box"><h4>Certificates and LSA</h4><p>The documents inspectors open with, plus lifeboats, liferafts, HRUs, pyrotechnics, muster lists and drill evidence.</p></div><div class="box"><h4>Fire safety and MARPOL</h4><p>Fire doors, dampers, fixed systems, escape routes, Oil Record Book, OWS, garbage, sewage, fuel and ballast records.</p></div><div class="box"><h4>MLC and navigation</h4><p>Hours of rest, SEAs, welfare records, medicals, corrected charts, bridge equipment, passage plans and GMDSS.</p></div><div class="box"><h4>ISM and final walk-round</h4><p>SMS access, maintenance evidence, NCR close-out, familiarisation, DPA details and the ten things people miss.</p></div></div></div></section>
+<section class="alt"><div class="wrap"><h3>Who it’s for</h3><p class="lede">It works at both ends of the gangway: crew can use it on board, and DPAs or QHSE managers can use it as a fast readiness baseline.</p><div class="fwd"><strong>If you’re crew and this helps, send it to your DPA or QHSE lead.</strong><br/>Good readiness often starts with someone on board who cared enough to pass it up.</div></div></section>
+<footer><div class="wrap"><div>© <span id="yr"></span> Meriden Compliance · an AxiomOrdo LTD brand<br/>General readiness aid only. Not legal, regulatory or compliance advice. Verify against your SMS, flag state and applicable instruments.</div><div><a href="https://meridencompliance.axiomordo.com">meridencompliance.axiomordo.com</a><br/>phil@axiomordo.com</div></div></footer>
+<script>
+document.getElementById('yr').textContent=new Date().getFullYear();
+var form=document.getElementById('leadForm'),btn=document.getElementById('submitBtn'),err=document.getElementById('errMsg');
+form.addEventListener('submit',function(e){e.preventDefault();err.style.display='none';btn.disabled=true;btn.textContent='Sending…';fetch(form.action,{method:'POST',body:new FormData(form),headers:{Accept:'application/json'}}).then(function(res){if(!res.ok)throw new Error('bad');document.getElementById('formCard').style.display='none';document.getElementById('successCard').style.display='block';}).catch(function(){btn.disabled=false;btn.textContent='Send me the checklist →';err.style.display='block';});});
+</script>
+</body>
+</html>
