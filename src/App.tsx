@@ -104,16 +104,16 @@ const brands: Brand[] = [
   {
     key: "sentinel",
     name: "Sentinel",
-    tagline: "Regulatory obligation, mapped. Nothing missed.",
+    tagline: "Deforestation due diligence. Evidence mapped to origin.",
     description:
-      "Enterprise compliance management that converts regulatory requirements into tracked obligations — with live evidence mapping and gap analysis.",
+      "EUDR due diligence intelligence for tracing commodities and products to origin, organising evidence, and preparing defensible submissions.",
     color: "#0369a1",
     accent: "#38bdf8",
     href: "/sentinel",
-    label: "Compliance",
-    hero: "Every obligation tracked. Every gap visible.",
+    label: "EUDR",
+    hero: "EUDR evidence, traced from product to plot.",
     subline:
-      "Sentinel converts regulatory text into discrete, trackable obligations — mapping requirements to evidence, flagging gaps, and maintaining a live compliance position across your operations.",
+      "Sentinel is being developed to structure EUDR due diligence evidence, connect products and suppliers to geolocation records, and expose gaps before submission.",
     problem: {
       heading: "Compliance failures are evidence failures.",
       body: [
@@ -324,6 +324,17 @@ const brands: Brand[] = [
     cta: "Start Free 30-Day Trial",
   },
 ];
+
+const unreleasedBrandKeys = new Set([
+  "verilog",
+  "emissary",
+  "sentinel",
+  "carbonledger",
+  "fuelpath",
+  "goldenthread",
+  "clearmark",
+  "safeops",
+]);
 
 // ─────────────────────────────────────────────────────────────────────────────
 // ARDS — The Standard (standalone site, separate from axiomordo.com)
@@ -619,6 +630,66 @@ function ARDSBadge({ accentColor }: { accentColor: string }) {
 // ─────────────────────────────────────────────────────────────────────────────
 // Generic Brand Page Template
 // ─────────────────────────────────────────────────────────────────────────────
+
+function BrandPlaceholderPage({ brand }: { brand: Brand }) {
+  return (
+    <main className="min-h-screen text-white" style={{ background: "#050810" }}>
+      <BrandNav brand={brand} />
+
+      <section className="relative flex min-h-screen items-center overflow-hidden">
+        <div
+          className="absolute inset-0"
+          style={{
+            background: `radial-gradient(ellipse 80% 65% at 60% 40%, ${brand.color}28 0%, transparent 70%)`,
+          }}
+        />
+        <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-[#050810] to-transparent" />
+
+        <div className="relative z-10 mx-auto w-full max-w-7xl px-5 pb-20 pt-32 sm:px-8">
+          <div className="max-w-3xl">
+            <div className="flex flex-wrap items-center gap-3">
+              <span
+                className="rounded-full px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em]"
+                style={{ background: `${brand.color}28`, color: brand.accent }}
+              >
+                {brand.label}
+              </span>
+              <span className="rounded-full border border-white/15 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-white/55">
+                In development
+              </span>
+            </div>
+            <h1 className="motion-fade mt-6 text-5xl font-semibold tracking-[-0.04em] text-white sm:text-7xl lg:text-8xl">
+              {brand.name}
+            </h1>
+            <p className="motion-fade mt-5 text-2xl font-medium leading-9 sm:text-3xl" style={{ color: brand.accent }}>
+              {brand.tagline}
+            </p>
+            <p className="motion-fade mt-7 max-w-2xl text-lg leading-8 text-white/60 sm:text-xl">
+              {brand.description}
+            </p>
+            <p className="motion-fade mt-5 max-w-2xl text-base leading-7 text-white/45">
+              Product and release information will be published as development progresses.
+            </p>
+            <div className="motion-fade mt-10 flex flex-col gap-4 sm:flex-row">
+              <a
+                href={`mailto:hello@axiomordo.com?subject=${encodeURIComponent(`Register interest in ${brand.name}`)}`}
+                className="inline-flex items-center justify-center rounded-full px-7 py-3.5 text-sm font-semibold transition hover:opacity-90"
+                style={{ background: brand.accent, color: "#000" }}
+              >
+                Register interest
+              </a>
+              <CTA to="/" secondary accentColor={brand.accent}>
+                AxiomOrdo Group
+              </CTA>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <GroupFooter brand={brand} />
+    </main>
+  );
+}
 
 function BrandPage({ brand }: { brand: Brand }) {
   return (
@@ -1368,6 +1439,11 @@ function AxiomOrdoHome() {
                     >
                       {brand.label}
                     </span>
+                    {unreleasedBrandKeys.has(brand.key) && (
+                      <span className="ml-auto mr-4 text-[10px] font-medium uppercase tracking-[0.16em] text-white/35">
+                        In development
+                      </span>
+                    )}
                     <span
                       className="text-lg font-light transition group-hover:translate-x-1"
                       style={{ color: brand.accent }}
@@ -1511,16 +1587,17 @@ export default function App() {
 
         {/* Brand sub-sites */}
         {brands.map((brand) =>
-          brand.key === "clearmark" ? (
-            <Route key={brand.key} path={brand.href} element={<ClearMarkPage />} />
-          ) : brand.key === "meriden" ? (
+          brand.key === "meriden" ? (
             <Route key={brand.key} path={brand.href} element={<MeridenPage />} />
+          ) : unreleasedBrandKeys.has(brand.key) ? (
+            <Route key={brand.key} path={brand.href} element={<BrandPlaceholderPage brand={brand} />} />
           ) : (
             <Route key={brand.key} path={brand.href} element={<BrandPage brand={brand} />} />
           )
         )}
 
         {/* Legacy redirects */}
+        <Route path="/eudr" element={<Navigate to="/sentinel" replace />} />
         <Route path="/clearline" element={<Navigate to="/clearmark" replace />} />
         <Route path="/pfas" element={<Navigate to="/clearmark" replace />} />
       </Routes>
