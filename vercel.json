@@ -1,1 +1,1 @@
-{"rewrites":[{"source":"/meriden","destination":"/meriden/index.html"},{"source":"/meriden/","destination":"/meriden/index.html"},{"source":"/(.*)","destination":"/index.html"}]}
+{"rewrites":[{"source":"/meriden","destination":"/meriden/index.html"},{"source":"/meriden/","destination":"/meriden/index.html"},{"source":"/meriden/ai-readiness-pilot","destination":"/meriden/ai-readiness-pilot.html"},{"source":"/meriden/ai-readiness-pilot/","destination":"/meriden/ai-readiness-pilot.html"},{"source":"/(.*)","destination":"/index.html"}]}
