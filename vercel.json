@@ -7,6 +7,8 @@
     { "source": "/pfas", "destination": "/clearmark", "permanent": true }
   ],
   "rewrites": [
+    { "source": "/ards", "destination": "/ards-gateway/index.html" },
+    { "source": "/ards/", "destination": "/ards-gateway/index.html" },
     { "source": "/meriden/psc-checklist", "destination": "/meriden/index.html" },
     { "source": "/meriden/psc-checklist/", "destination": "/meriden/index.html" },
     { "source": "/meriden/ai-readiness-pilot", "destination": "/meriden/ai-readiness-pilot.html" },
