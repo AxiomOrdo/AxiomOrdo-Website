@@ -1,1 +1,35 @@
-{"rewrites":[{"source":"/meriden","destination":"/meriden/index.html"},{"source":"/meriden/","destination":"/meriden/index.html"},{"source":"/meriden/ai-readiness-pilot","destination":"/meriden/ai-readiness-pilot.html"},{"source":"/meriden/ai-readiness-pilot/","destination":"/meriden/ai-readiness-pilot.html"},{"source":"/(.*)","destination":"/index.html"}]}
+{
+  "redirects": [
+    { "source": "/meriden", "destination": "/platforms/meriden", "permanent": true },
+    { "source": "/meriden/", "destination": "/platforms/meriden", "permanent": true },
+    { "source": "/eudr", "destination": "/sentinel", "permanent": true },
+    { "source": "/clearline", "destination": "/clearmark", "permanent": true },
+    { "source": "/pfas", "destination": "/clearmark", "permanent": true }
+  ],
+  "rewrites": [
+    { "source": "/meriden/psc-checklist", "destination": "/meriden/index.html" },
+    { "source": "/meriden/psc-checklist/", "destination": "/meriden/index.html" },
+    { "source": "/meriden/ai-readiness-pilot", "destination": "/meriden/ai-readiness-pilot.html" },
+    { "source": "/meriden/ai-readiness-pilot/", "destination": "/meriden/ai-readiness-pilot.html" },
+    { "source": "/platforms", "destination": "/architecture/index.html" },
+    { "source": "/platforms/:path*", "destination": "/architecture/index.html" },
+    { "source": "/solutions", "destination": "/architecture/index.html" },
+    { "source": "/solutions/:path*", "destination": "/architecture/index.html" },
+    { "source": "/industries", "destination": "/architecture/index.html" },
+    { "source": "/industries/:path*", "destination": "/architecture/index.html" },
+    { "source": "/resources", "destination": "/architecture/index.html" },
+    { "source": "/resources/:path*", "destination": "/architecture/index.html" },
+    { "source": "/company", "destination": "/architecture/index.html" },
+    { "source": "/company/:path*", "destination": "/architecture/index.html" },
+    { "source": "/trust", "destination": "/architecture/index.html" },
+    { "source": "/trust/:path*", "destination": "/architecture/index.html" },
+    { "source": "/legal/:path*", "destination": "/architecture/index.html" },
+    { "source": "/contact", "destination": "/architecture/index.html" },
+    { "source": "/meriden/ards-founding-panel", "destination": "/architecture/index.html" },
+    { "source": "/meriden/resources", "destination": "/architecture/index.html" },
+    { "source": "/meriden/psc-readiness", "destination": "/architecture/index.html" },
+    { "source": "/meriden/ai-governance", "destination": "/architecture/index.html" },
+    { "source": "/meriden/management-systems", "destination": "/architecture/index.html" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
