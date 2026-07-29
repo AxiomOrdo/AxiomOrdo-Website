@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 
 // ─── DESIGN SYSTEM ───────────────────────────────────────────────────────────
 // Aesthetic: Naval instrument panel — dark, precise, authoritative
