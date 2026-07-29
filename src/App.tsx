@@ -7,6 +7,7 @@ import {
   Navigate,
   useLocation,
 } from "react-router-dom";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Types
@@ -1720,6 +1721,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <ScrollToTop />
+      <SpeedInsights />
       <Routes>
         {/* Group home */}
         <Route path="/" element={<AxiomOrdoHome />} />
