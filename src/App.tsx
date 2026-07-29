@@ -15,6 +15,20 @@ import {
 
 type Capability = { title: string; desc: string };
 
+type SeoConfig = {
+  title: string;
+  description: string;
+  canonicalPath: string;
+  schema?: Record<string, unknown>;
+};
+
+type InsightHub = {
+  slug: string;
+  title: string;
+  shortTitle: string;
+  description: string;
+};
+
 type Brand = {
   key: string;
   name: string;
@@ -354,6 +368,53 @@ const ards = {
   href: ARDS_URL,
 };
 
+const SITE_URL = "https://www.axiomordo.com";
+
+const insightHubs: InsightHub[] = [
+  {
+    slug: "compliance-intelligence",
+    title: "Compliance Intelligence",
+    shortTitle: "Compliance Intelligence",
+    description:
+      "Evidence-led analysis on turning regulatory text, guidance, standards, and operational evidence into defensible compliance decisions.",
+  },
+  {
+    slug: "maritime-ai",
+    title: "Maritime AI",
+    shortTitle: "Maritime AI",
+    description:
+      "Practical analysis for controlled AI use in maritime QHSE, audit readiness, management systems, and assurance workflows.",
+  },
+  {
+    slug: "maritime-qhse",
+    title: "Maritime QHSE",
+    shortTitle: "Maritime QHSE",
+    description:
+      "Operational articles for DPAs, QHSE managers, marine assurance teams, and vessel operators working with ISM, PSC, MLC, STCW, and audit evidence.",
+  },
+  {
+    slug: "operational-assurance",
+    title: "Operational Assurance",
+    shortTitle: "Operational Assurance",
+    description:
+      "Articles on how controls, procedures, competence, records, and verification work in real operational settings.",
+  },
+  {
+    slug: "regulatory-analysis",
+    title: "Regulatory Analysis",
+    shortTitle: "Regulatory Analysis",
+    description:
+      "Source-aware analysis that separates law, regulation, official guidance, standards, recommendations, commentary, and opinion.",
+  },
+  {
+    slug: "audit-and-management-systems",
+    title: "Audit and Management Systems",
+    shortTitle: "Audit Systems",
+    description:
+      "Management-system and audit articles focused on evidence trails, controlled implementation, reviewability, and corrective action.",
+  },
+];
+
 // ─────────────────────────────────────────────────────────────────────────────
 // ClearMark Decision System
 // ─────────────────────────────────────────────────────────────────────────────
@@ -398,6 +459,60 @@ function ScrollToTop() {
     }
     window.scrollTo(0, 0);
   }, [pathname, hash]);
+  return null;
+}
+
+function PageSeo({ title, description, canonicalPath, schema }: SeoConfig) {
+  useEffect(() => {
+    document.title = title;
+
+    const upsertMeta = (selector: string, attrs: Record<string, string>) => {
+      let tag = document.head.querySelector(selector) as HTMLMetaElement | null;
+      if (!tag) {
+        tag = document.createElement("meta");
+        document.head.appendChild(tag);
+      }
+      Object.entries(attrs).forEach(([key, value]) => tag?.setAttribute(key, value));
+    };
+
+    upsertMeta('meta[name="description"]', { name: "description", content: description });
+    upsertMeta('meta[name="robots"]', {
+      name: "robots",
+      content: "index,follow,max-image-preview:large",
+    });
+    upsertMeta('meta[property="og:title"]', { property: "og:title", content: title });
+    upsertMeta('meta[property="og:description"]', {
+      property: "og:description",
+      content: description,
+    });
+    upsertMeta('meta[property="og:type"]', { property: "og:type", content: "website" });
+    upsertMeta('meta[property="og:url"]', {
+      property: "og:url",
+      content: `${SITE_URL}${canonicalPath}`,
+    });
+
+    let canonical = document.head.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
+    if (!canonical) {
+      canonical = document.createElement("link");
+      canonical.rel = "canonical";
+      document.head.appendChild(canonical);
+    }
+    canonical.href = `${SITE_URL}${canonicalPath}`;
+
+    let script = document.getElementById("page-schema") as HTMLScriptElement | null;
+    if (schema) {
+      if (!script) {
+        script = document.createElement("script");
+        script.type = "application/ld+json";
+        script.id = "page-schema";
+        document.head.appendChild(script);
+      }
+      script.textContent = JSON.stringify(schema);
+    } else if (script) {
+      script.remove();
+    }
+  }, [title, description, canonicalPath, schema]);
+
   return null;
 }
 
@@ -512,6 +627,9 @@ function GroupNav() {
           </div>
         </Link>
         <div className="flex items-center gap-5 text-sm font-medium">
+          <Link to="/insights" className="hidden text-white/65 transition hover:text-white sm:inline">
+            Insights
+          </Link>
           <a href={ARDS_URL} target="_blank" rel="noopener noreferrer" className="hidden text-white/65 transition hover:text-white sm:inline">
             ARDS Standard
           </a>
@@ -561,6 +679,12 @@ function GroupFooter({ brand }: { brand?: { name: string; accent: string } }) {
           <div className="flex flex-wrap gap-x-8 gap-y-3 text-sm text-white/35">
             <Link to="/" className="transition hover:text-white/65">
               Group Home
+            </Link>
+            <Link to="/insights" className="transition hover:text-white/65">
+              Insights
+            </Link>
+            <Link to="/authors/phillip-inzaghi" className="transition hover:text-white/65">
+              Author
             </Link>
             <a href={ARDS_URL} target="_blank" rel="noopener noreferrer" className="transition hover:text-white/65">
               ARDS Standard
@@ -1324,6 +1448,275 @@ function ARDSPage() {
   );
 }
 
+function InsightsIndexPage() {
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: "AxiomOrdo Insights",
+    description:
+      "Evidence-led articles on regulatory intelligence, maritime AI, operational assurance, and management-system implementation.",
+    url: `${SITE_URL}/insights`,
+    publisher: {
+      "@type": "Organization",
+      name: "AxiomOrdo",
+      url: SITE_URL,
+    },
+  };
+
+  return (
+    <main className="min-h-screen text-white" style={{ background: "#050810" }}>
+      <PageSeo
+        title="Insights | AxiomOrdo"
+        description="Evidence-led articles from AxiomOrdo on regulatory intelligence, maritime AI, operational assurance, and audit-ready compliance systems."
+        canonicalPath="/insights"
+        schema={schema}
+      />
+      <GroupNav />
+
+      <section className="relative overflow-hidden border-b border-white/8">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_70%_20%,rgba(34,211,238,0.16),transparent_56%)]" />
+        <div className="relative z-10 mx-auto max-w-7xl px-5 pb-20 pt-36 sm:px-8 lg:pb-28 lg:pt-44">
+          <p className="text-xs font-semibold uppercase tracking-[0.28em] text-cyan-300">
+            AxiomOrdo Insights
+          </p>
+          <h1 className="mt-6 max-w-4xl text-5xl font-semibold tracking-[-0.04em] text-white sm:text-7xl">
+            Regulatory analysis with the source trail left visible.
+          </h1>
+          <p className="mt-7 max-w-2xl text-xl leading-8 text-white/60">
+            Articles are developed from operational judgement, structured author
+            input, and source-aware evidence. Binding authority, official guidance,
+            standards, commentary, and interpretation are separated clearly.
+          </p>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-5 py-20 sm:px-8 lg:py-28">
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {insightHubs.map((hub) => (
+            <Link
+              key={hub.slug}
+              to={`/insights/${hub.slug}`}
+              className="group flex min-h-64 flex-col justify-between rounded-2xl border border-white/8 bg-white/[0.025] p-7 transition hover:border-cyan-300/35"
+            >
+              <div>
+                <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-cyan-300/70">
+                  Topic Hub
+                </p>
+                <h2 className="mt-4 text-2xl font-semibold tracking-tight text-white">
+                  {hub.title}
+                </h2>
+                <p className="mt-4 text-sm leading-6 text-white/50">
+                  {hub.description}
+                </p>
+              </div>
+              <span className="mt-8 text-sm font-semibold text-cyan-300 transition group-hover:translate-x-1">
+                View hub →
+              </span>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <section className="border-y border-white/8 bg-white/[0.02] py-20">
+        <div className="mx-auto grid max-w-7xl gap-12 px-5 sm:px-8 lg:grid-cols-[0.8fr_1.2fr]">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-white/35">
+              Author
+            </p>
+            <h2 className="mt-5 text-3xl font-semibold tracking-tight text-white sm:text-5xl">
+              Phillip Inzaghi
+            </h2>
+          </div>
+          <div className="space-y-6 text-lg leading-8 text-white/55">
+            <p>
+              Founder of AxiomOrdo, maritime QHSE specialist, ISM Lead Auditor,
+              and former Officer of the Watch. Articles use Phillip's judgement
+              and operational experience where relevant, with source claims
+              checked against authoritative material.
+            </p>
+            <Link
+              to="/authors/phillip-inzaghi"
+              className="inline-flex rounded-full border border-white/20 px-6 py-3 text-sm font-semibold text-white transition hover:border-white/40 hover:bg-white/5"
+            >
+              View author profile
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <GroupFooter />
+    </main>
+  );
+}
+
+function InsightHubPage({ hub }: { hub: InsightHub }) {
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: `${hub.title} | AxiomOrdo Insights`,
+    description: hub.description,
+    url: `${SITE_URL}/insights/${hub.slug}`,
+    isPartOf: {
+      "@type": "CollectionPage",
+      name: "AxiomOrdo Insights",
+      url: `${SITE_URL}/insights`,
+    },
+  };
+
+  return (
+    <main className="min-h-screen text-white" style={{ background: "#050810" }}>
+      <PageSeo
+        title={`${hub.title} | AxiomOrdo Insights`}
+        description={hub.description}
+        canonicalPath={`/insights/${hub.slug}`}
+        schema={schema}
+      />
+      <GroupNav />
+
+      <section className="mx-auto max-w-7xl px-5 pb-20 pt-36 sm:px-8 lg:pb-28 lg:pt-44">
+        <Link to="/insights" className="text-sm font-medium text-cyan-300/80 transition hover:text-cyan-200">
+          ← Insights
+        </Link>
+        <p className="mt-10 text-xs font-semibold uppercase tracking-[0.28em] text-white/35">
+          Topic Hub
+        </p>
+        <h1 className="mt-5 max-w-4xl text-5xl font-semibold tracking-[-0.04em] text-white sm:text-7xl">
+          {hub.title}
+        </h1>
+        <p className="mt-7 max-w-2xl text-xl leading-8 text-white/60">
+          {hub.description}
+        </p>
+      </section>
+
+      <section className="border-y border-white/8 bg-white/[0.02] py-20">
+        <div className="mx-auto max-w-7xl px-5 sm:px-8">
+          <p className="text-xs font-semibold uppercase tracking-[0.28em] text-white/35">
+            Articles
+          </p>
+          <div className="mt-8 rounded-2xl border border-white/8 bg-[#050810] p-8">
+            <h2 className="text-2xl font-semibold tracking-tight text-white">
+              Articles will appear here after editorial and evidence review.
+            </h2>
+            <p className="mt-4 max-w-2xl text-base leading-7 text-white/50">
+              This hub is live and indexable now. Published articles can be added
+              as stable child URLs under this section and included in the same
+              XML sitemap.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <GroupFooter />
+    </main>
+  );
+}
+
+function PhillipAuthorPage() {
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    name: "Phillip Inzaghi",
+    jobTitle: "Founder, AxiomOrdo",
+    url: `${SITE_URL}/authors/phillip-inzaghi`,
+    worksFor: {
+      "@type": "Organization",
+      name: "AxiomOrdo",
+      url: SITE_URL,
+    },
+    knowsAbout: [
+      "Maritime QHSE",
+      "ISM Code",
+      "Audit and assurance",
+      "Regulatory intelligence",
+      "Evidence provenance",
+      "AI governance",
+    ],
+  };
+
+  return (
+    <main className="min-h-screen text-white" style={{ background: "#050810" }}>
+      <PageSeo
+        title="Phillip Inzaghi | AxiomOrdo Author"
+        description="Author profile for Phillip Inzaghi, Founder of AxiomOrdo, maritime QHSE specialist, ISM Lead Auditor, and former Officer of the Watch."
+        canonicalPath="/authors/phillip-inzaghi"
+        schema={schema}
+      />
+      <GroupNav />
+
+      <section className="mx-auto grid max-w-7xl gap-16 px-5 pb-20 pt-36 sm:px-8 lg:grid-cols-[0.8fr_1.2fr] lg:pb-28 lg:pt-44">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.28em] text-cyan-300">
+            Author
+          </p>
+          <h1 className="mt-5 text-5xl font-semibold tracking-[-0.04em] text-white sm:text-7xl">
+            Phillip Inzaghi
+          </h1>
+          <p className="mt-5 text-xl leading-8 text-white/55">
+            Founder, AxiomOrdo
+            <br />
+            Maritime QHSE Specialist
+            <br />
+            Compliance and Assurance Consultant
+          </p>
+        </div>
+        <div className="space-y-7 text-lg leading-8 text-white/58">
+          <p>
+            Phillip Inzaghi writes on compliance intelligence, maritime QHSE,
+            AI governance, regulatory source validation, auditability, provenance,
+            and operational decision support.
+          </p>
+          <p>
+            His articles are developed from real operational judgement and
+            reviewed against authoritative sources. First-hand experience is used
+            only where relevant and is not treated as a substitute for law,
+            regulation, official guidance, or applicable standards.
+          </p>
+          <div className="flex flex-wrap gap-3 pt-2">
+            {[
+              "ISM Lead Auditor",
+              "Officer of the Watch",
+              "Maritime QHSE",
+              "Operational Assurance",
+              "Regulatory Intelligence",
+              "Evidence Provenance",
+            ].map((item) => (
+              <span key={item} className="rounded-full border border-white/15 px-4 py-2 text-xs font-medium text-white/55">
+                {item}
+              </span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="border-y border-white/8 bg-white/[0.02] py-20">
+        <div className="mx-auto max-w-7xl px-5 sm:px-8">
+          <p className="text-xs font-semibold uppercase tracking-[0.28em] text-white/35">
+            Article Areas
+          </p>
+          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {insightHubs.map((hub) => (
+              <Link
+                key={hub.slug}
+                to={`/insights/${hub.slug}`}
+                className="rounded-2xl border border-white/8 bg-[#050810] p-6 transition hover:border-cyan-300/35"
+              >
+                <h2 className="text-xl font-semibold tracking-tight text-white">
+                  {hub.shortTitle}
+                </h2>
+                <p className="mt-3 text-sm leading-6 text-white/45">
+                  {hub.description}
+                </p>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <GroupFooter />
+    </main>
+  );
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 // AxiomOrdo Group Home
 // ─────────────────────────────────────────────────────────────────────────────
@@ -1584,6 +1977,17 @@ export default function App() {
 
         {/* ARDS Standard */}
         <Route path="/ards" element={<ARDSPage />} />
+
+        {/* Insights */}
+        <Route path="/insights" element={<InsightsIndexPage />} />
+        {insightHubs.map((hub) => (
+          <Route
+            key={hub.slug}
+            path={`/insights/${hub.slug}`}
+            element={<InsightHubPage hub={hub} />}
+          />
+        ))}
+        <Route path="/authors/phillip-inzaghi" element={<PhillipAuthorPage />} />
 
         {/* Brand sub-sites */}
         {brands.map((brand) =>
