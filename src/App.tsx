@@ -463,6 +463,8 @@ function ScrollToTop() {
 }
 
 function PageSeo({ title, description, canonicalPath, schema }: SeoConfig) {
+  const schemaJson = schema ? JSON.stringify(schema) : null;
+
   useEffect(() => {
     document.title = title;
 
@@ -500,18 +502,18 @@ function PageSeo({ title, description, canonicalPath, schema }: SeoConfig) {
     canonical.href = `${SITE_URL}${canonicalPath}`;
 
     let script = document.getElementById("page-schema") as HTMLScriptElement | null;
-    if (schema) {
+    if (schemaJson) {
       if (!script) {
         script = document.createElement("script");
         script.type = "application/ld+json";
         script.id = "page-schema";
         document.head.appendChild(script);
       }
-      script.textContent = JSON.stringify(schema);
+      script.textContent = schemaJson;
     } else if (script) {
       script.remove();
     }
-  }, [title, description, canonicalPath, schema]);
+  }, [title, description, canonicalPath, schemaJson]);
 
   return null;
 }
@@ -975,9 +977,17 @@ function ClearMarkPage() {
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    e.currentTarget.reset();
-    window.alert(
-      "Thanks. We'll follow up with SKU list instructions and the audit scope within one business day."
+    const formData = new FormData(e.currentTarget);
+    const subject = "ClearMark PFAS readiness audit";
+    const body = [
+      `Name: ${String(formData.get("name") ?? "")}`,
+      `Work email: ${String(formData.get("workEmail") ?? "")}`,
+      `Company: ${String(formData.get("company") ?? "")}`,
+      `SKU range: ${String(formData.get("skuRange") ?? "")}`,
+    ].join("\n");
+
+    window.location.assign(
+      `mailto:hello@axiomordo.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
     );
   }
 
@@ -1164,22 +1174,44 @@ function ClearMarkPage() {
             className="grid gap-5 rounded-[2.5rem] bg-white p-8 sm:p-10 shadow-2xl"
           >
             <div className="grid gap-4">
+              <label htmlFor="clearmark-name" className="sr-only">
+                Name
+              </label>
               <input
+                id="clearmark-name"
+                name="name"
                 required
                 placeholder="Name"
                 className="w-full rounded-2xl border border-slate-200 px-5 py-4 text-slate-900 focus:outline-none focus:ring-2 focus:ring-cyan-400"
               />
+              <label htmlFor="clearmark-work-email" className="sr-only">
+                Work email
+              </label>
               <input
+                id="clearmark-work-email"
+                name="workEmail"
                 required
                 type="email"
                 placeholder="Work Email"
                 className="w-full rounded-2xl border border-slate-200 px-5 py-4 text-slate-900 focus:outline-none focus:ring-2 focus:ring-cyan-400"
               />
+              <label htmlFor="clearmark-company" className="sr-only">
+                Company
+              </label>
               <input
+                id="clearmark-company"
+                name="company"
                 placeholder="Company"
                 className="w-full rounded-2xl border border-slate-200 px-5 py-4 text-slate-900 focus:outline-none focus:ring-2 focus:ring-cyan-400"
               />
-              <select className="w-full rounded-2xl border border-slate-200 bg-white px-5 py-4 text-slate-900 focus:outline-none focus:ring-2 focus:ring-cyan-400">
+              <label htmlFor="clearmark-sku-range" className="sr-only">
+                SKU range
+              </label>
+              <select
+                id="clearmark-sku-range"
+                name="skuRange"
+                className="w-full rounded-2xl border border-slate-200 bg-white px-5 py-4 text-slate-900 focus:outline-none focus:ring-2 focus:ring-cyan-400"
+              >
                 <option>Under 250 SKUs</option>
                 <option>250 – 1,000 SKUs</option>
                 <option>1,000+ SKUs</option>
@@ -1193,7 +1225,7 @@ function ClearMarkPage() {
               Start Readiness Audit
             </button>
             <p className="text-center text-xs text-slate-400">
-              We'll respond within one business day.
+              Opens your email app with the request details. We'll respond within one business day.
             </p>
           </form>
         </div>
