@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "npm run build:aopdf && npm run build:site",
+    "build:aopdf": "node scripts/build-aopdf.mjs",
+    "build:site": "vite build",
     "preview": "vite preview"
   },
   "dependencies": {

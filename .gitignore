@@ -6,6 +6,10 @@ node_modules/
 dist/
 dist-ssr/
 build/
+public/aopdf/
+**/.next/
+**/out/
+*.tsbuildinfo
 
 # Environment files
 .env
