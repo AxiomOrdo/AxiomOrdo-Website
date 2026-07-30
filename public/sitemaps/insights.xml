@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://www.axiomordo.com/insights</loc><lastmod>2026-07-29</lastmod></url>
-  <url><loc>https://www.axiomordo.com/insights/compliance-intelligence</loc><lastmod>2026-07-29</lastmod></url>
-  <url><loc>https://www.axiomordo.com/insights/maritime-ai</loc><lastmod>2026-07-29</lastmod></url>
-  <url><loc>https://www.axiomordo.com/insights/maritime-qhse</loc><lastmod>2026-07-29</lastmod></url>
-  <url><loc>https://www.axiomordo.com/insights/operational-assurance</loc><lastmod>2026-07-29</lastmod></url>
-  <url><loc>https://www.axiomordo.com/insights/regulatory-analysis</loc><lastmod>2026-07-29</lastmod></url>
-  <url><loc>https://www.axiomordo.com/insights/audit-and-management-systems</loc><lastmod>2026-07-29</lastmod></url>
-  <url><loc>https://www.axiomordo.com/authors/phillip-inzaghi</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://www.axiomordo.com/meriden-compliance/insights</loc></url>
+  <url><loc>https://www.axiomordo.com/meriden-compliance/insights/maritime-ai</loc></url>
+  <url><loc>https://www.axiomordo.com/meriden-compliance/insights/maritime-ai/why-ai-policies-fail</loc></url>
+  <url><loc>https://www.axiomordo.com/meriden-compliance/insights/maritime-qhse</loc></url>
+  <url><loc>https://www.axiomordo.com/meriden-compliance/insights/risk-safety</loc></url>
+  <url><loc>https://www.axiomordo.com/meriden-compliance/insights/investigations</loc></url>
+  <url><loc>https://www.axiomordo.com/meriden-compliance/insights/safety-management-systems</loc></url>
+  <url><loc>https://www.axiomordo.com/meriden-compliance/insights/auditing-assurance</loc></url>
+  <url><loc>https://www.axiomordo.com/meriden-compliance/insights/human-factors</loc></url>
+  <url><loc>https://www.axiomordo.com/meriden-compliance/insights/leadership-accountability</loc></url>
+  <url><loc>https://www.axiomordo.com/meriden-compliance/insights/training-competence</loc></url>
+  <url><loc>https://www.axiomordo.com/authors/phillip-inzaghi</loc></url>
 </urlset>
