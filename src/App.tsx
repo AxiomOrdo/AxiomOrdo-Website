@@ -29,6 +29,14 @@ type InsightHub = {
   description: string;
 };
 
+type PlaceholderArticle = {
+  slug: string;
+  title: string;
+  subtitle: string;
+  category: string;
+  status: string;
+};
+
 type Brand = {
   key: string;
   name: string;
@@ -315,7 +323,7 @@ const brands: Brand[] = [
       "Structured ISM, MLC, and flag state compliance management for vessel operators who don't have a shore-based compliance department.",
     color: "#1d4ed8",
     accent: "#60a5fa",
-    href: "/meriden",
+    href: "/meriden-compliance",
     label: "Maritime SME",
     hero: "Maritime compliance your crew can actually use.",
     subline:
@@ -369,18 +377,13 @@ const ards = {
 };
 
 const SITE_URL = "https://www.axiomordo.com";
+const MERIDEN_PATH = "/meriden-compliance";
+const MERIDEN_INSIGHTS_PATH = `${MERIDEN_PATH}/insights`;
 
 const insightHubs: InsightHub[] = [
   {
-    slug: "compliance-intelligence",
-    title: "Compliance Intelligence",
-    shortTitle: "Compliance Intelligence",
-    description:
-      "Evidence-led analysis on turning regulatory text, guidance, standards, and operational evidence into defensible compliance decisions.",
-  },
-  {
     slug: "maritime-ai",
-    title: "Maritime AI",
+    title: "Maritime AI and Governance",
     shortTitle: "Maritime AI",
     description:
       "Practical analysis for controlled AI use in maritime QHSE, audit readiness, management systems, and assurance workflows.",
@@ -393,25 +396,64 @@ const insightHubs: InsightHub[] = [
       "Operational articles for DPAs, QHSE managers, marine assurance teams, and vessel operators working with ISM, PSC, MLC, STCW, and audit evidence.",
   },
   {
-    slug: "operational-assurance",
-    title: "Operational Assurance",
-    shortTitle: "Operational Assurance",
+    slug: "risk-safety",
+    title: "Risk and Operational Safety",
+    shortTitle: "Risk and Safety",
     description:
-      "Articles on how controls, procedures, competence, records, and verification work in real operational settings.",
+      "Articles on practical risk control, operational safeguards, field judgement, and the difference between documented controls and controls that work.",
   },
   {
-    slug: "regulatory-analysis",
-    title: "Regulatory Analysis",
-    shortTitle: "Regulatory Analysis",
+    slug: "investigations",
+    title: "Investigations",
+    shortTitle: "Investigations",
     description:
-      "Source-aware analysis that separates law, regulation, official guidance, standards, recommendations, commentary, and opinion.",
+      "Investigation-focused analysis on evidence, causation, corrective action, confidentiality, and defensible reporting.",
   },
   {
-    slug: "audit-and-management-systems",
-    title: "Audit and Management Systems",
-    shortTitle: "Audit Systems",
+    slug: "safety-management-systems",
+    title: "Safety Management Systems",
+    shortTitle: "SMS",
+    description:
+      "ISM and management-system articles covering procedures, records, implementation, review, and audit-ready evidence.",
+  },
+  {
+    slug: "auditing-assurance",
+    title: "Auditing and Assurance",
+    shortTitle: "Auditing",
     description:
       "Management-system and audit articles focused on evidence trails, controlled implementation, reviewability, and corrective action.",
+  },
+  {
+    slug: "human-factors",
+    title: "Human Factors",
+    shortTitle: "Human Factors",
+    description:
+      "Articles on competence, workload, communication, decision pressure, and how real people interact with formal controls.",
+  },
+  {
+    slug: "leadership-accountability",
+    title: "Leadership and Accountability",
+    shortTitle: "Leadership",
+    description:
+      "Analysis on ownership, review duties, operational accountability, and management decisions in maritime compliance.",
+  },
+  {
+    slug: "training-competence",
+    title: "Training and Competence",
+    shortTitle: "Competence",
+    description:
+      "Articles on training quality, competence evidence, familiarisation, supervision, and the limits of paper compliance.",
+  },
+];
+
+const placeholderArticles: PlaceholderArticle[] = [
+  {
+    slug: "why-ai-policies-fail",
+    title: "What Maritime Companies Misunderstand About AI Governance",
+    subtitle:
+      "The risk is not simply that people use AI. The risk is uncontrolled data, unchecked output, and misplaced accountability.",
+    category: "maritime-ai",
+    status: "Draft in development",
   },
 ];
 
@@ -579,7 +621,7 @@ function BrandNav({ brand, cta }: { brand: { name: string; accent: string; href:
               {brand.name}
             </span>
             <span className="block text-[10px] font-medium uppercase tracking-[0.22em] text-white/45">
-              Part of the AxiomOrdo Group
+              an AxiomOrdo company
             </span>
           </div>
         </Link>
@@ -588,7 +630,7 @@ function BrandNav({ brand, cta }: { brand: { name: string; accent: string; href:
             to="/"
             className="hidden text-white/55 transition hover:text-white/80 sm:inline"
           >
-            ← AxiomOrdo Group
+            ← AxiomOrdo
           </Link>
           {cta && (
             <a
@@ -627,14 +669,14 @@ function GroupNav() {
           </div>
         </Link>
         <div className="flex items-center gap-5 text-sm font-medium">
-          <Link to="/insights" className="hidden text-white/65 transition hover:text-white sm:inline">
-            Insights
+          <Link to={MERIDEN_INSIGHTS_PATH} className="hidden text-white/65 transition hover:text-white sm:inline">
+            Meriden Insights
           </Link>
           <a href={ARDS_URL} target="_blank" rel="noopener noreferrer" className="hidden text-white/65 transition hover:text-white sm:inline">
             ARDS Standard
           </a>
           <Link
-            to="/meriden"
+            to={MERIDEN_PATH}
             className="rounded-full border border-white/20 px-5 py-2 text-white transition hover:border-white/40 hover:bg-white/10"
           >
             Meriden Compliance
@@ -664,12 +706,12 @@ function GroupFooter({ brand }: { brand?: { name: string; accent: string } }) {
                   {brand.name}
                 </p>
                 <p className="mt-1 text-xs text-white/35">
-                  Part of the AxiomOrdo Group
+                  an AxiomOrdo company
                 </p>
               </>
             ) : (
               <>
-                <p className="text-base font-semibold text-white">AxiomOrdo Group</p>
+                <p className="text-base font-semibold text-white">AxiomOrdo Ltd</p>
                 <p className="mt-1 text-xs text-white/35">
                   Regulatory Intelligence Group
                 </p>
@@ -680,8 +722,8 @@ function GroupFooter({ brand }: { brand?: { name: string; accent: string } }) {
             <Link to="/" className="transition hover:text-white/65">
               Group Home
             </Link>
-            <Link to="/insights" className="transition hover:text-white/65">
-              Insights
+            <Link to={MERIDEN_INSIGHTS_PATH} className="transition hover:text-white/65">
+              Meriden Insights
             </Link>
             <Link to="/authors/phillip-inzaghi" className="transition hover:text-white/65">
               Author
@@ -703,7 +745,7 @@ function GroupFooter({ brand }: { brand?: { name: string; accent: string } }) {
           </div>
         </div>
         <p className="mt-12 text-xs text-white/18">
-          © {new Date().getFullYear()} AxiomOrdo Group. All rights reserved.
+          © {new Date().getFullYear()} AxiomOrdo Ltd. All rights reserved.
         </p>
       </div>
     </footer>
@@ -1275,7 +1317,7 @@ function MeridenPage() {
         <div className="relative z-10 mx-auto flex min-h-screen max-w-7xl items-center px-5 pb-16 pt-32 sm:px-8">
           <div className="max-w-3xl">
             <p className="motion-fade text-xs font-semibold uppercase tracking-[0.3em] text-blue-400">
-              Maritime SME · Part of the AxiomOrdo Group
+              Meriden Compliance · an AxiomOrdo company
             </p>
             <h1 className="motion-fade mt-5 text-5xl font-semibold tracking-[-0.04em] text-white sm:text-7xl lg:text-8xl">
               Maritime compliance your crew can actually use.
@@ -1286,13 +1328,33 @@ function MeridenPage() {
             </p>
             <div className="motion-fade mt-10 flex flex-col gap-4 sm:flex-row">
               <CTA to="#pricing" isExternal accentColor="#60a5fa">
-                Start Free 30-Day Trial
+                View Products
               </CTA>
-              <CTA to="/" secondary accentColor="#60a5fa">
-                AxiomOrdo Group
+              <CTA to={MERIDEN_INSIGHTS_PATH} accentColor="#60a5fa" secondary>
+                Read Insights
               </CTA>
             </div>
           </div>
+        </div>
+      </section>
+
+      <section className="border-y border-white/8 bg-white/[0.02] py-16">
+        <div className="mx-auto grid max-w-7xl gap-5 px-5 sm:grid-cols-2 sm:px-8 lg:grid-cols-4">
+          {[
+            ["Products", "Maritime AI readiness, governance packs, implementation plans, and supporting toolkits.", "#pricing"],
+            ["Services", "Readiness assessment, supported implementation, governance review, and maritime compliance consultancy.", "#services"],
+            ["Insights", "Evidence-led Meriden articles on maritime AI, QHSE, assurance, SMS, and operational accountability.", MERIDEN_INSIGHTS_PATH],
+            ["Resources", "Guides, checklists, frameworks, and free downloads for maritime compliance teams.", "/meriden"],
+          ].map(([title, desc, href]) => (
+            <Link
+              key={title}
+              to={href}
+              className="rounded-2xl border border-white/8 bg-[#050810] p-6 transition hover:border-blue-300/35"
+            >
+              <h2 className="text-xl font-semibold tracking-tight text-white">{title}</h2>
+              <p className="mt-3 text-sm leading-6 text-white/45">{desc}</p>
+            </Link>
+          ))}
         </div>
       </section>
 
@@ -1310,6 +1372,30 @@ function MeridenPage() {
           {brand.problem.body.map((para, i) => (
             <p key={i}>{para}</p>
           ))}
+        </div>
+      </section>
+
+      <section id="services" className="border-y border-white/8 bg-white/[0.02] py-24 sm:py-32">
+        <div className="mx-auto max-w-7xl px-5 sm:px-8">
+          <p className="text-xs font-semibold uppercase tracking-[0.28em] text-blue-400">
+            Services
+          </p>
+          <h2 className="mt-5 text-3xl font-semibold tracking-tight text-white sm:text-5xl">
+            Maritime compliance support with evidence left visible.
+          </h2>
+          <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              ["Readiness Assessment", "Placeholder for a structured assessment offer covering AI governance, PSC readiness, or SMS evidence gaps."],
+              ["Supported Implementation", "Placeholder for guided implementation support after an assessment or product purchase."],
+              ["Governance Review", "Placeholder for review of policy, tool use, data controls, verification duties, and accountability."],
+              ["Maritime Compliance Consultancy", "Placeholder for targeted ISM, QHSE, audit, investigation, and management-system support."],
+            ].map(([title, desc]) => (
+              <div key={title} className="rounded-2xl border border-white/8 bg-[#050810] p-6">
+                <h3 className="text-lg font-semibold tracking-tight text-white">{title}</h3>
+                <p className="mt-3 text-sm leading-6 text-white/45">{desc}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -1452,23 +1538,28 @@ function InsightsIndexPage() {
   const schema = {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    name: "AxiomOrdo Insights",
+    name: "Meriden Compliance Insights",
     description:
-      "Evidence-led articles on regulatory intelligence, maritime AI, operational assurance, and management-system implementation.",
-    url: `${SITE_URL}/insights`,
+      "Evidence-led maritime compliance articles from Meriden Compliance on maritime AI, QHSE, assurance, safety management systems, investigations, and competence.",
+    url: `${SITE_URL}${MERIDEN_INSIGHTS_PATH}`,
     publisher: {
       "@type": "Organization",
-      name: "AxiomOrdo",
-      url: SITE_URL,
+      name: "Meriden Compliance",
+      url: `${SITE_URL}${MERIDEN_PATH}`,
+      parentOrganization: {
+        "@type": "Organization",
+        name: "AxiomOrdo Ltd",
+        url: SITE_URL,
+      },
     },
   };
 
   return (
     <main className="min-h-screen text-white" style={{ background: "#050810" }}>
       <PageSeo
-        title="Insights | AxiomOrdo"
-        description="Evidence-led articles from AxiomOrdo on regulatory intelligence, maritime AI, operational assurance, and audit-ready compliance systems."
-        canonicalPath="/insights"
+        title="Meriden Compliance Insights | AxiomOrdo"
+        description="Evidence-led maritime compliance articles from Meriden Compliance on maritime AI, QHSE, assurance, safety management systems, investigations, and competence."
+        canonicalPath={MERIDEN_INSIGHTS_PATH}
         schema={schema}
       />
       <GroupNav />
@@ -1477,15 +1568,17 @@ function InsightsIndexPage() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_70%_20%,rgba(34,211,238,0.16),transparent_56%)]" />
         <div className="relative z-10 mx-auto max-w-7xl px-5 pb-20 pt-36 sm:px-8 lg:pb-28 lg:pt-44">
           <p className="text-xs font-semibold uppercase tracking-[0.28em] text-cyan-300">
-            AxiomOrdo Insights
+            Meriden Compliance Insights
           </p>
           <h1 className="mt-6 max-w-4xl text-5xl font-semibold tracking-[-0.04em] text-white sm:text-7xl">
-            Regulatory analysis with the source trail left visible.
+            Maritime compliance analysis with the source trail left visible.
           </h1>
           <p className="mt-7 max-w-2xl text-xl leading-8 text-white/60">
-            Articles are developed from operational judgement, structured author
-            input, and source-aware evidence. Binding authority, official guidance,
-            standards, commentary, and interpretation are separated clearly.
+            Meriden Compliance Insights sits under Meriden Compliance, an
+            AxiomOrdo company. Articles are developed from operational judgement,
+            structured author input, and source-aware evidence. Binding authority,
+            official guidance, standards, commentary, and interpretation are
+            separated clearly.
           </p>
         </div>
       </section>
@@ -1495,7 +1588,7 @@ function InsightsIndexPage() {
           {insightHubs.map((hub) => (
             <Link
               key={hub.slug}
-              to={`/insights/${hub.slug}`}
+              to={`${MERIDEN_INSIGHTS_PATH}/${hub.slug}`}
               className="group flex min-h-64 flex-col justify-between rounded-2xl border border-white/8 bg-white/[0.025] p-7 transition hover:border-cyan-300/35"
             >
               <div>
@@ -1553,29 +1646,29 @@ function InsightHubPage({ hub }: { hub: InsightHub }) {
   const schema = {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    name: `${hub.title} | AxiomOrdo Insights`,
+    name: `${hub.title} | Meriden Compliance Insights`,
     description: hub.description,
-    url: `${SITE_URL}/insights/${hub.slug}`,
+    url: `${SITE_URL}${MERIDEN_INSIGHTS_PATH}/${hub.slug}`,
     isPartOf: {
       "@type": "CollectionPage",
-      name: "AxiomOrdo Insights",
-      url: `${SITE_URL}/insights`,
+      name: "Meriden Compliance Insights",
+      url: `${SITE_URL}${MERIDEN_INSIGHTS_PATH}`,
     },
   };
 
   return (
     <main className="min-h-screen text-white" style={{ background: "#050810" }}>
       <PageSeo
-        title={`${hub.title} | AxiomOrdo Insights`}
+        title={`${hub.title} | Meriden Compliance Insights`}
         description={hub.description}
-        canonicalPath={`/insights/${hub.slug}`}
+        canonicalPath={`${MERIDEN_INSIGHTS_PATH}/${hub.slug}`}
         schema={schema}
       />
       <GroupNav />
 
       <section className="mx-auto max-w-7xl px-5 pb-20 pt-36 sm:px-8 lg:pb-28 lg:pt-44">
-        <Link to="/insights" className="text-sm font-medium text-cyan-300/80 transition hover:text-cyan-200">
-          ← Insights
+        <Link to={MERIDEN_INSIGHTS_PATH} className="text-sm font-medium text-cyan-300/80 transition hover:text-cyan-200">
+          ← Meriden Compliance Insights
         </Link>
         <p className="mt-10 text-xs font-semibold uppercase tracking-[0.28em] text-white/35">
           Topic Hub
@@ -1594,17 +1687,136 @@ function InsightHubPage({ hub }: { hub: InsightHub }) {
             Articles
           </p>
           <div className="mt-8 rounded-2xl border border-white/8 bg-[#050810] p-8">
-            <h2 className="text-2xl font-semibold tracking-tight text-white">
-              Articles will appear here after editorial and evidence review.
-            </h2>
-            <p className="mt-4 max-w-2xl text-base leading-7 text-white/50">
-              This hub is live and indexable now. Published articles can be added
-              as stable child URLs under this section and included in the same
-              XML sitemap.
-            </p>
+            {placeholderArticles
+              .filter((article) => article.category === hub.slug)
+              .map((article) => (
+                <Link
+                  key={article.slug}
+                  to={`${MERIDEN_INSIGHTS_PATH}/${hub.slug}/${article.slug}`}
+                  className="block rounded-xl border border-white/8 bg-white/[0.025] p-6 transition hover:border-cyan-300/35"
+                >
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-cyan-300/70">
+                    {article.status}
+                  </p>
+                  <h2 className="mt-4 text-2xl font-semibold tracking-tight text-white">
+                    {article.title}
+                  </h2>
+                  <p className="mt-3 max-w-2xl text-base leading-7 text-white/50">
+                    {article.subtitle}
+                  </p>
+                </Link>
+              ))}
+            {!placeholderArticles.some((article) => article.category === hub.slug) && (
+              <>
+                <h2 className="text-2xl font-semibold tracking-tight text-white">
+                  Placeholder hub ready for reviewed articles.
+                </h2>
+                <p className="mt-4 max-w-2xl text-base leading-7 text-white/50">
+                  Articles will appear here after editorial, author, evidence,
+                  and publication review.
+                </p>
+              </>
+            )}
           </div>
         </div>
       </section>
+
+      <GroupFooter />
+    </main>
+  );
+}
+
+function PlaceholderArticlePage({
+  hub,
+  article,
+}: {
+  hub: InsightHub;
+  article: PlaceholderArticle;
+}) {
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: article.title,
+    description: article.subtitle,
+    articleSection: hub.title,
+    author: {
+      "@type": "Person",
+      name: "Phillip Inzaghi",
+      url: `${SITE_URL}/authors/phillip-inzaghi`,
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "Meriden Compliance",
+      url: `${SITE_URL}${MERIDEN_PATH}`,
+    },
+    isPartOf: {
+      "@type": "CollectionPage",
+      name: "Meriden Compliance Insights",
+      url: `${SITE_URL}${MERIDEN_INSIGHTS_PATH}`,
+    },
+  };
+
+  return (
+    <main className="min-h-screen text-white" style={{ background: "#050810" }}>
+      <PageSeo
+        title={`${article.title} | Meriden Compliance Insights`}
+        description={article.subtitle}
+        canonicalPath={`${MERIDEN_INSIGHTS_PATH}/${hub.slug}/${article.slug}`}
+        schema={schema}
+      />
+      <GroupNav />
+
+      <article className="mx-auto max-w-4xl px-5 pb-24 pt-36 sm:px-8 lg:pt-44">
+        <Link
+          to={`${MERIDEN_INSIGHTS_PATH}/${hub.slug}`}
+          className="text-sm font-medium text-cyan-300/80 transition hover:text-cyan-200"
+        >
+          ← {hub.title}
+        </Link>
+        <p className="mt-10 text-xs font-semibold uppercase tracking-[0.28em] text-cyan-300">
+          {hub.title} · {article.status}
+        </p>
+        <h1 className="mt-5 text-5xl font-semibold tracking-[-0.04em] text-white sm:text-7xl">
+          {article.title}
+        </h1>
+        <p className="mt-7 text-xl leading-8 text-white/60">
+          {article.subtitle}
+        </p>
+
+        <div className="mt-12 rounded-2xl border border-white/8 bg-white/[0.025] p-7">
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-white/35">
+            Draft Placeholder
+          </p>
+          <div className="mt-5 space-y-5 text-base leading-7 text-white/55">
+            <p>
+              This article route is reserved for the first Meriden Compliance
+              authority article. Full publication is blocked until author review,
+              source verification, editorial review, and publication checks are
+              complete.
+            </p>
+            <p>
+              Placeholder thesis: maritime AI governance is not mainly about
+              whether AI is allowed. It is about whether the company controls the
+              task, the data, the tool, the user's competence, and the verification
+              of the output.
+            </p>
+          </div>
+        </div>
+
+        <section className="mt-12 grid gap-5 sm:grid-cols-2">
+          {[
+            ["Author input", "Phillip review needed for the first-hand ISM reference example and any anonymised operational details."],
+            ["Evidence", "Source needed for AI data handling claims, ISM Code references, and any legal or regulatory statements."],
+            ["Operational dilemma", "Placeholder ending: working-at-height toolbox talk prepared through personal AI under time pressure."],
+            ["Image", "Placeholder for AxiomOrdo Field Notes style hero and optional dilemma image."],
+          ].map(([title, desc]) => (
+            <div key={title} className="rounded-2xl border border-white/8 bg-white/[0.02] p-6">
+              <h2 className="text-lg font-semibold tracking-tight text-white">{title}</h2>
+              <p className="mt-3 text-sm leading-6 text-white/45">{desc}</p>
+            </div>
+          ))}
+        </section>
+      </article>
 
       <GroupFooter />
     </main>
@@ -1616,11 +1828,11 @@ function PhillipAuthorPage() {
     "@context": "https://schema.org",
     "@type": "Person",
     name: "Phillip Inzaghi",
-    jobTitle: "Founder, AxiomOrdo",
+    jobTitle: "Founder and Director, AxiomOrdo Ltd; Founder, Meriden Compliance",
     url: `${SITE_URL}/authors/phillip-inzaghi`,
     worksFor: {
       "@type": "Organization",
-      name: "AxiomOrdo",
+      name: "AxiomOrdo Ltd",
       url: SITE_URL,
     },
     knowsAbout: [
@@ -1636,8 +1848,8 @@ function PhillipAuthorPage() {
   return (
     <main className="min-h-screen text-white" style={{ background: "#050810" }}>
       <PageSeo
-        title="Phillip Inzaghi | AxiomOrdo Author"
-        description="Author profile for Phillip Inzaghi, Founder of AxiomOrdo, maritime QHSE specialist, ISM Lead Auditor, and former Officer of the Watch."
+        title="Phillip Inzaghi | Meriden Compliance Author"
+        description="Author profile for Phillip Inzaghi, Founder and Director of AxiomOrdo Ltd and Founder of Meriden Compliance."
         canonicalPath="/authors/phillip-inzaghi"
         schema={schema}
       />
@@ -1652,7 +1864,9 @@ function PhillipAuthorPage() {
             Phillip Inzaghi
           </h1>
           <p className="mt-5 text-xl leading-8 text-white/55">
-            Founder, AxiomOrdo
+            Founder and Director, AxiomOrdo Ltd
+            <br />
+            Founder, Meriden Compliance
             <br />
             Maritime QHSE Specialist
             <br />
@@ -1697,7 +1911,7 @@ function PhillipAuthorPage() {
             {insightHubs.map((hub) => (
               <Link
                 key={hub.slug}
-                to={`/insights/${hub.slug}`}
+                to={`${MERIDEN_INSIGHTS_PATH}/${hub.slug}`}
                 className="rounded-2xl border border-white/8 bg-[#050810] p-6 transition hover:border-cyan-300/35"
               >
                 <h2 className="text-xl font-semibold tracking-tight text-white">
@@ -1978,15 +2192,25 @@ export default function App() {
         {/* ARDS Standard */}
         <Route path="/ards" element={<ARDSPage />} />
 
-        {/* Insights */}
-        <Route path="/insights" element={<InsightsIndexPage />} />
+        {/* Meriden Compliance Insights */}
+        <Route path={MERIDEN_INSIGHTS_PATH} element={<InsightsIndexPage />} />
         {insightHubs.map((hub) => (
           <Route
             key={hub.slug}
-            path={`/insights/${hub.slug}`}
+            path={`${MERIDEN_INSIGHTS_PATH}/${hub.slug}`}
             element={<InsightHubPage hub={hub} />}
           />
         ))}
+        {placeholderArticles.map((article) => {
+          const hub = insightHubs.find((item) => item.slug === article.category);
+          return hub ? (
+            <Route
+              key={article.slug}
+              path={`${MERIDEN_INSIGHTS_PATH}/${hub.slug}/${article.slug}`}
+              element={<PlaceholderArticlePage hub={hub} article={article} />}
+            />
+          ) : null;
+        })}
         <Route path="/authors/phillip-inzaghi" element={<PhillipAuthorPage />} />
 
         {/* Brand sub-sites */}
@@ -2001,6 +2225,15 @@ export default function App() {
         )}
 
         {/* Legacy redirects */}
+        <Route path="/meriden" element={<Navigate to={MERIDEN_PATH} replace />} />
+        <Route path="/insights" element={<Navigate to={MERIDEN_INSIGHTS_PATH} replace />} />
+        {insightHubs.map((hub) => (
+          <Route
+            key={`legacy-${hub.slug}`}
+            path={`/insights/${hub.slug}`}
+            element={<Navigate to={`${MERIDEN_INSIGHTS_PATH}/${hub.slug}`} replace />}
+          />
+        ))}
         <Route path="/eudr" element={<Navigate to="/sentinel" replace />} />
         <Route path="/clearline" element={<Navigate to="/clearmark" replace />} />
         <Route path="/pfas" element={<Navigate to="/clearmark" replace />} />
