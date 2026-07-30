@@ -662,6 +662,9 @@ function GroupNav() {
           </div>
         </Link>
         <div className="flex items-center gap-5 text-sm font-medium">
+          <a href="/aopdf" className="hidden text-white/65 transition hover:text-white sm:inline">
+            AOPDF
+          </a>
           <Link to={MERIDEN_INSIGHTS_PATH} className="hidden text-white/65 transition hover:text-white sm:inline">
             Meriden Insights
           </Link>
@@ -721,6 +724,9 @@ function GroupFooter({ brand }: { brand?: { name: string; accent: string } }) {
             <Link to="/authors/phillip-inzaghi" className="transition hover:text-white/65">
               Author
             </Link>
+            <a href="/aopdf" className="transition hover:text-white/65">
+              AOPDF
+            </a>
             <a href={ARDS_URL} target="_blank" rel="noopener noreferrer" className="transition hover:text-white/65">
               ARDS Standard
             </a>
