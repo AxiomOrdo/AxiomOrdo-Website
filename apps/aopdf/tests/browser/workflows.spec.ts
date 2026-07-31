@@ -107,16 +107,32 @@ test('operation controls remain usable at governed responsive widths', async ({ 
   }
 });
 
-test('keyboard navigation and reduced motion remain functional', async ({ page }) => {
+test('keyboard navigation and reduced motion remain functional', async (
+  { page },
+  testInfo,
+) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/aopdf/tools/merge/');
   await page.keyboard.press('Tab');
   await expect(page.getByRole('link', { name: 'AOPDF' })).toBeFocused();
   await page.keyboard.press('Tab');
-  await expect(
-    page.getByRole('navigation', { name: 'Primary navigation' })
-      .getByRole('link', { name: 'Tools' }),
-  ).toBeFocused();
+  if (testInfo.project.name === 'mobile-chromium') {
+    const menuButton = page.getByRole('button', { name: 'Open navigation' });
+    await expect(menuButton).toBeFocused();
+    await page.keyboard.press('Enter');
+    await page.keyboard.press('Tab');
+    await expect(
+      page
+        .getByRole('navigation', { name: 'Mobile navigation' })
+        .getByRole('link', { name: 'Tools' }),
+    ).toBeFocused();
+  } else {
+    await expect(
+      page
+        .getByRole('navigation', { name: 'Primary navigation' })
+        .getByRole('link', { name: 'Tools' }),
+    ).toBeFocused();
+  }
   const fileButton = page.getByRole('button', { name: /Drop files here/ });
   await fileButton.focus();
   await expect(fileButton).toBeFocused();

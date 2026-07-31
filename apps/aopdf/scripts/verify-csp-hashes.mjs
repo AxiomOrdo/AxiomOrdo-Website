@@ -20,7 +20,10 @@ function htmlFiles(directory) {
 const generated = new Set();
 for (const filename of htmlFiles(exportRoot)) {
   const html = readFileSync(filename, 'utf8');
-  for (const match of html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)) {
+  if (/<script(?:\s[^>]*)?>[\s\S]*?self\.__next_f\.push[\s\S]*?<\/script>/i.test(html)) {
+    throw new Error(`Inline Next.js flight payload remains in ${filename}.`);
+  }
+  for (const match of html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/gi)) {
     if (!match[1]) continue;
     generated.add(
       `sha256-${createHash('sha256').update(match[1]).digest('base64')}`,
@@ -29,7 +32,7 @@ for (const filename of htmlFiles(exportRoot)) {
 }
 
 const csp = vercelConfig.headers
-  ?.find((rule) => rule.source === '/aopdf/:path*')
+  ?.find((rule) => rule.source === '/aopdf/(.*)')
   ?.headers?.find((header) => header.key === 'Content-Security-Policy')
   ?.value;
 if (typeof csp !== 'string') throw new Error('AOPDF CSP header is missing.');
@@ -57,7 +60,7 @@ for (const directive of [
 
 const responseHeaders = new Map(
   vercelConfig.headers
-    ?.find((rule) => rule.source === '/aopdf/:path*')
+    ?.find((rule) => rule.source === '/aopdf/(.*)')
     ?.headers?.map((header) => [header.key, header.value]),
 );
 for (const [key, value] of [

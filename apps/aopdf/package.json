@@ -3,12 +3,13 @@
   "private": true,
   "scripts": {
     "dev": "NEXT_TELEMETRY_DISABLED=1 next dev --webpack",
-    "build": "NEXT_TELEMETRY_DISABLED=1 next build --webpack",
+    "build": "NEXT_TELEMETRY_DISABLED=1 next build --webpack && node scripts/externalize-flight-scripts.mjs",
     "start": "NEXT_TELEMETRY_DISABLED=1 next start",
-    "lint": "eslint app components governance lib tests workers playwright.config.ts",
+    "lint": "eslint app components governance lib scripts tests workers playwright.config.ts",
     "typecheck": "tsc --noEmit",
     "test": "tsx --test tests/**/*.test.ts",
     "test:browser": "playwright test",
+    "sync:csp": "node scripts/sync-csp-hashes.mjs",
     "verify:csp": "node scripts/verify-csp-hashes.mjs"
   },
   "devDependencies": {

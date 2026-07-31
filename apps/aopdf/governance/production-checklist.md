@@ -21,6 +21,7 @@ deployment ID, verifier, UTC time and evidence link for every checked item.
 - [ ] Preview resolves `/aopdf`, `/aopdf/tools`, every admitted tool, `/limits`
   and all three legal routes.
 - [ ] CSP contains no `unsafe-inline` or `unsafe-eval` in `script-src`.
+- [ ] Next.js flight payloads are externalized and the remaining static inline script hash matches the exact export.
 - [ ] `worker-src 'self' blob:` permits the generated PDF worker.
 - [ ] `nosniff`, `no-referrer`, COOP, CORP and Permissions Policy are present.
 - [ ] Native save and browser fallback wording are accurate.
