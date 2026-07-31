@@ -20,10 +20,10 @@ function htmlFiles(directory) {
 const generated = new Set();
 for (const filename of htmlFiles(exportRoot)) {
   const html = readFileSync(filename, 'utf8');
-  if (/<script(?:\s[^>]*)?>[\s\S]*?self\.__next_f\.push[\s\S]*?<\/script>/i.test(html)) {
+  if (/<script(?:\s[^>]*)?>[\s\S]*?self\.__next_f\.push[\s\S]*?<\/script\s*>/i.test(html)) {
     throw new Error(`Inline Next.js flight payload remains in ${filename}.`);
   }
-  for (const match of html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/gi)) {
+  for (const match of html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script\s*>/gi)) {
     if (!match[1]) continue;
     generated.add(
       `sha256-${createHash('sha256').update(match[1]).digest('base64')}`,
