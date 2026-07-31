@@ -45,6 +45,28 @@ for (const tool of tools) {
 
     await page.goto(`/aopdf/tools/${tool}/`);
     await page.waitForFunction(() => typeof window.va === 'function');
+    await page.waitForFunction((expectedTool) => {
+      const queue = (
+        window as unknown as {
+          vaq?: Array<
+            [
+              string,
+              {
+                name?: string;
+                data?: Record<string, unknown>;
+              },
+            ]
+          >;
+        }
+      ).vaq;
+      return queue?.some(
+        ([kind, event]) =>
+          kind === 'event' &&
+          event.name === 'aopdf_tool_selected' &&
+          event.data?.tool === expectedTool &&
+          Object.keys(event.data).length === 1,
+      );
+    }, tool);
     const input = page.locator('input[type=file]');
     if (tool === 'images-to-pdf') {
       await input.setInputFiles([

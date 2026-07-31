@@ -1,4 +1,4 @@
-import { track } from '@vercel/analytics';
+import { inject, track } from '@vercel/analytics';
 import {
   isOperationErrorCode,
   type OperationErrorCode,
@@ -76,6 +76,7 @@ export function createOperationFinishedEvent(args: {
 }
 
 export function transmitTelemetry(event: TelemetryEvent): void {
+  inject();
   if (event.name === 'aopdf_tool_selected') {
     track(event.name, { tool: event.tool });
     return;

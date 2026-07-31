@@ -7,9 +7,9 @@ import { SpeedInsights } from '@vercel/speed-insights/next';
 export default function Providers({ children }: { children: ReactNode }) {
   return (
     <>
-      {children}
       <Analytics />
       <SpeedInsights />
+      {children}
     </>
   );
 }
