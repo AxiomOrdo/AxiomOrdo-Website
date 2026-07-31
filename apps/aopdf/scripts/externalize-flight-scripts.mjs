@@ -26,7 +26,7 @@ let externalizedCount = 0;
 for (const filename of htmlFiles(exportRoot)) {
   const html = readFileSync(filename, 'utf8');
   const externalized = html.replace(
-    /<script(\s[^>]*)?>([\s\S]*?)<\/script\s*>/gi,
+    /<script(\s[^>]*)?>([\s\S]*?)<\/script[^>]*>/gi,
     (tag, attributes = '', body = '') => {
       if (!body.includes('self.__next_f.push')) return tag;
 

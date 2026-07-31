@@ -19,7 +19,7 @@ const hashes = new Set();
 for (const filename of htmlFiles(exportRoot)) {
   const html = readFileSync(filename, 'utf8');
   for (const match of html.matchAll(
-    /<script(?:\s[^>]*)?>([\s\S]*?)<\/script\s*>/gi,
+    /<script(?:\s[^>]*)?>([\s\S]*?)<\/script[^>]*>/gi,
   )) {
     if (!match[1]) continue;
     hashes.add(
