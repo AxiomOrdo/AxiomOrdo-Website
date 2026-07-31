@@ -9,6 +9,8 @@ build/
 public/aopdf/
 **/.next/
 **/out/
+**/playwright-report/
+**/test-results/
 *.tsbuildinfo
 
 # Environment files

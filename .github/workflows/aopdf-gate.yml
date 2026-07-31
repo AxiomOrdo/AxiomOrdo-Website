@@ -1,0 +1,55 @@
+name: AOPDF Gate
+
+on:
+  pull_request:
+    paths:
+      - "apps/aopdf/**"
+      - "scripts/build-aopdf.mjs"
+      - "vercel.json"
+      - ".github/workflows/aopdf-gate.yml"
+  push:
+    branches: [main]
+    paths:
+      - "apps/aopdf/**"
+      - "scripts/build-aopdf.mjs"
+      - "vercel.json"
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/aopdf
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: apps/aopdf/package-lock.json
+      - run: npm ci --ignore-scripts
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm test
+      - run: npm run build
+      - run: npm run verify:csp
+      - run: npm audit --audit-level=high
+
+  browser:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/aopdf
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: apps/aopdf/package-lock.json
+      - run: npm ci --ignore-scripts
+      - run: npx playwright install --with-deps chromium firefox webkit
+      - run: npm run test:browser

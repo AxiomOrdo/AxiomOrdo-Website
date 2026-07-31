@@ -1,452 +1,697 @@
 'use client';
 
-import { useState, useCallback, useRef } from 'react';
-import { useSession } from 'next-auth/react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { UploadCloud, FileText, Trash2, ChevronUp, ChevronDown, Play, Loader2, AlertCircle, CheckCircle2 } from 'lucide-react';
-import type { PdfTool } from '@/lib/pdf-tools';
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type ComponentType,
+} from 'react';
+import {
+  AlertCircle,
+  CheckCircle2,
+  ChevronDown,
+  ChevronUp,
+  FileText,
+  Loader2,
+  Play,
+  ShieldCheck,
+  Square,
+  Trash2,
+  UploadCloud,
+} from 'lucide-react';
 import * as LucideIcons from 'lucide-react';
-import { appPath } from '@/lib/paths';
+import type { PdfTool } from '@/lib/pdf-tools';
 import { parsePageRanges } from '@/lib/pdf/page-ranges';
+import {
+  admitInputs,
+  type AdmittedInput,
+  type AdmissionInput,
+} from '@/governance/admission';
+import { deliverOutput } from '@/governance/download-contract';
+import {
+  ERROR_DEFINITIONS,
+  OperationError,
+  toOperationError,
+  type OperationErrorCode,
+} from '@/governance/operation-errors';
+import type {
+  OperationState,
+  OperationSummary,
+} from '@/governance/operation-states';
+import { canonicalOutputFilename } from '@/governance/filename-contract';
+import {
+  createOperationFinishedEvent,
+  createToolSelectedEvent,
+  transmitTelemetry,
+} from '@/governance/telemetry-contract';
+import {
+  isAdmittedToolSlug,
+  TOOL_LIMITS,
+  type AdmittedToolSlug,
+} from '@/governance/tool-limits';
+import { startWorkerOperation, type ActiveWorkerOperation } from '@/workers/client';
+import type { WorkerOptions, WorkerRequest } from '@/workers/protocol';
 
-interface LoadedFile {
-  file: File;
-  name: string;
-  size: string;
-  pages: number;
-  buffer: ArrayBuffer;
+interface LoadedFile extends AdmittedInput {
+  readonly file: File;
+  readonly displaySize: string;
 }
 
 interface ToolWorkspaceProps {
   tool: PdfTool;
 }
 
+async function readImagePixels(file: File): Promise<number> {
+  const bitmap = await createImageBitmap(file);
+  try {
+    return bitmap.width * bitmap.height;
+  } finally {
+    bitmap.close();
+  }
+}
+
+function formatMebibytes(bytes: number): string {
+  return `${(bytes / 1_048_576).toFixed(1)} MiB`;
+}
+
+function operationOptions(args: {
+  tool: AdmittedToolSlug;
+  splitMode: 'range' | 'single';
+  indices: number[];
+  rotation: number;
+  watermarkText: string;
+  pageNumberPosition: 'bottom-center' | 'bottom-right' | 'top-center';
+}): WorkerOptions {
+  switch (args.tool) {
+    case 'split':
+      return {
+        kind: 'split',
+        everyPage: args.splitMode === 'single',
+        ...(args.splitMode === 'range' ? { indices: args.indices } : {}),
+      };
+    case 'rotate':
+      return { kind: 'rotate', angle: args.rotation as 90 | 180 | 270 };
+    case 'delete-pages':
+      return { kind: 'delete-pages', indices: args.indices };
+    case 'watermark':
+      return { kind: 'watermark', text: args.watermarkText };
+    case 'page-numbers':
+      return { kind: 'page-numbers', position: args.pageNumberPosition };
+    default:
+      return { kind: 'none' };
+  }
+}
+
 export default function ToolWorkspace({ tool }: ToolWorkspaceProps) {
-  const { data: session } = useSession() || {};
+  if (!isAdmittedToolSlug(tool.slug)) {
+    throw new Error('ToolWorkspace requires an admitted tool.');
+  }
+  const toolSlug = tool.slug;
+  const limits = TOOL_LIMITS[toolSlug];
+  const IconComponent =
+    (LucideIcons as unknown as Record<string, ComponentType<{ className?: string }>>)[
+      tool.icon
+    ] ?? FileText;
+
   const [files, setFiles] = useState<LoadedFile[]>([]);
-  const [processing, setProcessing] = useState(false);
-  const [toast, setToast] = useState<{ msg: string; error: boolean } | null>(null);
+  const [operationState, setOperationState] = useState<OperationState>('idle');
+  const [errorCode, setErrorCode] = useState<OperationErrorCode | null>(null);
+  const [summary, setSummary] = useState<OperationSummary | null>(null);
+  const [statusMessage, setStatusMessage] = useState('Select files to begin.');
   const [splitRange, setSplitRange] = useState('1-2');
   const [splitMode, setSplitMode] = useState<'range' | 'single'>('range');
   const [watermarkText, setWatermarkText] = useState('CONFIDENTIAL');
   const [rotation, setRotation] = useState(90);
-  const [pageNumberPosition, setPageNumberPosition] = useState<'bottom-center' | 'bottom-right' | 'top-center'>('bottom-center');
+  const [pageNumberPosition, setPageNumberPosition] = useState<
+    'bottom-center' | 'bottom-right' | 'top-center'
+  >('bottom-center');
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const activeOperationRef = useRef<ActiveWorkerOperation | null>(null);
 
-  const IconComponent = (LucideIcons as any)[tool?.icon] ?? FileText;
+  useEffect(() => {
+    transmitTelemetry(createToolSelectedEvent(toolSlug));
+    return () => {
+      activeOperationRef.current?.cancel();
+      activeOperationRef.current = null;
+    };
+  }, [toolSlug]);
 
-  const isFreeTool = tool.tier === 'free';
-  const showToast = (msg: string, error = false) => {
-    setToast({ msg, error });
-    setTimeout(() => setToast(null), 4000);
-  };
-
-  const handleFiles = useCallback(async (fileList: FileList | null) => {
-    if (!fileList) return;
-    const pdfLib = await import('pdf-lib');
-    const newFiles: LoadedFile[] = [];
-
-    for (const file of Array.from(fileList)) {
-      if (!file?.name?.endsWith('.pdf') && file?.type !== 'application/pdf') {
-        // For images-to-pdf, accept image files
-        if (
-          tool.slug === 'images-to-pdf' &&
-          (file.type === 'image/jpeg' || file.type === 'image/png')
-        ) {
-          const buffer = await file.arrayBuffer();
-          newFiles.push({ file, name: file.name, size: `${(file.size / 1024 / 1024).toFixed(2)} MB`, pages: 1, buffer });
-          continue;
-        }
-        showToast(`Skipped ${file?.name}: Not a valid file.`, true);
-        continue;
+  const reportFailure = useCallback(
+    (error: unknown, startedAt?: number) => {
+      const operationError = toOperationError(error);
+      const cancelled =
+        operationError.code === 'OPERATION_CANCELLED' ||
+        operationError.code === 'SAVE_CANCELLED';
+      setFiles([]);
+      setErrorCode(operationError.code);
+      setOperationState(cancelled ? 'cancelled' : 'failed');
+      setStatusMessage(ERROR_DEFINITIONS[operationError.code].message);
+      if (startedAt !== undefined) {
+        transmitTelemetry(
+          createOperationFinishedEvent({
+            tool: toolSlug,
+            outcome: cancelled ? 'cancelled' : 'failure',
+            durationMs: performance.now() - startedAt,
+            errorCode: operationError.code,
+          }),
+        );
       }
-      if (file.size > 150 * 1024 * 1024) {
-        showToast(`Skipped ${file?.name}: Exceeds 150MB limit.`, true);
-        continue;
-      }
+    },
+    [toolSlug],
+  );
+
+  const handleFiles = useCallback(
+    async (fileList: FileList | null) => {
+      if (!fileList?.length) return;
+      setOperationState('validating');
+      setErrorCode(null);
+      setSummary(null);
+      setStatusMessage('Validating files against the tool limits.');
+
       try {
-        const buffer = await file.arrayBuffer();
-        const pdfDoc = await pdfLib.PDFDocument.load(buffer, { ignoreEncryption: true });
-        newFiles.push({
-          file,
-          name: file.name,
-          size: `${(file.size / 1024 / 1024).toFixed(2)} MB`,
-          pages: pdfDoc.getPageCount(),
-          buffer,
+        const candidates = [...files];
+        for (const file of Array.from(fileList)) {
+          const bytes = await file.arrayBuffer();
+          const imagePixels =
+            toolSlug === 'images-to-pdf'
+              ? await readImagePixels(file).catch(() => {
+                  throw new OperationError('FILE_TYPE_UNSUPPORTED');
+                })
+              : undefined;
+          const input: AdmissionInput = {
+            name: file.name,
+            mimeType: file.type,
+            size: file.size,
+            bytes,
+            ...(imagePixels !== undefined ? { imagePixels } : {}),
+          };
+          candidates.push({
+            ...input,
+            file,
+            pageCount: toolSlug === 'images-to-pdf' ? 1 : 0,
+            displaySize: formatMebibytes(file.size),
+          });
+        }
+
+        const admitted = await admitInputs({
+          tool: toolSlug,
+          inputs: candidates,
+          splitEveryPage: toolSlug === 'split' && splitMode === 'single',
         });
-      } catch {
-        showToast(`Could not parse ${file?.name}`, true);
+        const loaded = admitted.inputs.map((input, index) => ({
+          ...input,
+          file: candidates[index]?.file as File,
+          displaySize: formatMebibytes(input.size),
+        }));
+        setFiles(loaded);
+        setOperationState('ready');
+        setStatusMessage(
+          `${loaded.length} file${loaded.length === 1 ? '' : 's'} ready. Estimated working memory: ${formatMebibytes(admitted.estimatedWorkingBytes)}.`,
+        );
+      } catch (error) {
+        reportFailure(error);
+      } finally {
+        if (fileInputRef.current) fileInputRef.current.value = '';
       }
-    }
-    setFiles((prev: LoadedFile[]) => [...prev, ...newFiles]);
-  }, [tool?.slug]);
+    },
+    [files, reportFailure, splitMode, toolSlug],
+  );
 
   const moveFile = (index: number, direction: number) => {
     const newIndex = index + direction;
     if (newIndex < 0 || newIndex >= files.length) return;
-    const updated = [...files];
-    const temp = updated[index];
-    updated[index] = updated[newIndex] as LoadedFile;
-    updated[newIndex] = temp as LoadedFile;
-    setFiles(updated);
+    setFiles((current) => {
+      const updated = [...current];
+      [updated[index], updated[newIndex]] = [
+        updated[newIndex] as LoadedFile,
+        updated[index] as LoadedFile,
+      ];
+      return updated;
+    });
   };
 
   const removeFile = (index: number) => {
-    setFiles((prev: LoadedFile[]) => prev.filter((_: LoadedFile, i: number) => i !== index));
+    setFiles((current) => current.filter((_, candidate) => candidate !== index));
+    setSummary(null);
+    setErrorCode(null);
+    setOperationState('idle');
+    setStatusMessage('File removed. Validate the remaining selection before processing.');
   };
 
-  const downloadBlob = (data: Uint8Array | Blob, filename: string, mimeType = 'application/pdf') => {
-    const blob =
-      data instanceof Blob
-        ? data
-        : new Blob([Uint8Array.from(data).buffer], { type: mimeType });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = filename;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
-  };
-
-  const logUsage = async () => {
-    if (session?.user) {
-      try {
-        await fetch(appPath('/api/usage'), {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ tool: tool?.slug, fileSize: files?.[0]?.file?.size ?? 0 }),
-        });
-      } catch {}
-    }
+  const cancelOperation = () => {
+    activeOperationRef.current?.cancel();
+    activeOperationRef.current = null;
   };
 
   const runProcess = async () => {
-    if (files.length === 0) return;
-    setProcessing(true);
-    try {
-      const operations = await import('@/lib/pdf/operations');
+    if (files.length === 0 || activeOperationRef.current) return;
+    const startedAt = performance.now();
+    setErrorCode(null);
+    setSummary(null);
+    setOperationState('validating');
+    setStatusMessage('Running final admission checks.');
 
-      switch (tool?.slug) {
-        case 'merge': {
-          const bytes = await operations.mergePdfs(files.map((file) => file.buffer));
-          downloadBlob(bytes, 'axiomordopdf-merged.pdf');
-          showToast('PDFs merged successfully!');
-          break;
-        }
-        case 'split': {
-          const target = files[0];
-          if (!target) break;
-          if (splitMode === 'single') {
-            const JSZip = (await import('jszip')).default;
-            const zip = new JSZip();
-            const baseName = target.name.replace('.pdf', '');
-            const pages = await operations.splitEveryPage(target.buffer);
-            pages.forEach((bytes, index) => {
-              zip.file(`${baseName}_page_${index + 1}.pdf`, bytes);
-            });
-            const zipBlob = await zip.generateAsync({ type: 'blob' });
-            downloadBlob(zipBlob, `${baseName}_all_pages.zip`, 'application/zip');
-            showToast(`Split ${target.pages} pages into ZIP archive!`);
-          } else {
-            const indices = parsePageRanges(splitRange, target.pages);
-            const bytes = await operations.extractPages(target.buffer, indices);
-            downloadBlob(bytes, `${target.name.replace('.pdf', '')}_extracted.pdf`);
-            showToast('Extracted pages downloaded!');
-          }
-          break;
-        }
-        case 'compress': {
-          const target = files[0];
-          if (!target) break;
-          const bytes = await operations.optimizePdf(target.buffer);
-          const savings = ((1 - bytes.length / target.file.size) * 100).toFixed(1);
-          downloadBlob(bytes, `${target.name.replace('.pdf', '')}_compressed.pdf`);
-          showToast(
-            bytes.length < target.file.size
-              ? `Optimized. File size reduced by ${savings}%.`
-              : 'Optimization completed, but this document did not become smaller.',
-          );
-          break;
-        }
-        case 'rotate': {
-          const target = files[0];
-          if (!target) break;
-          const bytes = await operations.rotateAllPages(
-            target.buffer,
-            rotation as 90 | 180 | 270,
-          );
-          downloadBlob(bytes, `${target.name.replace('.pdf', '')}_rotated.pdf`);
-          showToast('Pages rotated!');
-          break;
-        }
-        case 'delete-pages': {
-          const target = files[0];
-          if (!target) break;
-          const indices = parsePageRanges(splitRange, target.pages);
-          const bytes = await operations.deletePages(target.buffer, indices);
-          downloadBlob(bytes, `${target.name.replace('.pdf', '')}_pages_removed.pdf`);
-          showToast(`Deleted ${indices.length} page(s)!`);
-          break;
-        }
-        case 'watermark': {
-          const target = files[0];
-          if (!target) break;
-          const bytes = await operations.addTextWatermark(
-            target.buffer,
-            watermarkText,
-          );
-          downloadBlob(bytes, `${target.name.replace('.pdf', '')}_watermarked.pdf`);
-          showToast('Watermark applied!');
-          break;
-        }
-        case 'page-numbers': {
-          const target = files[0];
-          if (!target) break;
-          const bytes = await operations.addPageNumbers(
-            target.buffer,
-            pageNumberPosition,
-          );
-          downloadBlob(bytes, `${target.name.replace('.pdf', '')}_numbered.pdf`);
-          showToast('Page numbers added!');
-          break;
-        }
-        case 'flatten': {
-          const target = files[0];
-          if (!target) break;
-          const bytes = await operations.flattenFormFields(target.buffer);
-          downloadBlob(bytes, `${target.name.replace('.pdf', '')}_flattened.pdf`);
-          showToast('Supported form fields flattened.');
-          break;
-        }
-        case 'images-to-pdf': {
-          const images: Array<{
-            bytes: ArrayBuffer;
-            type: 'image/jpeg' | 'image/png';
-          }> = [];
-          files.forEach((file) => {
-            const name = file.name.toLowerCase();
-            if (name.endsWith('.jpg') || name.endsWith('.jpeg')) {
-              images.push({ bytes: file.buffer, type: 'image/jpeg' });
-            }
-            if (name.endsWith('.png')) {
-              images.push({ bytes: file.buffer, type: 'image/png' });
-            }
-          });
-          const bytes = await operations.imagesToPdf(images);
-          downloadBlob(bytes, 'images-to-pdf.pdf');
-          showToast('Images converted to PDF!');
-          break;
-        }
-        default: {
-          showToast('This operation is not available.', true);
-        }
+    try {
+      const target = files[0];
+      let indices: number[] = [];
+      try {
+        indices =
+          (toolSlug === 'split' && splitMode === 'range') ||
+          toolSlug === 'delete-pages'
+            ? parsePageRanges(splitRange, target?.pageCount ?? 0)
+            : [];
+      } catch {
+        throw new OperationError('SELECTION_INVALID');
       }
-      await logUsage();
-    } catch (error: unknown) {
-      showToast(
-        error instanceof Error ? error.message : 'Processing failed.',
-        true,
+      const admission = await admitInputs({
+        tool: toolSlug,
+        inputs: files,
+        splitEveryPage: toolSlug === 'split' && splitMode === 'single',
+        ...(indices.length ? { selectedPageCount: indices.length } : {}),
+      });
+      if (
+        toolSlug === 'watermark' &&
+        (!watermarkText.trim() ||
+          watermarkText.length > (limits.maxWatermarkCharacters ?? 0) ||
+          !/^[\x20-\x7e\u00a0-\u00ff]+$/.test(watermarkText))
+      ) {
+        throw new OperationError('WATERMARK_TEXT_INVALID');
+      }
+
+      const operationId = crypto.randomUUID();
+      const request: WorkerRequest = {
+        type: 'execute',
+        operationId,
+        tool: toolSlug,
+        inputs: admission.inputs.map((input) => ({
+          bytes: input.bytes.slice(0),
+          mimeType: input.mimeType as
+            | 'application/pdf'
+            | 'image/jpeg'
+            | 'image/png',
+        })),
+        sourcePageCount: admission.aggregatePages,
+        options: operationOptions({
+          tool: toolSlug,
+          splitMode,
+          indices,
+          rotation,
+          watermarkText,
+          pageNumberPosition,
+        }),
+      };
+
+      setOperationState('processing');
+      setStatusMessage('Processing locally in a dedicated browser worker.');
+      const activeOperation = startWorkerOperation(request);
+      activeOperationRef.current = activeOperation;
+      const result = await activeOperation.result;
+      if (activeOperationRef.current?.operationId !== operationId) return;
+      activeOperationRef.current = null;
+
+      const filename = canonicalOutputFilename({
+        tool: toolSlug,
+        sourceName: target?.name,
+        fileCount: files.length,
+        outputPageCount: result.outputPageCount,
+        canonicalRange: indices.map((index) => index + 1).join('-'),
+        splitEveryPage: toolSlug === 'split' && splitMode === 'single',
+      });
+      setOperationState('saving');
+      setStatusMessage('PDF generation completed locally. Choose where to save it.');
+      const delivery = await deliverOutput({
+        data: result.output,
+        filename,
+        mimeType: result.mimeType,
+      });
+      const durationMs = Math.round(performance.now() - startedAt);
+      setSummary({
+        tool: toolSlug,
+        filesProcessed: files.length,
+        sourcePageCount: admission.aggregatePages,
+        outputPageCount: result.outputPageCount,
+        durationMs,
+        delivery: delivery.delivery,
+      });
+      setFiles([]);
+      setOperationState('success');
+      setStatusMessage(
+        delivery.delivery === 'native-save'
+          ? 'Saved.'
+          : 'Download started. Your browser is handling the download.',
       );
-    } finally {
-      setProcessing(false);
+      transmitTelemetry(
+        createOperationFinishedEvent({
+          tool: toolSlug,
+          outcome: 'success',
+          durationMs,
+        }),
+      );
+    } catch (error) {
+      activeOperationRef.current = null;
+      reportFailure(error, startedAt);
     }
   };
 
-  const acceptTypes = tool.slug === 'images-to-pdf' ? '.jpg,.jpeg,.png' : '.pdf';
-  const needsMultiple = tool.slug === 'merge' || tool.slug === 'images-to-pdf';
+  const acceptTypes =
+    toolSlug === 'images-to-pdf' ? '.jpg,.jpeg,.png' : '.pdf';
+  const canAddMore = files.length < limits.maxFiles;
+  const busy = ['validating', 'processing', 'saving', 'downloading'].includes(
+    operationState,
+  );
 
   return (
     <div className="space-y-6">
-      {/* Tool Header */}
-      <div className="text-center mb-8">
+      <header className="text-center mb-8">
         <div className="w-14 h-14 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center shadow-lg shadow-indigo-500/20">
           <IconComponent className="w-7 h-7 text-white" />
         </div>
-        <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight mb-2">{tool?.name}</h1>
-        <p className="text-zinc-400 text-sm max-w-lg mx-auto">{tool?.description}</p>
-        {!isFreeTool && (
-          <span className={`inline-block mt-3 px-3 py-1 text-xs font-semibold rounded-full ${
-            tool?.tier === 'pro' ? 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20' : 'bg-purple-500/10 text-purple-400 border border-purple-500/20'
-          }`}>
-            {tool?.tier === 'pro' ? 'Pro' : 'Enterprise'} Feature
-          </span>
-        )}
-      </div>
+        <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight mb-2">
+          {tool.name}
+        </h1>
+        <p className="text-zinc-400 text-sm max-w-lg mx-auto">
+          {tool.description}
+        </p>
+      </header>
 
-      {/* Drop Zone */}
-      {files.length === 0 ? (
-        <div
-          className="relative group border-2 border-dashed border-zinc-800 hover:border-indigo-500/50 bg-zinc-900/40 hover:bg-zinc-900/80 rounded-2xl p-10 text-center transition-all duration-300 cursor-pointer glow"
-          onClick={() => fileInputRef.current?.click()}
-          onDragOver={(e: any) => e.preventDefault()}
-          onDrop={(e: any) => { e.preventDefault(); handleFiles(e.dataTransfer?.files); }}
-        >
-          <input ref={fileInputRef} type="file" className="hidden" multiple={needsMultiple} accept={acceptTypes} onChange={(e: any) => handleFiles(e.target?.files)} />
-          <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-zinc-800/80 border border-zinc-700/50 flex items-center justify-center group-hover:scale-110 group-hover:border-indigo-500/40 transition-all duration-300">
-            <UploadCloud className="w-8 h-8 text-indigo-400" />
+      <section className="rounded-2xl border border-indigo-500/20 bg-indigo-500/5 p-5">
+        <div className="flex items-start gap-3">
+          <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-indigo-400" />
+          <div>
+            <h2 className="font-semibold text-zinc-200">Local processing boundary</h2>
+            <p className="mt-1 text-sm leading-6 text-zinc-400">
+              Current workflows process document bytes in this browser. AOPDF
+              records only the selected tool, outcome, duration, and coarse
+              browser/runtime information—never filenames or document-derived data.
+            </p>
           </div>
-          <h3 className="text-lg font-semibold text-zinc-200 mb-1">
-            Drop files here, or <span className="text-indigo-400 underline underline-offset-4">browse</span>
-          </h3>
-          <p className="text-xs text-zinc-500">{tool?.slug === 'images-to-pdf' ? 'Select image files (JPG, PNG)' : 'Select PDF files (Max 150MB per file)'}</p>
         </div>
+      </section>
+
+      <section className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5">
+        <h2 className="text-sm font-semibold text-zinc-200">Operating limits</h2>
+        <p className="mt-2 text-sm text-zinc-400">
+          {limits.minFiles}–{limits.maxFiles} file{limits.maxFiles === 1 ? '' : 's'};
+          {' '}100 MiB per file; 250 MiB aggregate; {limits.maxAggregatePages} pages;
+          {' '}1,024 MiB estimated working-memory limit; 120-second timeout.
+        </p>
+        <ul className="mt-3 list-disc space-y-1 pl-5 text-xs leading-5 text-zinc-500">
+          {limits.limitations.map((limitation) => (
+            <li key={limitation}>{limitation}</li>
+          ))}
+        </ul>
+      </section>
+
+      {files.length === 0 ? (
+        <button
+          type="button"
+          className="relative w-full min-h-52 border-2 border-dashed border-zinc-800 hover:border-indigo-500/50 bg-zinc-900/40 hover:bg-zinc-900/80 rounded-2xl p-10 text-center transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400"
+          onClick={() => fileInputRef.current?.click()}
+          onDragOver={(event) => event.preventDefault()}
+          onDrop={(event) => {
+            event.preventDefault();
+            void handleFiles(event.dataTransfer.files);
+          }}
+        >
+          <UploadCloud className="mx-auto h-10 w-10 text-indigo-400" />
+          <span className="mt-4 block text-lg font-semibold text-zinc-200">
+            Drop files here, or browse
+          </span>
+          <span className="mt-1 block text-xs text-zinc-500">
+            {toolSlug === 'images-to-pdf'
+              ? 'JPG or PNG; image limits are checked before processing'
+              : 'PDF; encrypted documents are rejected'}
+          </span>
+        </button>
       ) : (
-        <>
-          {/* File List */}
-          <div className="bg-zinc-900/60 border border-zinc-800 rounded-2xl p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-sm font-semibold text-zinc-300 uppercase tracking-wider flex items-center gap-2">
-                <FileText className="w-4 h-4 text-indigo-400" /> Files ({files.length})
-              </h2>
-              <div className="flex items-center gap-3">
-                <button onClick={() => fileInputRef.current?.click()} className="px-3 py-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs rounded-lg flex items-center gap-1.5 transition-colors border border-zinc-700">
-                  + Add Files
-                </button>
-                <input ref={fileInputRef} type="file" className="hidden" multiple accept={acceptTypes} onChange={(e: any) => handleFiles(e.target?.files)} />
-                <button onClick={() => setFiles([])} className="text-xs text-zinc-500 hover:text-rose-400 transition-colors">Clear All</button>
-              </div>
-            </div>
-            <div className="space-y-2.5">
-              {files.map((f: LoadedFile, idx: number) => (
-                <div key={`${f.name}-${idx}`} className="flex items-center justify-between p-3 rounded-xl bg-zinc-950 border border-zinc-800/80">
-                  <div className="flex items-center gap-3 overflow-hidden">
-                    <div className="flex flex-col gap-0.5 text-zinc-600">
-                      <button onClick={() => moveFile(idx, -1)} disabled={idx === 0} className={idx === 0 ? 'opacity-20' : 'hover:text-indigo-400'}><ChevronUp className="w-3.5 h-3.5" /></button>
-                      <button onClick={() => moveFile(idx, 1)} disabled={idx === files.length - 1} className={idx === files.length - 1 ? 'opacity-20' : 'hover:text-indigo-400'}><ChevronDown className="w-3.5 h-3.5" /></button>
-                    </div>
-                    <div className="w-8 h-8 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center shrink-0">
-                      <FileText className="w-4 h-4 text-indigo-400" />
-                    </div>
-                    <div className="truncate">
-                      <p className="text-sm font-medium text-zinc-200 truncate">{f.name}</p>
-                      <p className="text-[11px] text-zinc-500">{f.pages} Pages • {f.size}</p>
-                    </div>
-                  </div>
-                  <button onClick={() => removeFile(idx)} className="p-1.5 text-zinc-500 hover:text-rose-400 transition-colors">
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                </div>
-              ))}
+        <section className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-4 sm:p-6">
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+            <h2 className="text-sm font-semibold uppercase tracking-wider text-zinc-300">
+              Files ({files.length})
+            </h2>
+            <div className="flex flex-wrap gap-2">
+              <button
+                type="button"
+                disabled={!canAddMore || busy}
+                onClick={() => fileInputRef.current?.click()}
+                className="min-h-11 rounded-lg border border-zinc-700 bg-zinc-800 px-4 text-sm text-zinc-200 disabled:opacity-40"
+              >
+                Add files
+              </button>
+              <button
+                type="button"
+                disabled={busy}
+                onClick={() => {
+                  setFiles([]);
+                  setSummary(null);
+                  setOperationState('idle');
+                  setStatusMessage('Select files to begin.');
+                }}
+                className="min-h-11 rounded-lg px-4 text-sm text-zinc-400 hover:text-rose-300 disabled:opacity-40"
+              >
+                Clear all
+              </button>
             </div>
           </div>
-
-          {/* Tool-specific Options */}
-          {(tool?.slug === 'split' || tool?.slug === 'delete-pages') && (
-            <div className="bg-zinc-900/90 border border-zinc-800 rounded-2xl p-6">
-              {tool?.slug === 'split' && (
-                <div className="flex items-center gap-4 text-xs font-semibold text-zinc-300 mb-4">
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input type="radio" name="splitMode" checked={splitMode === 'range'} onChange={() => setSplitMode('range')} className="accent-indigo-500" />
-                    Extract Range
-                  </label>
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input type="radio" name="splitMode" checked={splitMode === 'single'} onChange={() => setSplitMode('single')} className="accent-indigo-500" />
-                    Split Every Page (ZIP)
-                  </label>
+          <div className="space-y-2">
+            {files.map((file, index) => (
+              <div
+                key={`${file.name}-${index}`}
+                className="flex items-center justify-between gap-3 rounded-xl border border-zinc-800 bg-zinc-950 p-3"
+              >
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-medium text-zinc-200">{file.name}</p>
+                  <p className="text-xs text-zinc-500">
+                    {file.pageCount} page{file.pageCount === 1 ? '' : 's'} · {file.displaySize}
+                  </p>
                 </div>
-              )}
-              {(splitMode === 'range' || tool?.slug === 'delete-pages') && (
-                <div>
-                  <label className="block text-xs font-medium text-zinc-400 mb-1.5">
-                    {tool?.slug === 'delete-pages' ? 'Pages to delete' : 'Page range'} (e.g. 1-3, 5):
-                  </label>
-                  <input
-                    type="text"
-                    value={splitRange}
-                    onChange={(e: any) => setSplitRange(e.target?.value ?? '')}
-                    className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-indigo-500"
-                  />
-                  <p className="text-[11px] text-zinc-500 mt-1">Total pages: {files?.[0]?.pages ?? 0}</p>
+                <div className="flex shrink-0 items-center gap-1">
+                  {limits.maxFiles > 1 ? (
+                    <>
+                      <button
+                        type="button"
+                        aria-label={`Move ${file.name} up`}
+                        disabled={index === 0 || busy}
+                        onClick={() => moveFile(index, -1)}
+                        className="min-h-11 min-w-11 rounded-lg p-3 text-zinc-500 hover:text-indigo-300 disabled:opacity-20"
+                      >
+                        <ChevronUp className="h-4 w-4" />
+                      </button>
+                      <button
+                        type="button"
+                        aria-label={`Move ${file.name} down`}
+                        disabled={index === files.length - 1 || busy}
+                        onClick={() => moveFile(index, 1)}
+                        className="min-h-11 min-w-11 rounded-lg p-3 text-zinc-500 hover:text-indigo-300 disabled:opacity-20"
+                      >
+                        <ChevronDown className="h-4 w-4" />
+                      </button>
+                    </>
+                  ) : null}
+                  <button
+                    type="button"
+                    aria-label={`Remove ${file.name}`}
+                    disabled={busy}
+                    onClick={() => removeFile(index)}
+                    className="min-h-11 min-w-11 rounded-lg p-3 text-zinc-500 hover:text-rose-300 disabled:opacity-20"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
                 </div>
-              )}
-            </div>
-          )}
-
-          {tool?.slug === 'watermark' && (
-            <div className="bg-zinc-900/90 border border-zinc-800 rounded-2xl p-6">
-              <label className="block text-xs font-medium text-zinc-400 mb-2">Watermark Text:</label>
-              <input
-                type="text"
-                value={watermarkText}
-                onChange={(e: any) => setWatermarkText(e.target?.value ?? '')}
-                className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-indigo-500"
-              />
-            </div>
-          )}
-
-          {tool?.slug === 'rotate' && (
-            <div className="bg-zinc-900/90 border border-zinc-800 rounded-2xl p-6">
-              <label className="block text-xs font-medium text-zinc-400 mb-2">Rotation Angle:</label>
-              <div className="flex gap-3">
-                {[90, 180, 270].map((deg: number) => (
-                  <button
-                    key={deg}
-                    onClick={() => setRotation(deg)}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                      rotation === deg ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30' : 'bg-zinc-900 text-zinc-400 border border-zinc-800'
-                    }`}
-                  >
-                    {deg}°
-                  </button>
-                ))}
               </div>
-            </div>
-          )}
-
-          {tool?.slug === 'page-numbers' && (
-            <div className="bg-zinc-900/90 border border-zinc-800 rounded-2xl p-6">
-              <label className="block text-xs font-medium text-zinc-400 mb-2">Position:</label>
-              <div className="flex gap-3">
-                {[{ v: 'bottom-center', l: 'Bottom Center' }, { v: 'bottom-right', l: 'Bottom Right' }, { v: 'top-center', l: 'Top Center' }].map((opt: any) => (
-                  <button
-                    key={opt.v}
-                    onClick={() => setPageNumberPosition(opt.v)}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                      pageNumberPosition === opt.v ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30' : 'bg-zinc-900 text-zinc-400 border border-zinc-800'
-                    }`}
-                  >
-                    {opt.l}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Process Button */}
-          <button
-            onClick={runProcess}
-            disabled={processing || files.length === 0}
-            className="w-full py-3.5 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl transition-all shadow-lg shadow-indigo-600/25 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.99]"
-          >
-            {processing ? (
-              <><Loader2 className="w-4 h-4 animate-spin" /> Processing...</>
-            ) : (
-              <><Play className="w-4 h-4 fill-current" /> Process & Download</>
-            )}
-          </button>
-        </>
+            ))}
+          </div>
+        </section>
       )}
 
-      {/* Toast */}
-      <AnimatePresence>
-        {toast && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
-            className={`fixed bottom-6 right-6 px-4 py-3 rounded-xl shadow-2xl flex items-center gap-2 text-xs font-semibold z-50 ${
-              toast.error
-                ? 'bg-zinc-900 border border-rose-500/50 text-rose-300'
-                : 'bg-zinc-900 border border-emerald-500/50 text-emerald-300'
-            }`}
+      <input
+        ref={fileInputRef}
+        type="file"
+        className="sr-only"
+        multiple={limits.maxFiles > 1}
+        accept={acceptTypes}
+        onChange={(event) => void handleFiles(event.target.files)}
+      />
+
+      {files.length > 0 && (toolSlug === 'split' || toolSlug === 'delete-pages') ? (
+        <section className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5">
+          {toolSlug === 'split' ? (
+            <div className="mb-4 flex flex-wrap gap-4">
+              <label className="flex min-h-11 items-center gap-2 text-sm text-zinc-300">
+                <input
+                  type="radio"
+                  name="split-mode"
+                  checked={splitMode === 'range'}
+                  onChange={() => setSplitMode('range')}
+                />
+                Extract pages
+              </label>
+              <label className="flex min-h-11 items-center gap-2 text-sm text-zinc-300">
+                <input
+                  type="radio"
+                  name="split-mode"
+                  checked={splitMode === 'single'}
+                  onChange={() => setSplitMode('single')}
+                />
+                Split every page
+              </label>
+            </div>
+          ) : null}
+          {splitMode === 'range' || toolSlug === 'delete-pages' ? (
+            <label className="block text-sm text-zinc-300">
+              {toolSlug === 'delete-pages' ? 'Pages to delete' : 'Pages to extract'}
+              <input
+                value={splitRange}
+                onChange={(event) => setSplitRange(event.target.value)}
+                className="mt-2 min-h-11 w-full rounded-lg border border-zinc-700 bg-zinc-950 px-3 text-zinc-100"
+                placeholder="1-3, 5"
+              />
+            </label>
+          ) : null}
+        </section>
+      ) : null}
+
+      {files.length > 0 && toolSlug === 'watermark' ? (
+        <label className="block rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5 text-sm text-zinc-300">
+          Watermark text
+          <input
+            value={watermarkText}
+            maxLength={limits.maxWatermarkCharacters}
+            onChange={(event) => setWatermarkText(event.target.value)}
+            className="mt-2 min-h-11 w-full rounded-lg border border-zinc-700 bg-zinc-950 px-3 text-zinc-100"
+          />
+        </label>
+      ) : null}
+
+      {files.length > 0 && toolSlug === 'rotate' ? (
+        <fieldset className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5">
+          <legend className="text-sm text-zinc-300">Rotation angle</legend>
+          <div className="mt-3 flex flex-wrap gap-3">
+            {[90, 180, 270].map((angle) => (
+              <button
+                type="button"
+                key={angle}
+                onClick={() => setRotation(angle)}
+                className={`min-h-11 rounded-lg border px-5 text-sm ${
+                  rotation === angle
+                    ? 'border-indigo-500 bg-indigo-500/20 text-indigo-200'
+                    : 'border-zinc-700 text-zinc-400'
+                }`}
+              >
+                {angle}°
+              </button>
+            ))}
+          </div>
+        </fieldset>
+      ) : null}
+
+      {files.length > 0 && toolSlug === 'page-numbers' ? (
+        <fieldset className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5">
+          <legend className="text-sm text-zinc-300">Page-number position</legend>
+          <div className="mt-3 flex flex-wrap gap-3">
+            {[
+              ['bottom-center', 'Bottom center'],
+              ['bottom-right', 'Bottom right'],
+              ['top-center', 'Top center'],
+            ].map(([value, label]) => (
+              <button
+                type="button"
+                key={value}
+                onClick={() =>
+                  setPageNumberPosition(
+                    value as 'bottom-center' | 'bottom-right' | 'top-center',
+                  )
+                }
+                className={`min-h-11 rounded-lg border px-4 text-sm ${
+                  pageNumberPosition === value
+                    ? 'border-indigo-500 bg-indigo-500/20 text-indigo-200'
+                    : 'border-zinc-700 text-zinc-400'
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </fieldset>
+      ) : null}
+
+      {files.length > 0 ? (
+        <div className="flex flex-col gap-3 sm:flex-row">
+          <button
+            type="button"
+            onClick={() => void runProcess()}
+            disabled={busy}
+            className="min-h-12 flex-1 rounded-xl bg-indigo-600 px-6 font-semibold text-white shadow-lg shadow-indigo-600/25 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {toast.error ? <AlertCircle className="w-4 h-4" /> : <CheckCircle2 className="w-4 h-4" />}
-            {toast.msg}
-          </motion.div>
-        )}
-      </AnimatePresence>
+            {busy ? (
+              <span className="flex items-center justify-center gap-2">
+                <Loader2 className="h-4 w-4 animate-spin motion-reduce:animate-none" />
+                {operationState === 'validating' ? 'Validating…' : 'Processing…'}
+              </span>
+            ) : (
+              <span className="flex items-center justify-center gap-2">
+                <Play className="h-4 w-4" /> Process locally
+              </span>
+            )}
+          </button>
+          {operationState === 'processing' ? (
+            <button
+              type="button"
+              onClick={cancelOperation}
+              className="min-h-12 rounded-xl border border-rose-500/40 px-6 font-semibold text-rose-300"
+            >
+              <span className="flex items-center justify-center gap-2">
+                <Square className="h-4 w-4" /> Cancel
+              </span>
+            </button>
+          ) : null}
+        </div>
+      ) : null}
+
+      <div
+        aria-live="polite"
+        aria-atomic="true"
+        className={`rounded-xl border p-4 text-sm ${
+          errorCode
+            ? 'border-rose-500/30 bg-rose-500/5 text-rose-200'
+            : operationState === 'success'
+              ? 'border-emerald-500/30 bg-emerald-500/5 text-emerald-200'
+              : 'border-zinc-800 bg-zinc-900/40 text-zinc-400'
+        }`}
+      >
+        <div className="flex items-start gap-2">
+          {errorCode ? (
+            <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+          ) : operationState === 'success' ? (
+            <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" />
+          ) : null}
+          <div>
+            <p>{statusMessage}</p>
+            {errorCode ? (
+              <p className="mt-1 text-xs text-zinc-400">
+                {ERROR_DEFINITIONS[errorCode].recovery} ({errorCode})
+              </p>
+            ) : null}
+          </div>
+        </div>
+      </div>
+
+      {summary ? (
+        <section className="rounded-2xl border border-emerald-500/20 bg-emerald-500/5 p-5">
+          <h2 className="font-semibold text-emerald-200">Local processing summary</h2>
+          <dl className="mt-4 grid grid-cols-2 gap-4 text-sm sm:grid-cols-5">
+            <div><dt className="text-zinc-500">Operation</dt><dd>{tool.name}</dd></div>
+            <div><dt className="text-zinc-500">Files</dt><dd>{summary.filesProcessed}</dd></div>
+            <div><dt className="text-zinc-500">Source pages</dt><dd>{summary.sourcePageCount}</dd></div>
+            <div><dt className="text-zinc-500">Output pages</dt><dd>{summary.outputPageCount}</dd></div>
+            <div><dt className="text-zinc-500">Duration</dt><dd>{summary.durationMs} ms</dd></div>
+          </dl>
+          <p className="mt-4 text-xs text-zinc-500">
+            This summary remains in this page and is not included in telemetry.
+          </p>
+        </section>
+      ) : null}
     </div>
   );
 }

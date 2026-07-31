@@ -7,20 +7,20 @@ import Link from 'next/link';
 const releaseLayers = [
   {
     icon: CheckCircle2,
-    title: 'Available now',
-    detail: 'Browser-local PDF operations with no document upload.',
+    title: 'Admission first',
+    detail: 'File, page, geometry, image and estimated-memory limits are checked before worker execution.',
     color: 'text-emerald-400',
   },
   {
     icon: CircleDashed,
-    title: 'In development',
-    detail: 'Page editing, verified security tools, accounts, and team workflows.',
+    title: 'Controlled execution',
+    detail: 'A dedicated worker is cancelled or terminated on demand, timeout, navigation and unmount.',
     color: 'text-amber-400',
   },
   {
     icon: ShieldCheck,
-    title: 'Admission controlled',
-    detail: 'Billing, APIs, OCR, and Office conversion remain off until their complete flows are verified.',
+    title: 'Contained telemetry',
+    detail: 'Only admitted tool, outcome, capped duration and governed error code can enter custom events.',
     color: 'text-indigo-400',
   },
 ];
@@ -32,7 +32,7 @@ export default function PricingPreview() {
         <div className="mb-12 text-center">
           <h2 className="text-3xl font-bold tracking-tight">Built in Governed Layers</h2>
           <p className="mx-auto mt-3 max-w-2xl text-zinc-400">
-            AOPDF launches useful local tools first. Commercial features will be priced only after their entitlements and service boundaries are operational.
+            AOPDF exposes the operating boundary before a document is selected and keeps document-derived data out of telemetry.
           </p>
         </div>
         <div className="grid gap-5 md:grid-cols-3">

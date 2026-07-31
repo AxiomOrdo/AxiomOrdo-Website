@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Layers, Scissors, Minimize2, RotateCw, Lock, Stamp, Image, Table } from 'lucide-react';
+import { Layers, Scissors, Minimize2, RotateCw, Hash, Stamp, Image, Table } from 'lucide-react';
 
 const features = [
   { icon: Layers, title: 'Merge PDFs', desc: 'Combine local PDF files in a selected source-file order.', color: 'text-indigo-400' },
@@ -11,7 +11,7 @@ const features = [
   { icon: Stamp, title: 'Watermark', desc: 'Apply a text watermark across every page.', color: 'text-violet-400' },
   { icon: Image, title: 'Images to PDF', desc: 'Combine local JPG and PNG images into a PDF.', color: 'text-teal-400' },
   { icon: Table, title: 'Flatten Forms', desc: 'Flatten supported interactive form fields into page content.', color: 'text-lime-400' },
-  { icon: Lock, title: 'Security tools', desc: 'Encryption and irreversible redaction remain gated until verified.', color: 'text-cyan-400' },
+  { icon: Hash, title: 'Page Numbers', desc: 'Add numbered labels in one supported position.', color: 'text-cyan-400' },
 ];
 
 export default function FeaturesGrid() {
@@ -19,8 +19,8 @@ export default function FeaturesGrid() {
     <section className="py-20">
       <div className="max-w-6xl mx-auto px-6">
         <div className="text-center mb-14">
-          <h2 className="text-3xl font-bold tracking-tight mb-3">Useful Tools, Honest Status</h2>
-          <p className="text-zinc-400 max-w-xl mx-auto">Available tools are operational now. Planned tools remain visible but cannot produce misleading placeholder output.</p>
+          <h2 className="text-3xl font-bold tracking-tight mb-3">Nine Admitted Workflows</h2>
+          <p className="text-zinc-400 max-w-xl mx-auto">Every listed tool has an explicit browser-local boundary and tool-specific limits.</p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {features.map((f: any, i: number) => (
