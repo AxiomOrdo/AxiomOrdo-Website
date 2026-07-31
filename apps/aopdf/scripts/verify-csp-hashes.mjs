@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { readFileSync, readdirSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -22,6 +22,20 @@ for (const filename of htmlFiles(exportRoot)) {
   const html = readFileSync(filename, 'utf8');
   if (/<script(?:\s[^>]*)?>[\s\S]*?self\.__next_f\.push[\s\S]*?<\/script[^>]*>/i.test(html)) {
     throw new Error(`Inline Next.js flight payload remains in ${filename}.`);
+  }
+  const externalFlightSources = [
+    ...html.matchAll(
+      /<script[^>]+src=["'](\/aopdf\/_next\/static\/aopdf-flight\/[^"']+)["'][^>]*>/gi,
+    ),
+  ].map((match) => match[1]);
+  if (externalFlightSources.length === 0) {
+    throw new Error(`No external Next.js flight payloads found in ${filename}.`);
+  }
+  for (const source of externalFlightSources) {
+    const asset = join(exportRoot, source.replace(/^\/aopdf\//, ''));
+    if (!existsSync(asset)) {
+      throw new Error(`External Next.js flight payload is missing: ${source}.`);
+    }
   }
   for (const match of html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script[^>]*>/gi)) {
     if (!match[1]) continue;
