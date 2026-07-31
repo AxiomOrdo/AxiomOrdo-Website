@@ -11,7 +11,7 @@ export default function ToolsPage() {
       <main className="flex-1 z-10 max-w-6xl mx-auto px-6 py-16 w-full">
         <div className="text-center mb-12">
           <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-3">PDF Tools</h1>
-          <p className="text-zinc-400 max-w-xl mx-auto">22+ professional tools to handle any PDF task. Select a tool below to get started.</p>
+          <p className="text-zinc-400 max-w-xl mx-auto">Nine governed, browser-local workflows with explicit operating limits. Select a tool to begin.</p>
         </div>
         <ToolsGrid />
       </main>

@@ -4,15 +4,14 @@ const nextConfig = {
   output: 'export',
   trailingSlash: true,
   distDir: process.env.NEXT_DIST_DIR || '.next',
+  outputFileTracingRoot: __dirname,
   poweredByHeader: false,
   productionBrowserSourceMaps: false,
-  turbopack: {
-    root: __dirname,
-  },
   typescript: {
     ignoreBuildErrors: false,
   },
   images: { unoptimized: true },
+  generateBuildId: async () => 'aopdf-governed-2026-07-31',
 };
 
 module.exports = nextConfig;

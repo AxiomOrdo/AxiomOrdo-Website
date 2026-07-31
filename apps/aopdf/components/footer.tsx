@@ -1,5 +1,3 @@
-'use client';
-
 import Link from 'next/link';
 import { FileText } from 'lucide-react';
 
@@ -11,14 +9,16 @@ export default function Footer() {
           <div className="w-7 h-7 rounded-lg bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center">
             <FileText className="w-4 h-4 text-white" />
           </div>
-          <span className="text-sm font-semibold text-zinc-400">AxiomOrdoPDF</span>
+          <span className="text-sm font-semibold text-zinc-400">AOPDF</span>
         </div>
         <div className="flex items-center gap-6 text-xs text-zinc-600">
           <Link href="/tools" className="hover:text-zinc-400 transition-colors">Tools</Link>
-          <Link href="/pricing" className="hover:text-zinc-400 transition-colors">Pricing</Link>
-          <Link href="/api-docs" className="hover:text-zinc-400 transition-colors">API</Link>
+          <Link href="/limits" className="hover:text-zinc-400 transition-colors">Limits</Link>
+          <Link href="/privacy" className="hover:text-zinc-400 transition-colors">Privacy</Link>
+          <Link href="/terms" className="hover:text-zinc-400 transition-colors">Terms</Link>
+          <Link href="/acceptable-use" className="hover:text-zinc-400 transition-colors">Acceptable use</Link>
         </div>
-        <p className="text-xs text-zinc-600">© 2026 AxiomOrdo Regulatory Intelligence Group</p>
+        <p className="text-xs text-zinc-600">© 2026 AxiomOrdo Ltd</p>
       </div>
     </footer>
   );

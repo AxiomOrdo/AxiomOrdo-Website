@@ -16,8 +16,11 @@ const mono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://axiomordo.com/aopdf'),
-  title: 'AOPDF — Private PDF Tools by AxiomOrdo',
+  metadataBase: new URL('https://axiomordo.com'),
+  title: {
+    default: 'AOPDF — Private PDF Tools by AxiomOrdo',
+    template: '%s | AOPDF',
+  },
   description: 'Private browser-based PDF tools with explicit processing boundaries and no document uploads for local tools.',
   icons: {
     icon: '/aopdf/favicon.svg',
@@ -26,7 +29,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'AOPDF — Private PDF Tools by AxiomOrdo',
     description: 'Private browser-based PDF tools with explicit processing boundaries.',
-    images: ['/og-image.png'],
+    images: ['/aopdf/og-image.png'],
   },
 };
 

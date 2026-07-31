@@ -1,17 +1,15 @@
 'use client';
 
-import { SessionProvider } from 'next-auth/react';
-import { ReactNode } from 'react';
-import { ACCOUNTS_ENABLED } from '@/lib/features';
+import type { ReactNode } from 'react';
+import { Analytics } from '@vercel/analytics/next';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 export default function Providers({ children }: { children: ReactNode }) {
   return (
-    <SessionProvider
-      basePath="/aopdf/api/auth"
-      session={ACCOUNTS_ENABLED ? undefined : null}
-      refetchOnWindowFocus={ACCOUNTS_ENABLED}
-    >
+    <>
       {children}
-    </SessionProvider>
+      <Analytics />
+      <SpeedInsights />
+    </>
   );
 }

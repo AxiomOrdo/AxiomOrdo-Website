@@ -38,6 +38,19 @@
     ".next/dev/types/**/*.ts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "out/**",
+    "playwright-report/**",
+    "test-results/**",
+    "components/auth/**",
+    "components/dashboard/**",
+    "lib/auth-options.ts",
+    "lib/prisma.ts",
+    "lib/rate-limit.ts",
+    "lib/server-features.ts",
+    "lib/stripe.ts",
+    "scripts/**",
+    "server/**",
+    "types/next-auth.d.ts"
   ]
 }

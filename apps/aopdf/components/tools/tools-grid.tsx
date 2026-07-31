@@ -17,8 +17,9 @@ export default function ToolsGrid() {
     <div>
       <div className="flex flex-wrap justify-center gap-2 mb-10">
         <button
+          type="button"
           onClick={() => setActiveCategory('All')}
-          className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-all ${
+          className={`min-h-11 px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${
             activeCategory === 'All'
               ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30'
               : 'bg-zinc-900 text-zinc-400 border border-zinc-800 hover:text-zinc-200'
@@ -28,9 +29,10 @@ export default function ToolsGrid() {
         </button>
         {TOOL_CATEGORIES.map((cat: string) => (
           <button
+            type="button"
             key={cat}
             onClick={() => setActiveCategory(cat)}
-            className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-all ${
+            className={`min-h-11 px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${
               activeCategory === cat
                 ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30'
                 : 'bg-zinc-900 text-zinc-400 border border-zinc-800 hover:text-zinc-200'
@@ -63,18 +65,9 @@ export default function ToolsGrid() {
                     <div className="flex items-center gap-2 mb-1">
                       <h3 className="text-sm font-semibold text-zinc-200">{tool.name}</h3>
                       <span className={`px-1.5 py-0.5 text-[10px] font-semibold rounded-md uppercase ${
-                        tool.tier === 'free' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' :
-                        tool.tier === 'pro' ? 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20' :
-                        'bg-purple-500/10 text-purple-400 border border-purple-500/20'
-                      }`}>
-                        {tool.tier}
-                      </span>
-                      <span className={`px-1.5 py-0.5 text-[10px] font-semibold rounded-md uppercase ${
                         tool.status === 'available'
                           ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
-                          : tool.status === 'beta'
-                            ? 'bg-amber-500/10 text-amber-300 border border-amber-500/20'
-                            : 'bg-zinc-800 text-zinc-400 border border-zinc-700'
+                          : 'bg-amber-500/10 text-amber-300 border border-amber-500/20'
                       }`}>
                         {tool.status}
                       </span>

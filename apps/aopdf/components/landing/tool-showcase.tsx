@@ -5,9 +5,9 @@ import { Upload, Cog, Download, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 
 const steps = [
-  { icon: Upload, title: 'Upload', desc: 'Drag and drop your PDF files into the workspace.', color: 'from-indigo-500 to-indigo-600' },
+  { icon: Upload, title: 'Select', desc: 'Choose local PDF or image files in the browser.', color: 'from-indigo-500 to-indigo-600' },
   { icon: Cog, title: 'Process', desc: 'Select your tool and configure settings. Everything runs locally.', color: 'from-purple-500 to-purple-600' },
-  { icon: Download, title: 'Download', desc: 'Get your processed file instantly — no waiting, no uploads.', color: 'from-emerald-500 to-emerald-600' },
+  { icon: Download, title: 'Save', desc: 'Use the native save picker or let your browser handle the fallback download.', color: 'from-emerald-500 to-emerald-600' },
 ];
 
 export default function ToolShowcase() {
@@ -16,7 +16,7 @@ export default function ToolShowcase() {
       <div className="max-w-5xl mx-auto px-6">
         <div className="text-center mb-14">
           <h2 className="text-3xl font-bold tracking-tight mb-3">How It Works</h2>
-          <p className="text-zinc-400">Three simple steps. No account required for free tools.</p>
+          <p className="text-zinc-400">Three local steps. No account or document upload.</p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {steps.map((s: any, i: number) => (

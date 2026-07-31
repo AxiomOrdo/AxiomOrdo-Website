@@ -24,15 +24,15 @@ export default function HeroSection() {
           </h1>
 
           <p className="text-lg text-zinc-400 max-w-2xl mx-auto mb-10 leading-relaxed">
-            Use verified browser-local tools today and see the status of every planned capability. No silent uploads and no placeholder operation presented as complete.
+            Use nine governed browser-local workflows with visible limits, stable failures and no document upload.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link href="/tools" className="px-8 py-3.5 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl transition-all shadow-lg shadow-indigo-600/25 flex items-center gap-2 active:scale-[0.98]">
               Start Processing <ArrowRight className="w-4 h-4" />
             </Link>
-            <Link href="/pricing" className="px-8 py-3.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 font-semibold rounded-xl transition-all border border-zinc-700 flex items-center gap-2">
-              View Pricing
+            <Link href="/limits" className="px-8 py-3.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 font-semibold rounded-xl transition-all border border-zinc-700 flex items-center gap-2">
+              Review Limits
             </Link>
           </div>
         </motion.div>
@@ -44,7 +44,7 @@ export default function HeroSection() {
           className="mt-16 flex flex-wrap justify-center gap-8 text-sm text-zinc-500"
         >
           <div className="flex items-center gap-2"><Shield className="w-4 h-4 text-indigo-400" /> Local processing boundary</div>
-          <div className="flex items-center gap-2"><Zap className="w-4 h-4 text-purple-400" /> Instant Processing</div>
+          <div className="flex items-center gap-2"><Zap className="w-4 h-4 text-purple-400" /> Dedicated worker execution</div>
           <div className="flex items-center gap-2"><Lock className="w-4 h-4 text-emerald-400" /> No document retention</div>
         </motion.div>
       </div>

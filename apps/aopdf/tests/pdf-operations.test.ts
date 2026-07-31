@@ -28,6 +28,35 @@ async function getPageCount(bytes: Uint8Array): Promise<number> {
   return (await PDFDocument.load(bytes)).getPageCount();
 }
 
+async function createMetadataPdf(pageCount = 1): Promise<Uint8Array> {
+  const document = await PDFDocument.create({ updateMetadata: false });
+  for (let index = 0; index < pageCount; index += 1) {
+    document.addPage([300, 400]);
+  }
+  document.setTitle('Governed title');
+  document.setAuthor('AxiomOrdo');
+  document.setSubject('Metadata fixture');
+  document.setKeywords(['one', 'two']);
+  document.setCreator('AOPDF fixture');
+  document.setProducer('AOPDF test');
+  document.setCreationDate(new Date('2024-01-02T03:04:05.000Z'));
+  document.setModificationDate(new Date('2025-02-03T04:05:06.000Z'));
+  return document.save({ useObjectStreams: false });
+}
+
+function supportedMetadata(document: PDFDocument) {
+  return {
+    title: document.getTitle(),
+    author: document.getAuthor(),
+    subject: document.getSubject(),
+    keywords: document.getKeywords(),
+    creator: document.getCreator(),
+    producer: document.getProducer(),
+    creationDate: document.getCreationDate()?.toISOString(),
+    modificationDate: document.getModificationDate()?.toISOString(),
+  };
+}
+
 test('parsePageRanges returns unique zero-based indices', () => {
   assert.deepEqual(parsePageRanges('1-3, 2, 5', 5), [0, 1, 2, 4]);
 });
@@ -53,7 +82,10 @@ test('merge, extract, split, and delete preserve governed page counts', async ()
   );
 
   assert.equal(await getPageCount(await deletePages(twoPages, [0])), 1);
-  await assert.rejects(() => deletePages(twoPages, [0, 1]), /every page/);
+  await assert.rejects(
+    () => deletePages(twoPages, [0, 1]),
+    (error) => (error as { code?: string }).code === 'SELECTION_INVALID',
+  );
 });
 
 test('rotation is applied to every page', async () => {
@@ -72,12 +104,71 @@ test('optimization, watermarking, and numbering retain page count', async () => 
   assert.equal(await getPageCount(await addPageNumbers(source, 'bottom-right')), 2);
 });
 
+test('single-document transformations preserve supported information fields', async () => {
+  const source = await createMetadataPdf();
+  const deleteSource = await createMetadataPdf(2);
+  const expected = supportedMetadata(
+    await PDFDocument.load(source, { updateMetadata: false }),
+  );
+  const outputs = [
+    await optimizePdf(source),
+    await rotateAllPages(source, 90),
+    await deletePages(deleteSource, [1]),
+    await addTextWatermark(source, 'DRAFT'),
+    await addPageNumbers(source, 'bottom-center'),
+    await flattenFormFields(source),
+  ];
+
+  for (const output of outputs) {
+    const actual = supportedMetadata(
+      await PDFDocument.load(output, { updateMetadata: false }),
+    );
+    assert.deepEqual(actual, expected);
+  }
+});
+
+test('merge, extract, split, and images create new documents without source metadata', async () => {
+  const source = await createMetadataPdf();
+  const plain = await createPdf(1);
+  const outputs = [
+    await mergePdfs([source, plain]),
+    await extractPages(source, [0]),
+    ...(await splitEveryPage(source)),
+  ];
+  for (const output of outputs) {
+    const document = await PDFDocument.load(output, { updateMetadata: false });
+    assert.equal(document.getTitle(), undefined);
+    assert.equal(document.getAuthor(), undefined);
+    assert.equal(document.getSubject(), undefined);
+  }
+});
+
 test('flatten removes supported interactive form fields', async () => {
   const document = await PDFDocument.create();
   const page = document.addPage([300, 400]);
-  const field = document.getForm().createTextField('reference');
-  field.addToPage(page, { x: 20, y: 300, width: 180, height: 24 });
-  field.setText('AO-001');
+  const form = document.getForm();
+  const text = form.createTextField('reference');
+  text.addToPage(page, { x: 20, y: 330, width: 180, height: 24 });
+  text.setText('AO-001');
+  const checkbox = form.createCheckBox('approved');
+  checkbox.addToPage(page, { x: 20, y: 290, width: 20, height: 20 });
+  checkbox.check();
+  const radio = form.createRadioGroup('priority');
+  radio.addOptionToPage('high', page, {
+    x: 20,
+    y: 250,
+    width: 20,
+    height: 20,
+  });
+  radio.select('high');
+  const dropdown = form.createDropdown('region');
+  dropdown.addOptions(['north', 'south']);
+  dropdown.addToPage(page, { x: 20, y: 200, width: 120, height: 24 });
+  dropdown.select('north');
+  const options = form.createOptionList('scope');
+  options.addOptions(['one', 'two']);
+  options.addToPage(page, { x: 20, y: 100, width: 120, height: 70 });
+  options.select('two');
 
   const flattened = await flattenFormFields(await document.save());
   const output = await PDFDocument.load(flattened);
@@ -94,9 +185,7 @@ test('imagesToPdf creates one page per supported image', async () => {
 });
 
 test('only implemented tools are marked available or beta', () => {
-  const admitted = PDF_TOOLS
-    .filter((tool) => tool.status !== 'planned')
-    .map((tool) => tool.slug);
+  const admitted = PDF_TOOLS.map((tool) => tool.slug);
   assert.deepEqual(admitted, [
     'merge',
     'split',
