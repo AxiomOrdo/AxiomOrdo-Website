@@ -42,8 +42,8 @@ if (!header) throw new Error('AOPDF CSP header is missing.');
 
 const previousValue = header.value;
 const nextValue = previousValue.replace(
-  /script-src 'self'(?: 'sha256-[^']+')*;/,
-  `script-src 'self' ${[...hashes].sort().join(' ')};`,
+  /script-src 'self' https:\/\/vercel\.live(?: 'sha256-[^']+')*;/,
+  `script-src 'self' https://vercel.live ${[...hashes].sort().join(' ')};`,
 );
 if (previousValue === nextValue) {
   console.log(`AOPDF CSP already contains ${hashes.size} synchronized hash.`);
