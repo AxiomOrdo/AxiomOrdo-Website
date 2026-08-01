@@ -442,9 +442,9 @@ const insightHubs: InsightHub[] = [
 const placeholderArticles: PlaceholderArticle[] = [
   {
     slug: "why-ai-policies-fail",
-    title: "What Maritime Companies Misunderstand About AI Governance",
+    title: "AI Governance in Maritime: How to Control AI-Supported Work Through Your Safety Management System",
     subtitle:
-      "The risk is not simply that people use AI. The risk is uncontrolled data, unchecked output, and misplaced accountability.",
+      "Why approved tools are not enough—and how verification, document control, competence and accountability apply when AI enters operational work.",
     category: "maritime-ai",
     status: "Published",
   },
@@ -1525,7 +1525,7 @@ function PlaceholderArticlePage({
   return (
     <main className="min-h-screen text-white" style={{ background: "#050810" }}>
       <PageSeo
-        title={`${article.title} | Meriden Compliance Insights`}
+        title="Maritime AI Governance: Controlling AI Through the SMS"
         description={article.subtitle}
         canonicalPath={`${MERIDEN_INSIGHTS_PATH}/${hub.slug}/${article.slug}`}
         image="/images/maritime-ai-governance-heading.jpg"
@@ -1562,12 +1562,14 @@ function PlaceholderArticlePage({
         />
 
         <div className="mt-12 space-y-8 text-base leading-8 text-white/65">
-          <p>AI is already entering maritime work, whether companies have formally approved it or not.</p>
+          <p>AI is already influencing safety management systems, audit reports and operational decisions inside maritime companies—often without formal approval or governance.</p>
+          <p>The question is no longer whether people are using AI. It is whether companies know where, how and under what controls it is being used.</p>
+          <p>The risk is not simply that people use AI. The risk is uncontrolled data, unchecked output and misplaced accountability.</p>
           <p>It may be used to draft risk assessments, summarise procedures, prepare toolbox talks, rewrite audit findings, compare requirements, or make safety management documents sound more polished. Some of that use may be helpful. Some of it may be harmless. Some of it may create serious control problems.</p>
           <p>The mistake is treating AI governance as a choice between “ban it” and “allow it”.</p>
           <p>That is too crude.</p>
           <p>The real question is operational: what information is being entered, what output is being produced, who checks it, what evidence supports it, and who remains accountable when AI-supported material enters company use.</p>
-          <p>At the time of writing, IMO instruments address AI-enabled autonomous and remotely operated ships, but there is no specific IMO guidance addressing routine maritime company use of AI for tasks such as drafting risk assessments, preparing toolbox talks, reviewing audit findings, summarising regulations, or supporting safety management documentation.</p>
+          <p>At the time of writing, I have not identified an IMO instrument specifically governing routine employee use of generative AI for tasks such as drafting risk assessments, preparing toolbox talks, reviewing audit findings, summarising regulations, or supporting safety management documentation. IMO has adopted a non-mandatory code for AI-enabled and remotely operated autonomous ships, but that is a different regulatory problem.</p>
           <p>That does not mean companies should wait.</p>
           <p>It means AI use has to be controlled through existing governance duties: safety management, competence, verification, confidentiality, document control, and accountability.</p>
 
@@ -1594,8 +1596,8 @@ function PlaceholderArticlePage({
               </tbody>
             </table>
           </div>
-          <p>The point is not that existing maritime regulation was written for AI. It was not.</p>
-          <p>The point is that AI can affect work already controlled by the safety management system. If AI-supported material enters that system, it still has to be checked, approved, controlled, and owned by the company.</p>
+          <p>Existing maritime regulation was not written for AI.</p>
+          <p>However, AI can affect work already controlled by the safety management system. Once AI-supported material enters that system, it still has to be checked, approved, controlled and owned by the company.</p>
 
           <h2 className="pt-8 text-3xl font-semibold tracking-tight text-white">The Second Misunderstanding: Polished Output Is Treated as Reliable Output</h2>
           <p>AI output often sounds confident.</p>
@@ -1607,6 +1609,7 @@ function PlaceholderArticlePage({
           <p>In audit, compliance, and safety work, that is not a harmless drafting issue. It can create false findings, false assurance, wasted review time, and misplaced confidence.</p>
           <p>The control is simple in principle, but often missing in practice:</p>
           <p className="font-semibold text-white">AI output must be checked against the source before it is relied on.</p>
+          <blockquote className="border-l-2 border-cyan-300/70 py-2 pl-6 text-2xl font-medium leading-9 text-cyan-100">Confident output is not evidence.</blockquote>
           <p>If the output cites a regulation, the regulation must be checked.</p>
           <p>If it summarises a procedure, the procedure must be checked.</p>
           <p>If it proposes a control, the control must be assessed by someone competent to judge whether it is suitable for the operation.</p>
@@ -1626,9 +1629,24 @@ function PlaceholderArticlePage({
           <p>At minimum, companies should define:</p>
           <ul className="list-disc space-y-2 pl-6"><li>approved AI tools and account types</li><li>prohibited information and upload rules</li><li>permitted and prohibited task types</li><li>review requirements for AI-supported outputs</li><li>source verification requirements</li><li>document control requirements</li><li>record retention where AI materially supports a decision or controlled document</li><li>competence expectations for users and reviewers</li></ul>
           <p>The strongest control is not the tool itself. It is the workflow around it.</p>
+          <blockquote className="border-l-2 border-cyan-300/70 py-2 pl-6 text-2xl font-medium leading-9 text-cyan-100">The strongest control is not the tool itself. It is the workflow around it.</blockquote>
+          <section className="rounded-3xl border border-cyan-300/20 bg-cyan-300/[0.05] p-6 sm:p-8" aria-labelledby="governance-workflow-heading">
+            <h3 id="governance-workflow-heading" className="text-2xl font-semibold tracking-tight text-white">A Practical Governance Workflow</h3>
+            <p className="mt-3 text-white/65">The workflow can be expressed through four connected controls:</p>
+            <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {[['CONTROL', 'Define the approved tool, permitted task and information boundaries.'], ['VERIFY', 'Check claims and proposed controls against the authoritative source and operational context.'], ['APPROVE', 'Require a competent person with the proper authority to accept or reject the output.'], ['RECORD', 'Retain the evidence, review and document history where the output affects a controlled decision or document.']].map(([label, explanation]) => (
+                <div key={label} className="rounded-2xl border border-white/10 bg-black/20 p-5">
+                  <p className="text-xs font-bold tracking-[0.2em] text-cyan-200">{label}</p>
+                  <p className="mt-3 text-sm leading-6 text-white/65">{explanation}</p>
+                </div>
+              ))}
+            </div>
+            <p className="mt-6 font-medium text-white">Human and organisational accountability applies throughout every stage. It does not appear only at the end of the process.</p>
+          </section>
           <p>For example, using AI to improve the readability of a toolbox talk is a different risk from using AI to generate the underlying task risk assessment. Summarising a public guidance note is different from uploading an incident report. Drafting general training prompts is different from asking AI to classify audit findings against a code or regulation.</p>
           <p>Those differences matter.</p>
           <p>A governance system should separate low-risk support tasks from tasks that could affect safety, compliance, legal exposure, client confidentiality, or operational decision-making.</p>
+          <blockquote className="border-l-2 border-cyan-300/70 py-2 pl-6 text-2xl font-medium leading-9 text-cyan-100">AI should be treated as an assistant, not an authority.</blockquote>
 
           <h2 className="pt-8 text-3xl font-semibold tracking-tight text-white">A Simple Control Test</h2>
           <p>Before using AI in maritime QHSE, SMS, audit, or operational assurance work, the user should be able to answer four questions:</p>
@@ -1654,12 +1672,24 @@ function PlaceholderArticlePage({
           <p>A system that only punishes the falsified record may discourage the next exhausted officer from speaking up. But a system that protects honesty by preserving false records destroys the integrity of the SMS and exposes the Master to personal liability.</p>
           <p>Good governance has to deal with both truths at the same time: falsified legal records cannot be ignored, and fatigue reporting cannot be treated as betrayal. If the only available choices are concealment or career destruction, the system has already failed before the officer walks into the Master’s office.</p>
 
+          <section className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 sm:p-8" aria-labelledby="key-takeaways-heading">
+            <h2 id="key-takeaways-heading" className="text-3xl font-semibold tracking-tight text-white">Key Takeaways</h2>
+            <ul className="mt-5 list-disc space-y-3 pl-6 text-white/70">
+              <li>Maritime AI governance is a management-system issue, not simply an IT issue.</li>
+              <li>Existing safety management controls already provide much of the necessary governance framework.</li>
+              <li>AI-supported outputs must be verified against authoritative sources and the actual operational context.</li>
+              <li>Accountability remains with the people and organisation using the output.</li>
+              <li>Practical operating controls matter more than lengthy AI policies.</li>
+            </ul>
+          </section>
+
           <h2 className="pt-8 text-3xl font-semibold tracking-tight text-white">Conclusion</h2>
           <p>Maritime companies do not need to wait for AI-specific IMO guidance before acting.</p>
           <p>The basic control problem is already visible.</p>
           <p>AI use should be governed through the same principles that already apply to safety management and assurance: controlled information, competent people, verified sources, approved documents, clear accountability, and evidence where evidence matters.</p>
           <p>The companies that handle this well will not be the ones with the longest AI policy.</p>
           <p>They will be the ones that make AI use visible, controlled, and reviewable before it affects operational work.</p>
+          <p>AI will continue to evolve. The principles of good governance will not. Companies that embed AI within their existing management systems, rather than allowing it to operate alongside them as an informal parallel process, will be better placed to use the technology safely, consistently and with confidence.</p>
         </div>
       </article>
 
