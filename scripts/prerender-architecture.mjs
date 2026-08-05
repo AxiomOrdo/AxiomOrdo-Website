@@ -128,6 +128,120 @@ const legacyRoutes = {
   },
 };
 
+const groupContent = {
+  platforms: {
+    section: "Platform portfolio",
+    intro: "Each platform has a defined regulatory domain, user, evidence model and decision output.",
+    cards: [
+      ["Meriden", "Maritime compliance, audit readiness and management-system transition.", "/platforms/meriden"],
+      ["Sentinel", "EUDR due-diligence evidence traced from product to plot.", "/sentinel"],
+      ["ClearMark", "SKU-level PFAS exposure and evidence classification.", "/clearmark"],
+      ["VeriLog", "Structured audit evidence before the external auditor arrives.", "/verilog"],
+      ["Emissary", "CBAM embedded-carbon evidence and declaration preparation.", "/emissary"],
+      ["CarbonLedger", "EU ETS position, allowance exposure and surrender preparation.", "/carbonledger"],
+      ["FuelPath", "FuelEU Maritime GHG-intensity position and penalty exposure.", "/fuelpath"],
+      ["Golden Thread", "Building and fire-safety evidence maintained through the asset lifecycle.", "/goldenthread"],
+    ],
+  },
+  solutions: {
+    section: "Solution areas",
+    intro: "Every solution retains the authority source, interpretation, evidence and decision path.",
+    cards: [
+      ["Regulatory intelligence", "Convert authoritative sources into current, usable obligations.", "/solutions/regulatory-intelligence"],
+      ["Authority mapping", "Link legal and regulatory text to discrete requirement units.", "/solutions/authority-mapping"],
+      ["Compliance decision support", "Turn requirements and evidence into bounded operational decisions.", "/solutions/compliance-decision-support"],
+      ["Evidence and provenance", "Preserve the source trail behind every conclusion.", "/solutions/evidence-provenance"],
+      ["Audit and assurance", "Expose evidence gaps before they become findings.", "/solutions/audit-assurance"],
+      ["Management-system implementation", "Move from policy intent to controlled implementation evidence.", "/solutions/management-system-implementation"],
+      ["Regulatory data interoperability", "Exchange regulatory records through governed, machine-readable structures.", "/solutions/regulatory-data-interoperability"],
+    ],
+  },
+  industries: {
+    section: "Industries",
+    intro: "Industry pages connect regulatory problems to platforms, ARDS domain packs and implementation routes.",
+    cards: [
+      ["Maritime", "ISM, PSC, FuelEU, EU ETS, management systems and operational assurance.", "/industries/maritime"],
+      ["Chemicals and manufacturing", "PFAS, supplier evidence and market-access decisions.", "/industries/chemicals-manufacturing"],
+      ["Consumer products", "SKU-level evidence, declarations and retailer requests.", "/industries/consumer-products"],
+      ["Food and agriculture", "EUDR origin, geolocation and due-diligence evidence.", "/industries/food-agriculture"],
+      ["Timber and furniture", "EUDR product-to-plot traceability and DDS preparation.", "/industries/timber-furniture"],
+      ["Energy and emissions", "CBAM, ETS and verified emissions evidence.", "/industries/energy-emissions"],
+      ["Fire and building safety", "Golden-thread records and controlled safety information.", "/industries/fire-building-safety"],
+    ],
+  },
+  resources: {
+    section: "Resource library",
+    intro: "Public material clearly separates binding authority from guidance, standards, recommendations and AxiomOrdo interpretation.",
+    cards: [
+      ["Regulatory insights", "Evidence-led analysis of current regulatory developments.", "/resources/insights"],
+      ["Regulatory briefings", "Focused summaries with source and effective-date controls.", "/resources/regulatory-briefings"],
+      ["Tools and checklists", "Operational aids linked to their underlying requirements.", "/resources/tools"],
+      ["Guides", "Implementation guidance with scope and limitations stated.", "/resources/guides"],
+      ["Research", "Methods, evaluations and supporting analysis.", "/resources/research"],
+      ["Case studies", "Application evidence and bounded outcomes.", "/resources/case-studies"],
+      ["Technical documentation", "Schemas, interfaces and implementation references.", "/resources/documentation"],
+      ["Glossary", "Controlled definitions across regulatory domains.", "/resources/glossary"],
+    ],
+  },
+  company: {
+    section: "Company and governance",
+    intro: "These pages explain who AxiomOrdo is, how its work is controlled and how users can assess trust.",
+    cards: [
+      ["About AxiomOrdo", "Purpose, operating model and platform portfolio.", "/company/about"],
+      ["Methodology", "How sources become requirements, evidence maps and decisions.", "/company/methodology"],
+      ["Authority and evidence policy", "Rules for source hierarchy, qualification and interpretation.", "/company/authority-policy"],
+      ["Governance", "Change control, review responsibilities and decision ownership.", "/company/governance"],
+      ["Partners", "Technology, domain and implementation relationships.", "/company/partners"],
+      ["Trust centre", "Security, data handling and responsible disclosure.", "/trust"],
+    ],
+  },
+  trust: {
+    section: "Trust documentation",
+    intro: "Security and governance material is versioned and updated as capabilities mature.",
+    cards: [
+      ["Security", "Security controls, scope and reporting channels.", "/trust/security"],
+      ["Privacy", "Personal-data handling and user rights.", "/legal/privacy"],
+      ["Data handling", "Evidence storage, access, retention and deletion.", "/trust/data-handling"],
+      ["AI governance", "Human oversight, bounded use and output limitations.", "/trust/ai-governance"],
+      ["Availability", "Service objectives and incident communication.", "/trust/availability"],
+      ["Subprocessors", "Third-party services used to deliver the platform.", "/trust/subprocessors"],
+      ["Responsible disclosure", "How to report security and evidence-integrity concerns.", "/trust/responsible-disclosure"],
+    ],
+  },
+  legal: {
+    section: "Legal documents",
+    intro: "Each document states its scope, effective date and applicable entity.",
+    cards: [
+      ["Privacy policy", "How personal data is handled.", "/legal/privacy"],
+      ["Cookie policy", "Cookies and similar technologies used on AxiomOrdo sites.", "/legal/cookies"],
+      ["Terms of use", "Terms governing use of the public website.", "/legal/terms"],
+      ["Accessibility", "Accessibility position and contact route.", "/legal/accessibility"],
+    ],
+  },
+};
+
+function staticContent(route) {
+  const parts = route.split("/").filter(Boolean);
+  const group = groupContent[parts[0]];
+  if (group && parts.length === 1) return group;
+  if (legacyRoutes[route]) {
+    return {
+      section: "Related routes",
+      intro: "Use the related routes below to continue through the AxiomOrdo evidence, platform and governance architecture.",
+      cards: [["Platforms", "Explore the platform portfolio and its defined regulatory domains.", "/platforms"], ["Resources", "Read evidence-led material and operational guides.", "/resources"], ["Contact", "Discuss a regulatory, evidence or implementation requirement.", "/contact"]],
+    };
+  }
+  return {
+    section: "Route scope",
+    intro: "This route is part of a governed information architecture with defined scope, evidence model, limitations and next action.",
+    cards: [["Parent route", "Return to the relevant architecture hub.", `/${parts[0]}`], ["Evidence and provenance", "Review how source trails support defensible conclusions.", "/solutions/evidence-provenance"], ["Next action", "Discuss the requirement with AxiomOrdo.", "/contact"]],
+  };
+}
+
+function staticCardsHtml(cards) {
+  return cards.map(([title, description, href]) => `<article class="card"><h3>${escapeHtml(title)}</h3><p>${escapeHtml(description)}</p><a href="${escapeHtml(href)}">Open route →</a></article>`).join("");
+}
+
 const explicitRoutes = [
   "/contact",
   "/platforms/meriden",
@@ -188,6 +302,7 @@ rmSync(outputRoot, { recursive: true, force: true });
 
 for (const route of routes) {
   const metadata = routeMetadata(route);
+  const content = staticContent(route);
   const title = `${metadata.title} | AxiomOrdo`;
   const canonical = `${siteOrigin}${route}`;
   const outputPath = join(outputRoot, `${route.slice(1)}.html`);
@@ -195,7 +310,10 @@ for (const route of routes) {
   const page = template
     .replace(/\n  <meta name="description"[^>]*\/>/, `\n  <meta name="description" content="${escapeHtml(metadata.description)}" />\n  <title>${escapeHtml(title)}</title>\n  <link rel="canonical" href="${escapeHtml(canonical)}" />`)
     .replace('<h1 id="title"></h1>', `<h1 id="title">${escapeHtml(metadata.title)}</h1>`)
-    .replace('<p class="lede" id="lede"></p>', `<p class="lede" id="lede">${escapeHtml(metadata.description)}</p>`);
+    .replace('<p class="lede" id="lede"></p>', `<p class="lede" id="lede">${escapeHtml(metadata.description)}</p>`)
+    .replace('<h2 id="section-title"></h2>', `<h2 id="section-title">${escapeHtml(content.section)}</h2>`)
+    .replace('<p class="intro" id="section-intro"></p>', `<p class="intro" id="section-intro">${escapeHtml(content.intro)}</p>`)
+    .replace('<div class="grid" id="grid"></div>', `<div class="grid" id="grid">${staticCardsHtml(content.cards)}</div>`);
   writeFileSync(outputPath, page);
 }
 

@@ -1,5 +1,11 @@
 {
   "redirects": [
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "axiomordo.com" }],
+      "destination": "https://www.axiomordo.com/:path*",
+      "permanent": true
+    },
     { "source": "/aopdf", "destination": "/aopdf/", "permanent": true },
     { "source": "/meriden", "destination": "/platforms/meriden", "permanent": true },
     { "source": "/meriden/", "destination": "/platforms/meriden", "permanent": true },

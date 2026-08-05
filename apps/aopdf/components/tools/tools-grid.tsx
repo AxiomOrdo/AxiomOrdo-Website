@@ -63,7 +63,7 @@ export default function ToolsGrid() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
-                      <h3 className="text-sm font-semibold text-zinc-200">{tool.name}</h3>
+                      <h2 className="text-sm font-semibold text-zinc-200">{tool.name}</h2>
                       <span className={`px-1.5 py-0.5 text-[10px] font-semibold rounded-md uppercase ${
                         tool.status === 'available'
                           ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
