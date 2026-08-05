@@ -1,42 +1,40 @@
 # SEO-GOD post-promotion audit punch list — 2026-08-06
 
 Site: https://axiomordo.com
-OpenSEO audit: `6b8b7436-b7d1-4de2-8aea-e85b6ea98348`
+OpenSEO audit: `27532872-4618-46ff-b091-d4a8a792e881`
 Money-page prioritisation: OpenSEO depth/internal-link proxy; no money-page list was supplied.
 
-The deployed crawl fetched 90 pages. No pages were blocked. Lighthouse produced no usable performance data: 20 of 20 runs failed.
+The final deployed crawl fetched 90 pages. No pages were blocked. Lighthouse completed 0 of 20 runs; all 20 failed, so no performance result is claimed.
 
 ## Promotion result
 
-The prior audit reported 455 issues. This audit reports 282. The route prerendering change resolved 184 previously observed rows: 46 `missing-title`, 46 `duplicate-meta-description`, 46 `missing-h1`, and 46 `duplicate-content` findings. Eleven new or changed findings appeared from newer remote content merged during promotion, so the arithmetic is `455 - 184 + 11 = 282`.
+The baseline audit reported 455 issues. The first post-promotion audit reported 282. After the legacy compliance route correction, this final audit reports 216. The production changes resolved the route-level duplicate metadata, missing-H1, no-outgoing-link and duplicate-content findings for the prerendered legacy set. `/meriden-compliance` is now delivered with its own title, description and H1.
 
 ## Remaining class 1 — breakage on money pages
 
-No broken-page, broken-internal-link, server-error, or redirect-loop findings.
+No broken-page, broken-internal-link, server-error, redirect-loop, or duplicate-content findings.
 
 ## Remaining class 2 — titles and meta descriptions
 
-- `duplicate-meta-description` — 24 URLs remain, primarily non-architecture pages such as the root, author, platform, and insight routes. Give each delivered page a unique description.
-- `duplicate-title` — 24 URLs remain in the same non-architecture content set. Give each delivered page a unique title.
-- `missing-meta-description` — 1 URL remains: `/meriden/checklist.html`.
-- `title-too-long` — 9 URLs; shorten each affected title to roughly 50–60 characters.
-- `meta-description-too-long` — 4 URLs; shorten each affected description to roughly 70–160 characters.
-- `meta-description-too-short` — 3 URLs: `/aopdf/privacy/`, `/aopdf/terms/`, `/aopdf/acceptable-use/`.
+- `duplicate-title` — 2 root URL variants: `https://axiomordo.com/` and `https://www.axiomordo.com/`. The crawl treats the apex and www hosts as separate pages; enforce one host at the domain/deployment layer if both are intended to resolve.
+- `duplicate-meta-description` — the same 2 root URL variants. Resolve with the same host canonicalisation decision.
+- `missing-meta-description` — 1 URL: `/meriden/checklist.html`. Add a 70–160 character description in the producing HTML.
+- `meta-description-too-long` — 1 URL: `/meriden/ai-readiness-pilot`; shorten the current 171-character description.
 
 ## Remaining class 3 — crawlability and internal linking
 
-- `orphan-page` — 47 URLs remain. Add intentional internal links from relevant hubs, or document intentional exclusions.
-- `no-outgoing-links` — 21 URLs remain. Add relevant next-step links where the page is intended to be indexable.
+- `orphan-page` — 46 URLs remain. Add intentional internal links from relevant hubs, or document intentional exclusions.
+- `no-outgoing-links` — 2 root URL variants: the apex and www homepage pages. Resolve the host pair and ensure the canonical homepage contains server-rendered links.
+- `canonicalized-page` — 15 AOPDF URLs are canonicalized to their slash-form URLs. These are intentional trailing-slash canonicals from the static export, not broken-page findings.
 
 ## Remaining class 4 — content and headings
 
-- `thin-content` — 79 URLs remain. Expand with genuinely useful content, noindex, or consolidate.
-- `duplicate-content` — 2 URLs remain. Choose canonical URLs and use redirects/canonical tags where appropriate.
-- `missing-h1` — 21 URLs remain outside the prerendered architecture route set. Add one meaningful server-rendered H1 per indexable page.
-- `heading-order-skip` — 47 URLs remain. Correct heading hierarchy after route content is server-rendered.
+- `thin-content` — 79 URLs remain. Expand with authoritative, genuinely useful content, noindex, or consolidate; do not fill these with invented claims.
+- `missing-h1` — 2 root URL variants: the apex and www homepage pages. Resolve the host pair and add a server-rendered homepage H1.
+- `heading-order-skip` — 66 URLs remain, primarily the architecture template and AOPDF tools page. Correct heading hierarchy after deciding the authoritative content structure.
 
 ## Class 5 — performance
 
 No performance findings can be claimed. Lighthouse failed for all 20 attempted pages; investigate the OpenSEO/Lighthouse execution environment before using performance results.
 
-Owner for remaining content and metadata: website application owner. Owner for hosting, redirect, CDN, or Lighthouse-environment work: deployment/hosting administrator.
+Owner for remaining content and metadata: website application owner. Owner for host redirects, canonicalisation, CDN, or Lighthouse-environment work: deployment/hosting administrator.
