@@ -292,10 +292,24 @@ function sitemapRoutes() {
   return routes;
 }
 
-const routes = [...new Set([...sitemapRoutes(), ...explicitRoutes, ...Object.keys(legacyRoutes)])]
+const sourceRoutes = sitemapRoutes();
+const routes = [...new Set([...sourceRoutes, ...explicitRoutes, ...Object.keys(legacyRoutes)])]
   .filter((route) => explicitRoutes.includes(route) || legacyRoutes[route] || Object.keys(groups).some((group) => route === `/${group}` || route.startsWith(`/${group}/`)) || route.startsWith("/meriden/"))
   .filter((route) => route !== "/")
   .sort();
+
+const sitemapUrls = [
+  "/",
+  ...new Set([...sourceRoutes, ...explicitRoutes, ...Object.keys(legacyRoutes)].filter((route) => route !== "/")),
+].sort();
+const sitemapXml = [
+  '<?xml version="1.0" encoding="UTF-8"?>',
+  '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+  ...sitemapUrls.map((route) => `  <url><loc>${siteOrigin}${route}</loc></url>`),
+  "</urlset>",
+  "",
+].join("\n");
+writeFileSync(join(root, "public", "sitemap.xml"), sitemapXml);
 
 const template = readFileSync(templatePath, "utf8");
 rmSync(outputRoot, { recursive: true, force: true });
