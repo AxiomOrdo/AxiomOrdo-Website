@@ -178,7 +178,7 @@ function sitemapRoutes() {
   return routes;
 }
 
-const routes = [...new Set([...sitemapRoutes(), ...explicitRoutes])]
+const routes = [...new Set([...sitemapRoutes(), ...explicitRoutes, ...Object.keys(legacyRoutes)])]
   .filter((route) => explicitRoutes.includes(route) || legacyRoutes[route] || Object.keys(groups).some((group) => route === `/${group}` || route.startsWith(`/${group}/`)) || route.startsWith("/meriden/"))
   .filter((route) => route !== "/")
   .sort();
