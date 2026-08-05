@@ -43,6 +43,8 @@
     { "source": "/meriden/psc-checklist/", "destination": "/meriden/index.html" },
     { "source": "/meriden/ai-readiness-pilot", "destination": "/meriden/ai-readiness-pilot.html" },
     { "source": "/meriden/ai-readiness-pilot/", "destination": "/meriden/ai-readiness-pilot.html" },
+    { "source": "/meriden-compliance/insights/maritime-qhse", "destination": "/meriden-qhse-hub/index.html" },
+    { "source": "/meriden-compliance/insights/maritime-qhse/", "destination": "/meriden-qhse-hub/index.html" },
     { "source": "/meriden-compliance/insights/maritime-qhse/false-assurance-maritime-compliance", "destination": "/articles/false-assurance-maritime-compliance.html" },
     { "source": "/meriden-compliance/insights/maritime-qhse/false-assurance-maritime-compliance/", "destination": "/articles/false-assurance-maritime-compliance.html" },
     { "source": "/platforms", "destination": "/architecture-v2/index.html" },
