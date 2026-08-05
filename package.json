@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "npm run build:aopdf && npm run build:site",
     "build:aopdf": "node scripts/build-aopdf.mjs",
-    "build:site": "vite build",
+    "build:site": "node scripts/prerender-architecture.mjs && vite build",
     "preview": "vite preview"
   },
   "dependencies": {
