@@ -9,27 +9,27 @@ const siteOrigin = "https://www.axiomordo.com";
 
 const groups = {
   platforms: {
-    title: "Regulatory intelligence built around evidence, not assertions.",
+    title: "Regulatory intelligence platforms",
     description: "AxiomOrdo platforms convert complex regulatory obligations into traceable decisions, structured evidence and operational action.",
   },
   solutions: {
-    title: "Compliance decisions that can be explained, tested and replayed.",
+    title: "Compliance decision support",
     description: "Find AxiomOrdo by the problem you need to solve rather than by product name.",
   },
   industries: {
-    title: "One evidence discipline across multiple regulated sectors.",
+    title: "Regulatory intelligence by industry",
     description: "AxiomOrdo applies the same authority, provenance and replay principles while respecting domain-specific law, standards and operating reality.",
   },
   resources: {
-    title: "Regulatory material with visible authority and verification status.",
+    title: "Regulatory resources and tools",
     description: "Briefings, tools and technical material are classified by source type, jurisdiction, effective date and last verification.",
   },
   company: {
-    title: "A regulatory intelligence group built around verifiable authority.",
+    title: "About AxiomOrdo",
     description: "AxiomOrdo develops governed systems for authority mapping, evidence provenance, compliance decisions and operational assurance.",
   },
   trust: {
-    title: "Controls for security, data handling and accountable AI use.",
+    title: "Trust, security and governance",
     description: "Trust claims are separated into specific, maintainable policies rather than bundled into general assurances.",
   },
   legal: {
@@ -40,12 +40,91 @@ const groups = {
 
 const details = {
   "/platforms/meriden": {
-    title: "Maritime compliance that survives operational scrutiny.",
+    title: "Meriden maritime compliance",
     description: "Meriden supports audit readiness, management-system implementation and maritime AI governance with evidence designed for real operations.",
   },
   "/contact": {
-    title: "Discuss a regulatory, evidence or implementation requirement.",
+    title: "Contact AxiomOrdo",
     description: "Use the relevant route so commercial, technical and partnership enquiries reach the correct workflow.",
+  },
+};
+
+const legacyRoutes = {
+  "/authors/phillip-inzaghi": {
+    title: "Phillip Inzaghi author",
+    description: "Phillip Inzaghi writes on maritime QHSE, regulatory intelligence, AI governance, evidence provenance and auditability.",
+  },
+  "/verilog": {
+    title: "VeriLog audit evidence",
+    description: "VeriLog structures SMS documentation into a defensible audit record before the external auditor arrives.",
+  },
+  "/emissary": {
+    title: "Emissary CBAM evidence",
+    description: "Emissary structures supplier emissions data and CBAM declaration evidence before reporting deadlines.",
+  },
+  "/sentinel": {
+    title: "Sentinel EUDR due diligence",
+    description: "Sentinel traces EUDR due-diligence evidence from products and suppliers to origin and geolocation records.",
+  },
+  "/carbonledger": {
+    title: "CarbonLedger EU ETS position",
+    description: "CarbonLedger tracks verified emissions, allowance position and surrender exposure across the EU ETS year.",
+  },
+  "/fuelpath": {
+    title: "FuelPath FuelEU Maritime",
+    description: "FuelPath calculates FuelEU Maritime GHG-intensity position, pooling options and penalty exposure.",
+  },
+  "/goldenthread": {
+    title: "Golden Thread fire-safety evidence",
+    description: "Golden Thread maintains fire-safety information, change records and evidence through the building lifecycle.",
+  },
+  "/clearmark": {
+    title: "ClearMark PFAS evidence",
+    description: "ClearMark classifies SKU-level PFAS evidence and identifies targeted testing, supplier or reformulation actions.",
+  },
+  "/meriden-compliance": {
+    title: "Meriden Compliance",
+    description: "Meriden Compliance provides structured maritime management-system, audit-readiness and operational assurance support.",
+  },
+  "/meriden-compliance/insights": {
+    title: "Meriden Compliance insights",
+    description: "Evidence-led maritime compliance insights covering QHSE, AI governance, assurance, investigations and competence.",
+  },
+  "/meriden-compliance/insights/maritime-ai": {
+    title: "Maritime AI governance insights",
+    description: "Maritime AI governance analysis for controlled use, verification, competence, document control and accountability.",
+  },
+  "/meriden-compliance/insights/maritime-ai/why-ai-policies-fail": {
+    title: "Why maritime AI policies fail",
+    description: "A practical analysis of why an AI policy alone does not control AI-supported work inside a maritime safety system.",
+  },
+  "/meriden-compliance/insights/risk-safety": {
+    title: "Maritime risk and safety insights",
+    description: "Practical analysis of risk control, operational safeguards and the difference between documented and working controls.",
+  },
+  "/meriden-compliance/insights/investigations": {
+    title: "Maritime investigations insights",
+    description: "Investigation analysis covering evidence, causation, corrective action, confidentiality and defensible reporting.",
+  },
+  "/meriden-compliance/insights/safety-management-systems": {
+    title: "Safety management systems insights",
+    description: "ISM and management-system guidance covering procedures, records, implementation, review and audit-ready evidence.",
+  },
+  "/meriden-compliance/insights/auditing-assurance": {
+    title: "Maritime auditing and assurance",
+    description: "Audit and assurance analysis focused on evidence trails, controlled implementation, reviewability and corrective action.",
+  },
+  "/meriden-compliance/insights/human-factors": {
+    title: "Maritime human factors insights",
+    description: "Analysis of competence, workload, communication, decision pressure and how people interact with formal controls.",
+  },
+  "/meriden-compliance/insights/leadership-accountability": {
+    title: "Maritime leadership and accountability",
+    description: "Analysis of ownership, review duties, operational accountability and management decisions in maritime compliance.",
+  },
+  "/meriden-compliance/insights/training-competence": {
+    title: "Maritime training and competence",
+    description: "Practical analysis of training quality, competence evidence, familiarisation, supervision and paper compliance limits.",
   },
 };
 
@@ -74,15 +153,17 @@ function pretty(value) {
 }
 
 function routeMetadata(route) {
+  if (legacyRoutes[route]) return legacyRoutes[route];
   if (details[route]) return details[route];
   const parts = route.split("/").filter(Boolean);
   const group = groups[parts[0]];
   if (group && parts.length === 1) return group;
   const name = pretty(parts.at(-1) || "AxiomOrdo");
-  const section = pretty(parts[0] || "AxiomOrdo").toLowerCase();
+  const sectionName = pretty(parts[0] || "AxiomOrdo");
+  const section = sectionName.toLowerCase();
   return {
-    title: name,
-    description: `${name} is part of AxiomOrdo's ${section} architecture. This route is established for governed content, evidence model, outputs and next action.`,
+    title: parts.length > 1 ? `${name} | ${sectionName}` : name,
+    description: `${name} is part of AxiomOrdo's ${section} architecture, with defined scope, evidence model, outputs and next action.`,
   };
 }
 
@@ -98,7 +179,7 @@ function sitemapRoutes() {
 }
 
 const routes = [...new Set([...sitemapRoutes(), ...explicitRoutes])]
-  .filter((route) => explicitRoutes.includes(route) || Object.keys(groups).some((group) => route === `/${group}` || route.startsWith(`/${group}/`)) || route.startsWith("/meriden/"))
+  .filter((route) => explicitRoutes.includes(route) || legacyRoutes[route] || Object.keys(groups).some((group) => route === `/${group}` || route.startsWith(`/${group}/`)) || route.startsWith("/meriden/"))
   .filter((route) => route !== "/")
   .sort();
 

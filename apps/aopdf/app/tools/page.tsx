@@ -2,6 +2,13 @@ import Navbar from '@/components/navbar';
 import Footer from '@/components/footer';
 import AmbientGlow from '@/components/ambient-glow';
 import ToolsGrid from '@/components/tools/tools-grid';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'PDF Tools',
+  description: 'Nine browser-local PDF workflows with explicit limits, from merging and splitting to watermarking and form flattening.',
+  alternates: { canonical: '/aopdf/tools/' },
+};
 
 export default function ToolsPage() {
   return (

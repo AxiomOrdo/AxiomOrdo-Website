@@ -21,7 +21,10 @@ export const metadata: Metadata = {
     default: 'AOPDF — Private PDF Tools by AxiomOrdo',
     template: '%s | AOPDF',
   },
-  description: 'Private browser-based PDF tools with explicit processing boundaries and no document uploads for local tools.',
+  description: 'Private browser PDF tools with local processing boundaries and no document uploads for local workflows.',
+  alternates: {
+    canonical: '/aopdf/',
+  },
   icons: {
     icon: '/aopdf/favicon.svg',
     shortcut: '/aopdf/favicon.svg',
