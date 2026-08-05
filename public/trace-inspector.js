@@ -87,6 +87,20 @@
     return String(value).replace(/[&<>'"]/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" }[char]));
   }
 
+  function getRecordableHref(anchor) {
+    const rawHref = anchor.getAttribute("href");
+    if (!rawHref || !rawHref.trim()) return null;
+
+    try {
+      const parsed = new URL(rawHref, window.location.href);
+      const allowedSchemes = new Set(["http:", "https:", "mailto:", "tel:"]);
+      if (!allowedSchemes.has(parsed.protocol.toLowerCase())) return null;
+      return rawHref;
+    } catch {
+      return null;
+    }
+  }
+
   async function exportReceipt() {
     const receipt = {
       schema_version: "axiomordo.website-replay-receipt.v1",
@@ -119,8 +133,8 @@
   document.addEventListener("click", (event) => {
     const anchor = event.target instanceof Element ? event.target.closest("a") : null;
     if (!anchor) return;
-    const href = anchor.getAttribute("href") || "";
-    if (!href || href.startsWith("javascript:")) return;
+    const href = getRecordableHref(anchor);
+    if (!href) return;
     record("link_activated", { href, label: (anchor.textContent || "").trim().slice(0, 120) });
   }, true);
 
