@@ -74,8 +74,6 @@
     { "source": "/goldenthread", "destination": "/architecture-v2/routes/goldenthread.html" },
     { "source": "/clearmark", "destination": "/architecture-v2/routes/clearmark.html" },
     { "source": "/meriden-compliance", "destination": "/architecture-v2/routes/meriden-compliance.html" },
-    { "source": "/meriden-compliance/insights", "destination": "/architecture-v2/routes/meriden-compliance/insights.html" },
-    { "source": "/meriden-compliance/insights/:path*", "destination": "/architecture-v2/routes/meriden-compliance/insights/:path*.html" },
     { "source": "/platforms", "destination": "/architecture-v2/routes/platforms.html" },
     { "source": "/platforms/:path*", "destination": "/architecture-v2/routes/platforms/:path*.html" },
     { "source": "/solutions", "destination": "/architecture-v2/routes/solutions.html" },
