@@ -34,7 +34,7 @@ for (const filename of htmlFiles(exportRoot)) {
       const assetName = `${digest}.js`;
       writeFileSync(join(scriptRoot, assetName), body, 'utf8');
       externalizedCount += 1;
-      return `<script${attributes} src="/aopdf/_next/static/aopdf-flight/${assetName}"></script>`;
+      return `<script${attributes} src="/ao-pdf/_next/static/aopdf-flight/${assetName}"></script>`;
     },
   );
   writeFileSync(filename, externalized, 'utf8');

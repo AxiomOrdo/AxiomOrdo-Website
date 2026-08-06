@@ -6,7 +6,7 @@ node_modules/
 dist/
 dist-ssr/
 build/
-public/aopdf/
+public/ao-pdf/
 **/.next/
 **/out/
 **/playwright-report/

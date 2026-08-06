@@ -7,7 +7,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'PDF Tools',
   description: 'Nine browser-local PDF workflows with explicit limits, from merging and splitting to watermarking and form flattening.',
-  alternates: { canonical: '/aopdf/tools/' },
+  alternates: { canonical: '/ao-pdf/tools/' },
 };
 
 export default function ToolsPage() {

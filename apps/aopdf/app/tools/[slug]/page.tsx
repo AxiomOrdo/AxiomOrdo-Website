@@ -18,7 +18,7 @@ export async function generateMetadata(
   if (!tool) return {};
   return {
     title: tool.name,
-    description: `${tool.description} Process locally in your browser with AOPDF.`,
+    description: `${tool.description} Process locally in your browser with AO-PDF.`,
   };
 }
 

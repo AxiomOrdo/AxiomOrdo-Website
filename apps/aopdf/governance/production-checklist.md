@@ -1,4 +1,4 @@
-# AOPDF Production Verification Checklist
+# AO-PDF Production Verification Checklist
 
 > LEGAL REVIEW REQUIRED BEFORE PAID ACTIVATION
 
@@ -7,7 +7,7 @@ deployment ID, verifier, UTC time and evidence link for every checked item.
 
 ## Candidate
 
-- [ ] `npm ci` succeeds from the AOPDF lockfile without lifecycle generation.
+- [ ] `npm ci` succeeds from the AO-PDF lockfile without lifecycle generation.
 - [ ] Typecheck, lint, unit, browser, responsive and accessibility suites pass.
 - [ ] Static export contains only admitted routes and assets.
 - [ ] `npm audit --audit-level=high` passes.
@@ -18,7 +18,7 @@ deployment ID, verifier, UTC time and evidence link for every checked item.
 
 ## Preview
 
-- [ ] Preview resolves `/aopdf`, `/aopdf/tools`, every admitted tool, `/limits`
+- [ ] Preview resolves `/ao-pdf`, `/ao-pdf/tools`, every admitted tool, `/limits`
   and all three legal routes.
 - [ ] CSP contains no `unsafe-inline` or `unsafe-eval` in `script-src`.
 - [ ] Next.js flight payloads are externalized and the remaining static inline script hash matches the exact export.

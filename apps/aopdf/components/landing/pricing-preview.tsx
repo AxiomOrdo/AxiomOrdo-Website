@@ -32,7 +32,7 @@ export default function PricingPreview() {
         <div className="mb-12 text-center">
           <h2 className="text-3xl font-bold tracking-tight">Built in Governed Layers</h2>
           <p className="mx-auto mt-3 max-w-2xl text-zinc-400">
-            AOPDF exposes the operating boundary before a document is selected and keeps document-derived data out of telemetry.
+            AO-PDF exposes the operating boundary before a document is selected and keeps document-derived data out of telemetry.
           </p>
         </div>
         <div className="grid gap-5 md:grid-cols-3">

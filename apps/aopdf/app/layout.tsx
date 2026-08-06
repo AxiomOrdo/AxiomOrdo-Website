@@ -18,21 +18,21 @@ const mono = JetBrains_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL('https://axiomordo.com'),
   title: {
-    default: 'AOPDF — Private PDF Tools by AxiomOrdo',
-    template: '%s | AOPDF',
+    default: 'AO-PDF — Private PDF Tools by AxiomOrdo',
+    template: '%s | AO-PDF',
   },
   description: 'Private browser PDF tools with local processing boundaries and no document uploads for local workflows.',
   alternates: {
-    canonical: '/aopdf/',
+    canonical: '/ao-pdf/',
   },
   icons: {
-    icon: '/aopdf/favicon.svg',
-    shortcut: '/aopdf/favicon.svg',
+    icon: '/ao-pdf/favicon.svg',
+    shortcut: '/ao-pdf/favicon.svg',
   },
   openGraph: {
-    title: 'AOPDF — Private PDF Tools by AxiomOrdo',
+    title: 'AO-PDF — Private PDF Tools by AxiomOrdo',
     description: 'Private browser-based PDF tools with explicit processing boundaries.',
-    images: ['/aopdf/og-image.png'],
+    images: ['/ao-pdf/og-image.png'],
   },
 };
 

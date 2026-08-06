@@ -37,8 +37,8 @@ async function createMetadataPdf(pageCount = 1): Promise<Uint8Array> {
   document.setAuthor('AxiomOrdo');
   document.setSubject('Metadata fixture');
   document.setKeywords(['one', 'two']);
-  document.setCreator('AOPDF fixture');
-  document.setProducer('AOPDF test');
+  document.setCreator('AO-PDF fixture');
+  document.setProducer('AO-PDF test');
   document.setCreationDate(new Date('2024-01-02T03:04:05.000Z'));
   document.setModificationDate(new Date('2025-02-03T04:05:06.000Z'));
   return document.save({ useObjectStreams: false });

@@ -43,7 +43,7 @@ for (const tool of tools) {
       if (request.method() !== 'GET') transmittedBodies.push(request.postData() ?? '');
     });
 
-    await page.goto(`/aopdf/tools/${tool}/`);
+    await page.goto(`/ao-pdf/tools/${tool}/`);
     await page.waitForFunction(() => typeof window.va === 'function');
     await page.waitForFunction((expectedTool) => {
       const queue = (
@@ -97,7 +97,7 @@ for (const tool of tools) {
     await page.getByRole('button', { name: 'Process locally' }).click();
     const download = await downloadPromise;
     await expect(page.getByText('Download started. Your browser is handling the download.')).toBeVisible();
-    expect(download.suggestedFilename()).toMatch(/^.*aopdf.*\.(pdf|zip)$/);
+    expect(download.suggestedFilename()).toMatch(/^.*ao-pdf.*\.(pdf|zip)$/);
     await expect(page.getByRole('heading', { name: 'Local processing summary' })).toBeVisible();
 
     const transmitted = transmittedBodies.join('\n');
@@ -109,7 +109,7 @@ for (const tool of tools) {
 
 test('limits and legal routes are reachable', async ({ page }) => {
   for (const route of ['limits', 'privacy', 'terms', 'acceptable-use']) {
-    await page.goto(`/aopdf/${route}/`);
+    await page.goto(`/ao-pdf/${route}/`);
     await expect(page.locator('h1')).toBeVisible();
   }
 });
@@ -117,7 +117,7 @@ test('limits and legal routes are reachable', async ({ page }) => {
 test('operation controls remain usable at governed responsive widths', async ({ page }) => {
   for (const width of [320, 375, 768]) {
     await page.setViewportSize({ width, height: 800 });
-    await page.goto('/aopdf/tools/rotate/');
+    await page.goto('/ao-pdf/tools/rotate/');
     await page.locator('input[type=file]').setInputFiles({
       name: 'fixture.pdf',
       mimeType: 'application/pdf',
@@ -134,9 +134,9 @@ test('keyboard navigation and reduced motion remain functional', async (
   testInfo,
 ) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
-  await page.goto('/aopdf/tools/merge/');
+  await page.goto('/ao-pdf/tools/merge/');
   await page.keyboard.press('Tab');
-  await expect(page.getByRole('link', { name: 'AOPDF' })).toBeFocused();
+  await expect(page.getByRole('link', { name: 'AO-PDF' })).toBeFocused();
   await page.keyboard.press('Tab');
   if (testInfo.project.name === 'mobile-chromium') {
     const menuButton = page.getByRole('button', { name: 'Open navigation' });

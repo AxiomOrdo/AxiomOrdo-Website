@@ -9,7 +9,7 @@ export default function Footer() {
           <div className="w-7 h-7 rounded-lg bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center">
             <FileText className="w-4 h-4 text-white" />
           </div>
-          <span className="text-sm font-semibold text-zinc-400">AOPDF</span>
+          <span className="text-sm font-semibold text-zinc-400">AO-PDF</span>
         </div>
         <div className="flex items-center gap-6 text-xs text-zinc-600">
           <Link href="/tools" className="hover:text-zinc-400 transition-colors">Tools</Link>

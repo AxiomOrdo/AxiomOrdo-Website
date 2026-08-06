@@ -1,4 +1,4 @@
-# AOPDF Release Gates
+# AO-PDF Release Gates
 
 ## Status record
 
@@ -19,7 +19,7 @@ reviewed and locked with `M1_STATUS = VERIFIED`.
 - [ ] Telemetry rejects prohibited and unknown fields.
 - [ ] Document-byte exfiltration assertion passes in each governed browser.
 - [ ] Legal routes are present in the production-equivalent preview.
-- [ ] AOPDF CSP and response headers are inspected on that preview.
+- [ ] AO-PDF CSP and response headers are inspected on that preview.
 - [ ] Exact install, typecheck, lint, unit, browser and static-build jobs pass.
 - [ ] Dependency audit and CodeQL pass for the exact candidate SHA.
 - [ ] All nine workflows are manually verified against that exact SHA.

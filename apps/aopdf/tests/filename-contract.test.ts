@@ -19,7 +19,7 @@ test('canonical filenames follow the governed operation contract', () => {
       fileCount: 3,
       outputPageCount: 7,
     }),
-    'aopdf-merged-3-files.pdf',
+    'ao-pdf-merged-3-files.pdf',
   );
   assert.equal(
     canonicalOutputFilename({
@@ -29,7 +29,7 @@ test('canonical filenames follow the governed operation contract', () => {
       outputPageCount: 3,
       canonicalRange: '1-3',
     }),
-    'report-aopdf-pages-1-3.pdf',
+    'report-ao-pdf-pages-1-3.pdf',
   );
   assert.equal(
     canonicalOutputFilename({
@@ -39,7 +39,7 @@ test('canonical filenames follow the governed operation contract', () => {
       outputPageCount: 10,
       splitEveryPage: true,
     }),
-    'report-aopdf-split-10-pages.zip',
+    'report-ao-pdf-split-10-pages.zip',
   );
   assert.equal(
     canonicalOutputFilename({
@@ -47,6 +47,6 @@ test('canonical filenames follow the governed operation contract', () => {
       fileCount: 4,
       outputPageCount: 4,
     }),
-    'aopdf-images-4.pdf',
+    'ao-pdf-images-4.pdf',
   );
 });

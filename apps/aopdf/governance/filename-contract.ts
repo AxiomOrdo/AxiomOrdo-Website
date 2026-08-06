@@ -24,15 +24,15 @@ export function canonicalOutputFilename(args: {
   splitEveryPage?: boolean;
 }): string {
   const base = sanitizeSourceBasename(args.sourceName ?? 'document');
-  if (args.tool === 'merge') return `aopdf-merged-${args.fileCount}-files.pdf`;
+  if (args.tool === 'merge') return `ao-pdf-merged-${args.fileCount}-files.pdf`;
   if (args.tool === 'images-to-pdf') {
-    return `aopdf-images-${args.fileCount}.pdf`;
+    return `ao-pdf-images-${args.fileCount}.pdf`;
   }
   if (args.tool === 'split' && args.splitEveryPage) {
-    return `${base}-aopdf-split-${args.outputPageCount}-pages.zip`;
+    return `${base}-ao-pdf-split-${args.outputPageCount}-pages.zip`;
   }
   if (args.tool === 'split') {
-    return `${base}-aopdf-pages-${args.canonicalRange ?? 'selected'}.pdf`;
+    return `${base}-ao-pdf-pages-${args.canonicalRange ?? 'selected'}.pdf`;
   }
   const operation: Record<Exclude<AdmittedToolSlug, 'merge' | 'split' | 'images-to-pdf'>, string> = {
     compress: 'optimized',
@@ -42,5 +42,5 @@ export function canonicalOutputFilename(args: {
     'page-numbers': 'numbered',
     flatten: 'flattened',
   };
-  return `${base}-aopdf-${operation[args.tool]}.pdf`;
+  return `${base}-ao-pdf-${operation[args.tool]}.pdf`;
 }

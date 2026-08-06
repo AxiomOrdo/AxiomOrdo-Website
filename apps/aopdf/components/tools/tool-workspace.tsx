@@ -381,7 +381,7 @@ export default function ToolWorkspace({ tool }: ToolWorkspaceProps) {
           <div>
             <h2 className="font-semibold text-zinc-200">Local processing boundary</h2>
             <p className="mt-1 text-sm leading-6 text-zinc-400">
-              Current workflows process document bytes in this browser. AOPDF
+              Current workflows process document bytes in this browser. AO-PDF
               records only the selected tool, outcome, duration, and coarse
               browser/runtime information—never filenames or document-derived data.
             </p>

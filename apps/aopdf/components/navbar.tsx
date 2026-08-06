@@ -22,7 +22,7 @@ export default function Navbar() {
             <FileText className="h-5 w-5 text-white" />
           </div>
           <span className="bg-gradient-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-lg font-bold tracking-tight text-transparent">
-            AOPDF
+            AO-PDF
           </span>
         </Link>
 

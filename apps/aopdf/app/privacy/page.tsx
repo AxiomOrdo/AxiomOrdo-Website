@@ -4,8 +4,8 @@ import { readLegalDocument } from '@/lib/legal-documents';
 
 export const metadata: Metadata = {
   title: 'Privacy',
-  description: 'How AOPDF keeps document processing local, limits telemetry and places device security responsibilities with the user.',
-  alternates: { canonical: '/aopdf/privacy/' },
+  description: 'How AO-PDF keeps document processing local, limits telemetry and places device security responsibilities with the user.',
+  alternates: { canonical: '/ao-pdf/privacy/' },
 };
 
 export default function PrivacyPage() {

@@ -1,4 +1,4 @@
-# AOPDF Hardening Matrix
+# AO-PDF Hardening Matrix
 
 This authority contains exactly 54 governed cases. Oversized and sensitive
 fixtures are generated during tests and are never committed. `local-only`

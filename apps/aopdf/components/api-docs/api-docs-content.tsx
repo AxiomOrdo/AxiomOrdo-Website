@@ -11,11 +11,11 @@ export default function ApiDocsContent() {
           API not yet admitted
         </p>
         <h1 className="mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl">
-          AOPDF API
+          AO-PDF API
         </h1>
         <p className="mx-auto mt-4 max-w-2xl text-zinc-400">
           Public processing endpoints are intentionally disabled. The earlier
-          prototype documented routes that did not exist; AOPDF will not publish
+          prototype documented routes that did not exist; AO-PDF will not publish
           an API contract before authentication, rate limits, file handling, and
           output validation are implemented and tested.
         </p>

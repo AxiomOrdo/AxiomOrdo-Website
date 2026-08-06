@@ -9,7 +9,7 @@ const repositoryRoot = path.resolve(
 );
 const appDirectory = path.join(repositoryRoot, "apps", "aopdf");
 const exportDirectory = path.join(appDirectory, "out");
-const publicDirectory = path.join(repositoryRoot, "public", "aopdf");
+const publicDirectory = path.join(repositoryRoot, "public", "ao-pdf");
 const npmCommand = process.platform === "win32" ? "npm.cmd" : "npm";
 
 function run(command, args, cwd) {
@@ -33,7 +33,7 @@ run(npmCommand, ["ci", "--no-audit", "--no-fund"], appDirectory);
 run(npmCommand, ["run", "build"], appDirectory);
 
 if (!existsSync(exportDirectory)) {
-  throw new Error(`AOPDF export was not created at ${exportDirectory}`);
+  throw new Error(`AO-PDF export was not created at ${exportDirectory}`);
 }
 
 rmSync(publicDirectory, { recursive: true, force: true });

@@ -29,16 +29,16 @@ for (const filename of htmlFiles(exportRoot)) {
 }
 
 if (hashes.size === 0) {
-  throw new Error('No static inline scripts were found for the AOPDF CSP.');
+  throw new Error('No static inline scripts were found for the AO-PDF CSP.');
 }
 
 const source = readFileSync(configPath, 'utf8');
 const config = JSON.parse(source);
-const rule = config.headers?.find((candidate) => candidate.source === '/aopdf/(.*)');
+const rule = config.headers?.find((candidate) => candidate.source === '/ao-pdf/(.*)');
 const header = rule?.headers?.find(
   (candidate) => candidate.key === 'Content-Security-Policy',
 );
-if (!header) throw new Error('AOPDF CSP header is missing.');
+if (!header) throw new Error('AO-PDF CSP header is missing.');
 
 const previousValue = header.value;
 const nextValue = previousValue.replace(
@@ -46,14 +46,14 @@ const nextValue = previousValue.replace(
   `script-src 'self' https://vercel.live ${[...hashes].sort().join(' ')};`,
 );
 if (previousValue === nextValue) {
-  console.log(`AOPDF CSP already contains ${hashes.size} synchronized hash.`);
+  console.log(`AO-PDF CSP already contains ${hashes.size} synchronized hash.`);
   process.exit(0);
 }
 
 const previousJsonValue = JSON.stringify(previousValue);
 const nextJsonValue = JSON.stringify(nextValue);
 if (!source.includes(previousJsonValue)) {
-  throw new Error('AOPDF CSP source value could not be located exactly.');
+  throw new Error('AO-PDF CSP source value could not be located exactly.');
 }
 writeFileSync(
   configPath,
@@ -61,4 +61,4 @@ writeFileSync(
   'utf8',
 );
 
-console.log(`Synchronized ${hashes.size} AOPDF CSP hash.`);
+console.log(`Synchronized ${hashes.size} AO-PDF CSP hash.`);

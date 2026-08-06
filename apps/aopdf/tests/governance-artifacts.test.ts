@@ -25,7 +25,7 @@ test('source-versioned legal policies expose governed frontmatter', () => {
   }
 });
 
-test('deployed routes contain no legacy AOPDF product naming', () => {
+test('deployed routes contain no legacy AO-PDF product naming', () => {
   const files = [
     'app/layout.tsx',
     'components/navbar.tsx',

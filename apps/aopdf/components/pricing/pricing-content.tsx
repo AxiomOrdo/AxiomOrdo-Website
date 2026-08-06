@@ -12,7 +12,7 @@ export default function PricingContent() {
           Billing disabled during launch
         </p>
         <h1 className="mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl">
-          AOPDF launch access
+          AO-PDF launch access
         </h1>
         <p className="mx-auto mt-4 max-w-2xl text-zinc-400">
           Available browser-local tools can be used without an account. No

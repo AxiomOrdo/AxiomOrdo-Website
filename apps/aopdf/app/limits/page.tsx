@@ -7,7 +7,7 @@ import { TOOL_LIMITS } from '@/governance/tool-limits';
 
 export const metadata: Metadata = {
   title: 'Operating Limits',
-  description: 'Governed input, processing and output limits for all nine AOPDF workflows.',
+  description: 'Governed input, processing and output limits for all nine AO-PDF workflows.',
 };
 
 export default function LimitsPage() {
@@ -18,7 +18,7 @@ export default function LimitsPage() {
       <main className="z-10 mx-auto w-full max-w-6xl flex-1 px-4 py-12 sm:px-6 sm:py-16">
         <header className="mx-auto max-w-3xl text-center">
           <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl">
-            AOPDF Operating Limits
+            AO-PDF Operating Limits
           </h1>
           <p className="mt-4 text-sm leading-7 text-zinc-400 sm:text-base">
             Every workflow processes locally in a dedicated browser worker. The
@@ -66,7 +66,7 @@ export default function LimitsPage() {
         <section className="mt-8 rounded-2xl border border-indigo-500/20 bg-indigo-500/5 p-6 text-sm leading-7 text-zinc-400">
           <h2 className="font-semibold text-zinc-200">Estimated memory is not measured memory</h2>
           <p className="mt-2">
-            AOPDF conservatively estimates working bytes from input size, decoded
+            AO-PDF conservatively estimates working bytes from input size, decoded
             image pixels, page-object overhead, simultaneous outputs,
             serialization duplication and operation multipliers. Browsers do not
             expose a reliable cross-browser measurement of PDF-library memory.

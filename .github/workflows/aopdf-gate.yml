@@ -1,4 +1,4 @@
-name: AOPDF Gate
+name: AO-PDF Gate
 
 on:
   pull_request:
