@@ -61,6 +61,8 @@
     { "source": "/meriden/ai-readiness-pilot/", "destination": "/meriden/ai-readiness-pilot.html" },
     { "source": "/meriden-compliance/insights/maritime-qhse", "destination": "/meriden-qhse-hub/index.html" },
     { "source": "/meriden-compliance/insights/maritime-qhse/", "destination": "/meriden-qhse-hub/index.html" },
+    { "source": "/meriden-compliance/insights/maritime-qhse/why-work-should-not-start-just-because-the-permit-is-approved", "destination": "/articles/why-work-should-not-start-just-because-the-permit-is-approved.html" },
+    { "source": "/meriden-compliance/insights/maritime-qhse/why-work-should-not-start-just-because-the-permit-is-approved/", "destination": "/articles/why-work-should-not-start-just-because-the-permit-is-approved.html" },
     { "source": "/meriden-compliance/insights/maritime-qhse/false-assurance-maritime-compliance", "destination": "/articles/false-assurance-maritime-compliance.html" },
     { "source": "/meriden-compliance/insights/maritime-qhse/false-assurance-maritime-compliance/", "destination": "/articles/false-assurance-maritime-compliance.html" },
     { "source": "/authors/phillip-inzaghi", "destination": "/architecture-v2/routes/authors/phillip-inzaghi.html" },
