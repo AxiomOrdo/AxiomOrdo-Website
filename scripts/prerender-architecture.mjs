@@ -43,6 +43,10 @@ const details = {
     title: "Meriden maritime compliance",
     description: "Meriden supports audit readiness, management-system implementation and maritime AI governance with evidence designed for real operations.",
   },
+  "/meriden/resources/30-day-ai-rollout-plan-for-maritime-teams/": {
+    title: "30-Day AI rollout plan for maritime teams",
+    description: "A phased implementation guide covering permitted use, confidentiality, pilot controls, human review, evidence retention and management review.",
+  },
   "/contact": {
     title: "Contact AxiomOrdo",
     description: "Use the relevant route so commercial, technical and partnership enquiries reach the correct workflow.",
@@ -224,6 +228,17 @@ function staticContent(route) {
   const parts = route.split("/").filter(Boolean);
   const group = groupContent[parts[0]];
   if (group && parts.length === 1) return group;
+  if (route === "/meriden/resources/30-day-ai-rollout-plan-for-maritime-teams/") {
+    return {
+      section: "Implementation guide",
+      intro: "A phased guide for introducing controlled AI use into maritime teams with explicit permissions, review duties and evidence boundaries.",
+      cards: [
+        ["Meriden resources", "Return to the wider maritime resource library.", "/meriden/resources"],
+        ["AI governance", "Review the related governance route and its stated limits.", "/meriden/ai-governance"],
+        ["Contact", "Discuss a controlled implementation requirement with AxiomOrdo.", "/contact"],
+      ],
+    };
+  }
   if (legacyRoutes[route]) {
     return {
       section: "Related routes",
@@ -244,6 +259,8 @@ function staticCardsHtml(cards) {
 
 const explicitRoutes = [
   "/contact",
+  "/legal",
+  "/meriden/resources/30-day-ai-rollout-plan-for-maritime-teams/",
   "/platforms/meriden",
   "/meriden/ards-founding-panel",
   "/meriden/resources",
@@ -319,8 +336,9 @@ for (const route of routes) {
   const content = staticContent(route);
   const title = `${metadata.title} | AxiomOrdo`;
   const canonical = `${siteOrigin}${route}`;
-  const outputPath = join(outputRoot, `${route.slice(1)}.html`);
-  mkdirSync(join(outputRoot, route.slice(1, route.lastIndexOf("/"))), { recursive: true });
+  const outputRoute = route.replace(/\/$/, "");
+  const outputPath = join(outputRoot, `${outputRoute.slice(1)}.html`);
+  mkdirSync(join(outputRoot, outputRoute.slice(1, outputRoute.lastIndexOf("/"))), { recursive: true });
   const page = template
     .replace(/\n  <meta name="description"[^>]*\/>/, `\n  <meta name="description" content="${escapeHtml(metadata.description)}" />\n  <title>${escapeHtml(title)}</title>\n  <link rel="canonical" href="${escapeHtml(canonical)}" />`)
     .replace('<h1 id="title"></h1>', `<h1 id="title">${escapeHtml(metadata.title)}</h1>`)
