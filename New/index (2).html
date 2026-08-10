@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meriden Compliance | AxiomOrdo Group</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        'brand-navy': '#060d18',
+        'brand-surface': '#0a1322',
+        'brand-card': '#0f1c2e',
+        'brand-gold': '#C89F3A',
+        'brand-gold-light': '#E6C15A',
+        'brand-text-main': '#ffffff',
+        'brand-text-muted': '#94a3b8'
+      },
+      fontFamily: { sans: ['Inter','sans-serif'], serif: ['Playfair Display','serif'] }
+    }
+  }
+};
+</script>
+<style>
+body { background-color: #060d18; color: #f0f0f0; overflow-x: hidden; font-family: 'Inter', sans-serif; }
+::selection { background: #D4A017; color: #000; }
+</style>
+</head>
+<body class="min-h-screen antialiased">
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect } = React;
+
+const Logo = ({ size = "h-10" }) => (
+  <div className={`flex items-center gap-3 ${size} cursor-pointer group`}>
+    <svg width="48" height="48" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="drop-shadow-lg transition-transform duration-500 group-hover:scale-105">
+      <path d="M50 5L90 20V50C90 72 70 90 50 95C30 90 10 72 10 50V20L50 5Z" stroke="white" strokeWidth="4" fill="transparent"/>
+      <path d="M50 18L78 28V52C78 68 63 82 50 86C37 82 22 68 22 52V28L50 18Z" fill="#D4A017"/>
+      <path d="M35 35V65L42 58V45L50 55L58 45V58L65 65V35L58 40V48L50 38L42 48V40L35 35Z" fill="#0b1221" opacity="0.9"/>
+      <circle cx="60" cy="62" r="8" stroke="white" strokeWidth="3" fill="none"/>
+    </svg>
+    <div className="flex flex-col leading-tight">
+      <span className="text-xl font-bold tracking-widest text-white uppercase">MERIDEN</span>
+      <span className="text-sm font-medium tracking-[0.2em] text-brand-gold uppercase -mt-1">COMPLIANCE</span>
+    </div>
+  </div>
+);
+
+const Navbar = () => {
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 50);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+  return (
+    <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${scrolled ? 'glass-panel py-3 shadow-lg' : 'bg-transparent py-5'}`} style={{backdropFilter: scrolled ? 'blur(12px)' : 'none', background: scrolled ? 'rgba(19,29,48,0.7)' : 'transparent', borderBottom: scrolled ? '1px solid rgba(255,255,255,0.05)' : 'none'}}>
+      <div className="container mx-auto px-6 flex justify-between items-center">
+        <div className="flex items-center gap-12">
+          <Logo />
+          <div className="hidden xl:flex gap-8 text-xs font-semibold uppercase tracking-wide text-brand-text-muted">
+            {['Mariden Compliance', 'Academy', 'Shop All', 'PSC Inspections', 'QMS & SMS Systems', 'Training Tools', 'AI & Governance', 'More'].map((item) => (
+              <a key={item} href="#" className="hover:text-brand-gold transition-colors relative group">{item}
+                <span className="absolute bottom-[-4px] left-0 w-0 h-[2px] bg-brand-gold transition-all group-hover:w-full"></span>
+              </a>
+            ))}
+          </div>
+        </div>
+        <div className="flex items-center gap-6">
+          <button className="flex items-center gap-2 text-xs font-bold uppercase text-brand-text-muted hover:text-white"><span>GBP</span> <i data-lucide="chevron-down" className="w-3 h-3"></i></button>
+          <i data-lucide="search" className="w-5 h-5 text-brand-text-muted cursor-pointer hover:text-brand-gold transition-colors"></i>
+          <i data-lucide="user" className="w-5 h-5 text-brand-text-muted cursor-pointer hover:text-brand-gold transition-colors"></i>
+          <div className="relative cursor-pointer hover:text-brand-gold transition-colors group">
+            <i data-lucide="shopping-bag" className="w-5 h-5 text-brand-text-muted"></i>
+            <span className="absolute -top-2 -right-2 bg-brand-gold text-black text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">2</span>
+          </div>
+        </div>
+      </div>
+    </nav>
+  );
+};
+
+const Hero = () => (
+  <section className="relative min-h-screen flex flex-col justify-center pt-32 pb-20 overflow-hidden" style={{background: 'radial-gradient(circle at 15% 50%, rgba(212,160,23,0.08) 0%, transparent 25%), radial-gradient(circle at 85% 30%, rgba(59,130,246,0.05) 0%, transparent 25%), linear-gradient(to bottom right, #0b1221, #111b2e)'}}>
+    <div className="absolute top-1/4 left-0 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl -z-10"></div>
+    <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-brand-gold/5 rounded-full blur-3xl -z-10"></div>
+    <div className="container mx-auto px-6 max-w-5xl text-center relative z-10">
+      <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-white/5 backdrop-blur-md mb-8">
+        <span className="w-2 h-2 bg-green-400 rounded-full shadow-[0_0_10px_rgba(74,222,128,0.8)] animate-pulse"></span>
+        <span className="text-xs font-medium text-gray-300 tracking-wide uppercase">A Member of the AxiomOrdo Group</span>
+      </div>
+      <h1 className="text-5xl md:text-7xl font-extrabold text-white mb-8 leading-tight tracking-tight">
+        Practical maritime QHSE <br />
+        <span className="text-gradient">templates, checklists,</span><br/>
+        <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 to-brand-gold">and AI-assisted operational tools.</span>
+      </h1>
+      <p className="text-lg md:text-xl text-brand-text-muted max-w-3xl mx-auto mb-12 leading-relaxed font-light">
+        Built to help teams get proper fast, with more compliancy, and view outcomes before they become serious decisions.<br/>
+        <span className="text-sm text-gray-500 mt-2 block">Add ons for all companies, OPA, QMS changes, supervisory onboarders, and guaranteed toolboxes.</span>
+      </p>
+      <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+        <button className="group relative px-10 py-4 bg-brand-card border border-brand-gold/30 text-brand-gold font-bold uppercase tracking-widest text-sm rounded-lg overflow-hidden transition-all hover:bg-brand-gold hover:text-black shadow-[0_0_20px_rgba(212,160,23,0.3)] hover:shadow-[0_0_30px_rgba(212,160,23,0.5)]">
+          <span className="relative z-10 flex items-center gap-2">Start with PSC & Inspection Readiness <i data-lucide="arrow-right" className="w-4 h-4 group-hover:translate-x-1 transition-transform"></i></span>
+        </button>
+        <a href="#" className="text-brand-text-muted hover:text-white text-sm font-medium underline decoration-gray-600 underline-offset-8 transition-colors">Browse all 300+ downloads</a>
+      </div>
+    </div>
+    <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-brand-navy to-transparent"></div>
+  </section>
+);
+
+const products = [
+  { categoryTitle: "Start with PSC & Inspection Readiness", categoryDesc: "Inspection-focused tools for structured preparation before external scrutiny.",
+    items: [
+      { title: "Environmental Compliance Kit", subtitle: "Envir.", price: "$69.00", type: "DOC" },
+      { title: "MLC 2006 Compliance Kit", subtitle: "Social.", price: "$89.00", type: "DOC" },
+      { title: "PSC Inspector Ai Awareness Kit", subtitle: "Inspect.", price: "$49.00", type: "DOC" },
+    ]
+  },
+  { categoryTitle: "Build and improve systems", categoryDesc: "SMS ISM documentation tools for operators and shore-side teams.",
+    items: [
+      { title: "Maritime UMMIS Users Guide", subtitle: "Guides.", price: "FREE", type: "PDF" },
+      { title: "UMM Marine Ai Masterclass Kit", subtitle: "Training.", price: "$199.00", type: "VID" },
+      { title: "Anchored Safety Management system (SMS) Template bundle", subtitle: "System.", price: "$299.00", type: "ZIP" },
+    ]
+  },
+  { categoryTitle: "Roll out AI with more control", categoryDesc: "Governance and implementation tools for maritime teams adopting AI without losing review discipline.",
+    items: [
+      { title: "Maritime Gen-AI Implementation Playbook", subtitle: "Guide.", price: "$49.00", type: "PDF" },
+      { title: "SO GenAI Maritima Ai Implementation Plan", subtitle: "Plan.", price: "$99.00", type: "DOC" },
+      { title: "Maritime AI governance implementation System", subtitle: "System.", price: "$250.00", type: "KIT" },
+    ]
+  }
+];
+
+const ProductCard = ({ item }) => (
+  <div className="group bg-gradient-to-br from-[#0a1322] to-[#060d18] rounded-xl p-6 border border-white/5 relative overflow-hidden cursor-pointer flex flex-col min-h-[280px] hover:translate-y-[-5px] hover:border-brand-gold/40 hover:shadow-[0_10px_30px_-5px_rgba(0,0,0,0.5),0_0_15px_rgba(212,160,23,0.1)] transition-all duration-300">
+    <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-brand-gold/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+    <div className="mt-4 mb-6 flex justify-center">
+      <div className="w-24 h-24 rounded-full bg-[#1e3a5f]/80 flex items-center justify-center relative border border-blue-900/50 group-hover:border-brand-gold/50 transition-colors duration-300">
+        <div className="w-14 h-14 rounded-full bg-[#152340] flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform duration-300">
+          <i data-lucide="shield-check" className="w-6 h-6 text-brand-gold"></i>
+        </div>
+      </div>
+    </div>
+    <div className="text-center flex-grow flex flex-col justify-end">
+      <h3 className="text-white font-bold text-sm leading-snug mb-1 group-hover:text-brand-gold-light transition-colors">{item.title}</h3>
+      <p className="text-gray-500 text-xs mb-3 uppercase tracking-wider">{item.subtitle}</p>
+      <div className="flex items-center justify-between mt-2 border-t border-white/5 pt-4">
+        <span className="text-white font-semibold text-sm">{item.price}</span>
+        <div className="flex items-center gap-2 text-xs text-gray-400 bg-black/20 px-2 py-1 rounded">
+          <span>{item.type}</span>
+          <i data-lucide="download" className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
+const ProductSection = () => (
+  <section className="py-20 relative">
+    <div className="container mx-auto px-6 space-y-24">
+      {products.map((cat, idx) => (
+        <div key={idx}>
+          <div className="mb-10 max-w-2xl">
+            <div className="w-12 h-[2px] bg-brand-gold mb-6"></div>
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 leading-tight">{cat.categoryTitle}</h2>
+            <p className="text-lg text-brand-text-muted font-light">{cat.categoryDesc}</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {cat.items.map((item, i) => <ProductCard key={i} item={item} />)}
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+);
+
+const CTA = () => (
+  <section className="py-24 bg-brand-surface relative overflow-hidden">
+    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-1 bg-gradient-to-r from-transparent via-brand-gold/50 to-transparent"></div>
+    <div className="container mx-auto px-6 flex flex-col lg:flex-row items-center justify-between gap-12">
+      <div className="lg:max-w-xl">
+        <h2 className="text-3xl font-bold text-white mb-4">Join the network of maritime compliance officers.</h2>
+        <p className="text-gray-400">Get early access to new AI templates, industry checklists, and exclusive webinars.</p>
+      </div>
+      <div className="w-full lg:w-auto flex gap-3">
+        <input type="email" placeholder="Enter your work email" className="bg-brand-navy border border-white/10 text-white px-6 py-4 rounded-lg focus:outline-none focus:border-brand-gold/50 w-full lg:w-80 transition-colors"/>
+        <button className="bg-brand-gold text-black font-bold px-8 py-4 rounded-lg hover:bg-yellow-400 transition-colors whitespace-nowrap">Subscribe</button>
+      </div>
+    </div>
+  </section>
+);
+
+const Footer = () => (
+  <footer className="bg-black/40 pt-16 pb-8 text-sm border-t border-white/5">
+    <div className="container mx-auto px-6">
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 mb-16">
+        <div className="col-span-2 lg:col-span-1">
+          <Logo size="h-12" />
+          <p className="mt-4 text-gray-500 leading-relaxed text-xs max-w-xs">Part of the AxiomOrdo Group. Delivering world-class maritime compliance solutions since 2020.</p>
+        </div>
+        {[
+          { title: "Products", links: ["PSC Templates","SMS Manuals","AI Governance","Checklists","Audits"] },
+          { title: "Company", links: ["About Us","Careers","Blog","Partners","Contact"] },
+          { title: "Support", links: ["Help Center","Terms","Privacy","Sitemap"] },
+          { title: "Connect", links: ["LinkedIn","Twitter","YouTube","Newsletter"] }
+        ].map((col, idx) => (
+          <div key={idx}>
+            <h4 className="font-bold text-white mb-6 uppercase tracking-wider text-xs">{col.title}</h4>
+            <ul className="space-y-3">
+              {col.links.map(link => (
+                <li key={link}><a href="#" className="text-gray-500 hover:text-brand-gold transition-colors duration-300">{link}</a></li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+      <div className="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+        <p className="text-gray-600 text-xs">&copy; 2023 Meriden Compliance. All rights reserved.</p>
+        <div className="flex gap-6">
+          <i data-lucide="linkedin" className="w-4 h-4 text-gray-600 hover:text-white cursor-pointer transition-colors"></i>
+          <i data-lucide="twitter" className="w-4 h-4 text-gray-600 hover:text-white cursor-pointer transition-colors"></i>
+          <i data-lucide="globe" className="w-4 h-4 text-gray-600 hover:text-white cursor-pointer transition-colors"></i>
+        </div>
+      </div>
+    </div>
+  </footer>
+);
+
+const App = () => {
+  useEffect(() => { if (window.lucide) lucide.createIcons(); }, []);
+  useEffect(() => { setTimeout(() => { if (window.lucide) lucide.createIcons(); }, 500); }, []);
+  return (
+    <div className="min-h-screen antialiased selection:bg-brand-gold selection:text-black">
+      <Navbar />
+      <main>
+        <Hero />
+        <ProductSection />
+        <CTA />
+      </main>
+      <Footer />
+    </div>
+  );
+};
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+</script>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a2728cac3ecbd339',t:'MTc4NjA2NjU3Nw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

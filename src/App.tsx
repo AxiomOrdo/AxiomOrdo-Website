@@ -1014,6 +1014,108 @@ function BrandPage({ brand }: { brand: Brand }) {
     </main>
   );
 }
+const meridenProducts = [
+  { title: "AI Readiness Plan", label: "Implementation", price: "£49", image: "/meriden/products/product_01_ai_plan.png", desc: "A practical plan for introducing AI into a maritime team with control, review, and accountability." },
+  { title: "90-Day AI Rollout Plan", label: "Implementation", price: "£79", image: "/meriden/products/product_02_90day.png", desc: "A phased route from first use case to a governed, reviewable operational rollout." },
+  { title: "AI Hallucinations Guide", label: "Governance", price: "£39", image: "/meriden/products/product_03_hallucinations.png", desc: "Help your team recognise, challenge, and document unreliable AI output." },
+  { title: "AI for the SMS", label: "ISM / SMS", price: "£99", image: "/meriden/products/product_04_ai_sms.png", desc: "A controlled working pack for using AI around the Safety Management System." },
+  { title: "ISM AI Assistant", label: "ISM / SMS", price: "£149", image: "/meriden/products/product_06_ism_ai.png", desc: "A structured companion for finding, preparing, and reviewing ISM evidence." },
+  { title: "AI Audit Preparation", label: "Audit readiness", price: "£89", image: "/meriden/products/product_07_ai_audit_prep.png", desc: "Prepare your people, records, and management review before the auditor arrives." },
+  { title: "AI Audit Readiness Kit", label: "Audit readiness", price: "£129", image: "/meriden/products/product_08_ai_audit_readiness.png", desc: "A deeper readiness pack for teams building a more defensible audit position." },
+  { title: "AI Governance System", label: "Governance", price: "£199", image: "/meriden/products/product_09_ai_governance.png", desc: "Policies, registers, review prompts, and controls for responsible AI adoption." },
+  { title: "AI Readiness Framework", label: "Framework", price: "£249", image: "/meriden/products/product_10_ai_readiness.png", desc: "A practical framework for assessing whether maritime AI use is ready for trust." },
+];
+
+const meridenNav = [
+  ["Insights", `${MERIDEN_PATH}/insights`],
+  ["Shop", `${MERIDEN_PATH}/shop`],
+  ["Consultancy", `${MERIDEN_PATH}/consultancy`],
+] as const;
+
+function MeridenLogo({ compact = false }: { compact?: boolean }) {
+  return (
+    <Link to={MERIDEN_PATH} className="flex items-center gap-3" aria-label="Meriden Compliance home">
+      <span className="flex h-10 w-10 items-center justify-center rounded-full border border-[#c89f3a]/70 bg-[#0b1b2e] text-xl text-[#e6c15a] shadow-[0_0_24px_rgba(200,159,58,0.15)]">M</span>
+      <span className="leading-none">
+        <span className="block font-serif text-xl tracking-[0.18em] text-white">MERIDEN</span>
+        {!compact && <span className="mt-1 block text-[10px] font-medium tracking-[0.32em] text-[#d5aa4b]">COMPLIANCE</span>}
+      </span>
+    </Link>
+  );
+}
+
+function MeridenStandaloneNav() {
+  return (
+    <header className="sticky top-0 z-50 border-b border-white/10 bg-[#06101d]/90 backdrop-blur-xl">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 sm:px-8">
+        <MeridenLogo />
+        <nav className="hidden items-center gap-8 md:flex" aria-label="Meriden Compliance">
+          <Link to={MERIDEN_PATH} className="text-sm text-white/70 transition hover:text-white">Home</Link>
+          {meridenNav.map(([label, href]) => <Link key={href} to={href} className="text-sm text-white/70 transition hover:text-white">{label}</Link>)}
+        </nav>
+        <a href="mailto:contact@meriedencompliance.com?subject=Meriden%20Compliance%20enquiry" className="rounded-full border border-[#c89f3a]/70 px-4 py-2 text-xs font-semibold uppercase tracking-[0.15em] text-[#e6c15a] transition hover:bg-[#c89f3a] hover:text-[#06101d]">Talk to us</a>
+      </div>
+    </header>
+  );
+}
+
+function MeridenStandaloneFooter() {
+  return (
+    <footer className="border-t border-white/10 bg-[#040a12] py-12">
+      <div className="mx-auto flex max-w-7xl flex-col gap-6 px-5 text-sm text-white/45 sm:px-8 md:flex-row md:items-end md:justify-between">
+        <div><MeridenLogo compact /><p className="mt-4 max-w-sm leading-6">Navigating compliance. Securing trust. Practical maritime compliance tools and consultancy for operators who need the detail to hold.</p></div>
+        <div className="md:text-right"><p>© 2026 Meriden Compliance</p><p className="mt-2"><a className="transition hover:text-[#e6c15a]" href="mailto:support@meriedencompliance.com">support@meriedencompliance.com</a></p><p className="mt-1 text-xs text-white/30">General information only. Verify against current requirements and your approved SMS.</p></div>
+      </div>
+    </footer>
+  );
+}
+
+function MeridenProductCard({ product }: { product: typeof meridenProducts[number] }) {
+  return <article className="group overflow-hidden rounded-2xl border border-white/10 bg-[#0b1a2b] transition duration-300 hover:-translate-y-1 hover:border-[#c89f3a]/60 hover:shadow-[0_18px_50px_rgba(0,0,0,0.35)]">
+    <div className="aspect-[4/3] overflow-hidden bg-[#10243a]"><img src={product.image} alt={product.title} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" /></div>
+    <div className="p-6"><p className="text-[10px] font-semibold uppercase tracking-[0.25em] text-[#d5aa4b]">{product.label}</p><h3 className="mt-3 text-xl font-semibold text-white">{product.title}</h3><p className="mt-3 min-h-12 text-sm leading-6 text-white/55">{product.desc}</p><div className="mt-6 flex items-center justify-between border-t border-white/10 pt-4"><span className="text-lg font-semibold text-[#f1d27d]">{product.price}</span><a href={`mailto:support@meriedencompliance.com?subject=${encodeURIComponent(product.title)}`} className="text-sm font-semibold text-white transition hover:text-[#e6c15a]">Enquire →</a></div></div>
+  </article>;
+}
+
+function MeridenStandalonePage() {
+  const { pathname } = useLocation();
+  const isShop = pathname.endsWith("/shop");
+  const isConsultancy = pathname.endsWith("/consultancy");
+  const isInsights = pathname.endsWith("/insights");
+  return <main className="meriden-site min-h-screen bg-[#06101d] text-white">
+    <MeridenStandaloneNav />
+    {isShop ? <MeridenShopPage /> : isConsultancy ? <MeridenConsultancyPage /> : isInsights ? <MeridenStandaloneInsightsPage /> : <MeridenStandaloneHomePage />}
+    <MeridenStandaloneFooter />
+  </main>;
+}
+
+function MeridenStandaloneHomePage() {
+  return <>
+    <section className="relative overflow-hidden border-b border-white/10">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_75%_25%,rgba(30,76,120,0.58),transparent_42%),linear-gradient(135deg,#06101d_0%,#0b1d31_55%,#06101d_100%)]" />
+      <div className="relative mx-auto grid min-h-[680px] max-w-7xl items-center gap-12 px-5 py-24 sm:px-8 lg:grid-cols-[1.05fr_.95fr] lg:py-32">
+        <div><p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#d5aa4b]">Maritime compliance, with poise</p><h1 className="mt-6 max-w-3xl font-serif text-5xl leading-[1.04] tracking-tight text-white sm:text-7xl">Navigate compliance.<br /><span className="text-[#e6c15a]">Secure trust.</span></h1><p className="mt-7 max-w-xl text-lg leading-8 text-white/65">Dapper, dependable compliance tools and expert support for maritime operators, QHSE teams, and leaders who expect their systems to stand up when it matters.</p><div className="mt-10 flex flex-col gap-4 sm:flex-row"><Link to={`${MERIDEN_PATH}/shop`} className="rounded-full bg-[#c89f3a] px-7 py-4 text-center text-sm font-bold uppercase tracking-[0.14em] text-[#06101d] transition hover:bg-[#e6c15a]">Explore the shop</Link><Link to={`${MERIDEN_PATH}/consultancy`} className="rounded-full border border-white/25 px-7 py-4 text-center text-sm font-semibold uppercase tracking-[0.14em] text-white transition hover:border-[#e6c15a] hover:text-[#e6c15a]">Our consultancy</Link></div></div>
+        <div className="relative mx-auto w-full max-w-lg"><div className="absolute -inset-10 rounded-full bg-[#1b5780]/20 blur-3xl" /><div className="relative rounded-[2rem] border border-[#c89f3a]/30 bg-[#071525]/80 p-8 shadow-2xl backdrop-blur"><div className="flex items-center justify-between border-b border-white/10 pb-6"><MeridenLogo /><span className="text-3xl text-[#c89f3a]">✦</span></div><div className="py-12 text-center"><div className="mx-auto flex h-36 w-36 items-center justify-center rounded-full border border-[#c89f3a]/60 bg-[radial-gradient(circle,#173a59,#091523_68%)] text-7xl font-serif text-[#e6c15a] shadow-[0_0_50px_rgba(200,159,58,0.16)]">M</div><p className="mt-8 font-serif text-2xl tracking-[0.22em] text-white">MERIDEN</p><p className="mt-2 text-xs tracking-[0.46em] text-[#d5aa4b]">COMPLIANCE</p></div><div className="flex justify-between border-t border-white/10 pt-5 text-xs uppercase tracking-[0.18em] text-white/40"><span>ISM · QHSE · AI</span><span>Est. 2026</span></div></div></div>
+      </div>
+    </section>
+    <section className="mx-auto max-w-7xl px-5 py-24 sm:px-8"><div className="grid gap-12 lg:grid-cols-[.8fr_1.2fr] lg:items-end"><div><p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#d5aa4b]">The Meriden standard</p><h2 className="mt-5 max-w-xl font-serif text-4xl leading-tight text-white sm:text-5xl">Confidence is built in the detail.</h2></div><p className="max-w-2xl text-lg leading-8 text-white/55">From the Safety Management System to the next audit, Meriden helps you turn obligations into clear actions, evidence, and better decisions. No theatre. No noise. Just a more assured way to work.</p></div><div className="mt-16 grid gap-5 md:grid-cols-3">{[["01","Prepare","Practical packs that help your people get ready before scrutiny arrives."],["02","Implement","A clear route from policy to working practice, with ownership left visible."],["03","Assure","Evidence-led review that shows what is working, what is missing, and what to do next."]].map(([n,t,d]) => <div key={n} className="border-t border-[#c89f3a]/50 pt-6"><span className="text-sm text-[#d5aa4b]">{n}</span><h3 className="mt-8 text-2xl font-semibold">{t}</h3><p className="mt-3 text-sm leading-6 text-white/50">{d}</p></div>)}</div></section>
+    <section className="border-y border-white/10 bg-[#091827] py-24"><div className="mx-auto grid max-w-7xl gap-8 px-5 sm:px-8 md:grid-cols-3">{[["Shop","Ready-to-use toolkits for AI governance, ISM, audits, and operational readiness.",`${MERIDEN_PATH}/shop`],["Consultancy","Focused support for leaders who need a sharper management system and a steadier hand.",`${MERIDEN_PATH}/consultancy`],["Insights","Straight-talking notes on QHSE, assurance, and making compliance useful at sea and ashore.",`${MERIDEN_PATH}/insights`]].map(([t,d,h]) => <Link key={t} to={h} className="group rounded-2xl border border-white/10 bg-[#06101d] p-8 transition hover:-translate-y-1 hover:border-[#c89f3a]/60"><p className="text-xs uppercase tracking-[0.25em] text-[#d5aa4b]">Meriden</p><h3 className="mt-4 text-2xl font-semibold group-hover:text-[#f1d27d]">{t}</h3><p className="mt-4 text-sm leading-6 text-white/50">{d}</p><span className="mt-8 inline-block text-sm font-semibold text-white">Discover →</span></Link>)}</div></section>
+  </>;
+}
+
+function MeridenShopPage() {
+  return <><section className="mx-auto max-w-7xl px-5 pb-16 pt-24 sm:px-8"><p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#d5aa4b]">The Meriden shop</p><h1 className="mt-5 max-w-3xl font-serif text-5xl leading-tight sm:text-7xl">Tools for a more assured operation.</h1><p className="mt-6 max-w-2xl text-lg leading-8 text-white/60">Downloadable working packs for maritime teams adopting AI, strengthening the SMS, and preparing for audit with a little more clarity.</p></section><section className="mx-auto grid max-w-7xl gap-6 px-5 pb-28 sm:px-8 md:grid-cols-2 lg:grid-cols-3">{meridenProducts.map(product => <MeridenProductCard key={product.title} product={product} />)}</section></>;
+}
+
+function MeridenConsultancyPage() {
+  const offers = [["Compliance health check","A focused review of your current arrangements, records, and immediate exposure."],["SMS and ISM support","Practical help to make procedures usable, responsibilities clear, and evidence easier to defend."],["AI governance for maritime teams","A proportionate framework for selecting use cases, setting controls, and keeping human judgement in charge."],["Audit and inspection readiness","A calm, structured preparation programme for internal audits, SMC work, or Port State Control."],["Management review and improvement","Turn recurring findings and weak signals into an owned, prioritised improvement plan."],["Targeted QHSE advice","Senior support for a specific operational, investigative, or management-system question."]];
+  return <><section className="relative overflow-hidden border-b border-white/10 bg-[radial-gradient(circle_at_75%_15%,rgba(30,76,120,0.6),transparent_38%),#06101d]"><div className="mx-auto max-w-7xl px-5 py-24 sm:px-8 lg:py-32"><p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#d5aa4b]">Consultancy services</p><h1 className="mt-5 max-w-4xl font-serif text-5xl leading-[1.05] sm:text-7xl">Good advice should leave your team stronger.</h1><p className="mt-7 max-w-2xl text-lg leading-8 text-white/60">Meriden brings experienced, practical attention to the places where compliance becomes operational: the SMS, the audit trail, the decision, and the people expected to make it work.</p><a href="mailto:contact@meriedencompliance.com?subject=Meriden%20consultancy%20enquiry" className="mt-10 inline-flex rounded-full bg-[#c89f3a] px-7 py-4 text-sm font-bold uppercase tracking-[0.14em] text-[#06101d] transition hover:bg-[#e6c15a]">Discuss your requirements</a></div></section><section className="mx-auto max-w-7xl px-5 py-24 sm:px-8"><div className="grid gap-x-10 gap-y-14 md:grid-cols-2 lg:grid-cols-3">{offers.map(([t,d],i) => <article key={t} className="border-t border-[#c89f3a]/50 pt-6"><span className="text-sm text-[#d5aa4b]">0{i+1}</span><h2 className="mt-8 text-xl font-semibold">{t}</h2><p className="mt-3 text-sm leading-6 text-white/55">{d}</p></article>)}</div></section><section className="border-y border-white/10 bg-[#091827] py-24"><div className="mx-auto grid max-w-7xl gap-12 px-5 sm:px-8 lg:grid-cols-2"><div><p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#d5aa4b]">A considered engagement</p><h2 className="mt-5 font-serif text-4xl">Start with the question that keeps coming back.</h2></div><div className="space-y-5 text-lg leading-8 text-white/55"><p>Tell us where the pressure is: an upcoming audit, a system that is not landing onboard, an AI initiative that needs boundaries, or a finding that will not stay closed.</p><p>We will scope the right conversation, keep the advice proportionate, and leave you with clear next actions.</p></div></div></section></>;
+}
+
+function MeridenStandaloneInsightsPage() {
+  return <><section className="mx-auto max-w-7xl px-5 pb-16 pt-24 sm:px-8"><p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#d5aa4b]">Meriden insights</p><h1 className="mt-5 max-w-4xl font-serif text-5xl leading-tight sm:text-7xl">Useful thinking for people who carry the compliance burden.</h1><p className="mt-6 max-w-2xl text-lg leading-8 text-white/60">Notes on maritime QHSE, management systems, assurance, AI governance, and the difference between a document that exists and a control that works.</p></section><section className="mx-auto grid max-w-7xl gap-6 px-5 pb-28 sm:px-8 lg:grid-cols-3">{[["Maritime QHSE","Why work should not start just because the permit is approved","A permit is a necessary control. It is not the final check that the worksite is ready.","/meriden-compliance/insights/maritime-qhse/why-work-should-not-start-just-because-the-permit-is-approved"],["AI governance","Why AI policies fail in practice","A policy only matters when the person making the decision knows what it requires of them.","/meriden-compliance/insights/maritime-ai/why-ai-policies-fail"],["Maritime QHSE","False assurance in maritime compliance","The absence of a finding is not the same thing as evidence that the system is working.","/meriden-compliance/insights/maritime-qhse/false-assurance-maritime-compliance"]].map(([tag,t,d,h]) => <article key={t} className="flex flex-col rounded-2xl border border-white/10 bg-[#0b1a2b] p-7"><p className="text-[10px] font-semibold uppercase tracking-[0.25em] text-[#d5aa4b]">{tag}</p><h2 className="mt-5 text-2xl font-semibold leading-tight">{t}</h2><p className="mt-4 flex-1 text-sm leading-6 text-white/50">{d}</p><Link to={h} className="mt-8 text-sm font-semibold text-white transition hover:text-[#e6c15a]">Read the insight →</Link></article>)}</section></>;
+}
+
 function MeridenPage() {
   const brand = brands.find((b) => b.key === "meriden")!;
 
@@ -2056,20 +2158,32 @@ function AxiomOrdoHome() {
 // App Router
 // ─────────────────────────────────────────────────────────────────────────────
 
+// Legacy AxiomOrdo components and data remain in this shared app for their
+// existing product history, even where the standalone Meriden routes now use
+// the new brand experience.
+void pfasDecisions;
+void MeridenPage;
+void InsightsIndexPage;
+
 export default function App() {
+  const meridenHost = typeof window !== "undefined" && /meri(?:den|eden)compliance\.com/i.test(window.location.hostname);
   return (
     <BrowserRouter>
       <ScrollToTop />
       <SpeedInsights />
       <Routes>
         {/* Group home */}
-        <Route path="/" element={<AxiomOrdoHome />} />
+        <Route path="/" element={meridenHost ? <MeridenStandalonePage /> : <AxiomOrdoHome />} />
+        {meridenHost && <Route path="/shop" element={<MeridenStandalonePage />} />}
+        {meridenHost && <Route path="/consultancy" element={<MeridenStandalonePage />} />}
 
         {/* ARDS Standard */}
         <Route path="/ards" element={<ARDSPage />} />
 
         {/* Meriden Compliance Insights */}
-        <Route path={MERIDEN_INSIGHTS_PATH} element={<InsightsIndexPage />} />
+        <Route path={MERIDEN_INSIGHTS_PATH} element={<MeridenStandalonePage />} />
+        <Route path={`${MERIDEN_PATH}/shop`} element={<MeridenStandalonePage />} />
+        <Route path={`${MERIDEN_PATH}/consultancy`} element={<MeridenStandalonePage />} />
         {insightHubs.map((hub) => (
           <Route
             key={hub.slug}
@@ -2092,7 +2206,7 @@ export default function App() {
         {/* Brand sub-sites */}
         {brands.map((brand) =>
           brand.key === "meriden" ? (
-            <Route key={brand.key} path={brand.href} element={<MeridenPage />} />
+            <Route key={brand.key} path={brand.href} element={<MeridenStandalonePage />} />
           ) : unreleasedBrandKeys.has(brand.key) ? (
             <Route key={brand.key} path={brand.href} element={<BrandPlaceholderPage brand={brand} />} />
           ) : (
