@@ -93,7 +93,7 @@
     { "source": "/contact", "destination": "/architecture-v2/routes/contact.html" },
     { "source": "/meriden/ards-founding-panel", "destination": "/architecture-v2/routes/meriden/ards-founding-panel.html" },
     { "source": "/meriden/resources", "destination": "/architecture-v2/routes/meriden/resources.html" },
-    { "source": "/meriden/psc-readiness", "destination": "/architecture-v2/routes/meriden/psc-readiness.html" },
+    { "source": "/meriden/psc-readiness", "destination": "/meriden/psc-readiness-review.html" },
     { "source": "/meriden/ai-governance", "destination": "/architecture-v2/routes/meriden/ai-governance.html" },
     { "source": "/meriden/management-systems", "destination": "/architecture-v2/routes/meriden/management-systems.html" },
     { "source": "/(.*)", "destination": "/index.html" }
