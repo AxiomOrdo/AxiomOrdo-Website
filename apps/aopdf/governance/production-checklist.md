@@ -27,7 +27,9 @@ deployment ID, verifier, UTC time and evidence link for every checked item.
 - [ ] Native save and browser fallback wording are accurate.
 - [ ] Network capture shows no document bytes or document-derived values.
 - [ ] Analytics custom events are received using only the governed allowlist.
-- [ ] All nine workflows are manually verified against the candidate SHA.
+- [ ] All thirteen workflows are manually verified against the candidate SHA.
+- [ ] Assurance bundles contain machine-readable and readable evidence manifests whose hashes reproduce locally.
+- [ ] Redaction output reopens in an independent PDF reader and passes the supported-content matrix.
 
 ## Production
 

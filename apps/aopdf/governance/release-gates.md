@@ -22,7 +22,9 @@ reviewed and locked with `M1_STATUS = VERIFIED`.
 - [ ] AO-PDF CSP and response headers are inspected on that preview.
 - [ ] Exact install, typecheck, lint, unit, browser and static-build jobs pass.
 - [ ] Dependency audit and CodeQL pass for the exact candidate SHA.
-- [ ] All nine workflows are manually verified against that exact SHA.
+- [ ] All thirteen workflows are manually verified against that exact SHA.
+- [ ] Inspection, comparison and manifest outputs match their V1 schemas.
+- [ ] Redaction output passes bounded residual-content verification and independent-reader reopening.
 - [ ] The 54-case hardening matrix has linked evidence.
 - [ ] Candidate worktree is clean.
 - [ ] The exact merged SHA is deployed.
@@ -41,6 +43,8 @@ reviewed and locked with `M1_STATUS = VERIFIED`.
 
 ## Scope lock
 
-Accounts, databases, API keys, Stripe, server-side document uploads, persistent
-history, OCR, Office conversion, password protection or unlocking, secure
-redaction, new PDF operations and document-derived telemetry are prohibited.
+Accounts, databases, API keys, Stripe, server-side document uploads, cross-session
+document history, OCR, Office conversion, password protection or unlocking,
+unlisted PDF operations and document-derived telemetry remain prohibited. The
+four document-assurance operations admitted by AOPDF-DOCUMENT-ASSURANCE-V1 are
+bounded by `document-assurance-v1.md` and create no server or production authority.

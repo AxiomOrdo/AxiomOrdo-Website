@@ -58,6 +58,10 @@ function estimateWorkingBytes(args: {
     'page-numbers': 3,
     flatten: 3,
     'images-to-pdf': 2,
+    inspect: 4,
+    compare: 8,
+    'evidence-manifest': 2,
+    redact: 12,
   };
   return Math.ceil(
     args.aggregateBytes * multipliers[args.tool] +

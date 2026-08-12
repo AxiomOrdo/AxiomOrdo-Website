@@ -99,6 +99,11 @@ workerScope.onmessage = async (event: MessageEvent<WorkerRequest>) => {
         );
         outputPageCount = request.inputs.length;
         break;
+      case 'inspect':
+      case 'compare':
+      case 'evidence-manifest':
+      case 'redact':
+        throw new Error('Assurance operation routed to the wrong executor.');
     }
 
     const transferable =

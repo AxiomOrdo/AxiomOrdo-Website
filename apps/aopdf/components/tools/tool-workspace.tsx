@@ -52,6 +52,17 @@ import {
 } from '@/governance/tool-limits';
 import { startWorkerOperation, type ActiveWorkerOperation } from '@/workers/client';
 import type { WorkerOptions, WorkerRequest } from '@/workers/protocol';
+import { parseRedactionRectangles } from '@/lib/assurance/redaction-selection';
+import {
+  clearWorkspaceHistory,
+  readWorkspaceHistory,
+  writeWorkspaceHistory,
+} from '@/lib/assurance/workspace-history';
+import {
+  isAssuranceTool,
+  type RedactionRectangle,
+  type WorkspaceHistoryEntry,
+} from '@/lib/assurance/types';
 
 interface LoadedFile extends AdmittedInput {
   readonly file: File;
@@ -82,6 +93,7 @@ function operationOptions(args: {
   rotation: number;
   watermarkText: string;
   pageNumberPosition: 'bottom-center' | 'bottom-right' | 'top-center';
+  redactionRectangles: readonly RedactionRectangle[];
 }): WorkerOptions {
   switch (args.tool) {
     case 'split':
@@ -98,6 +110,8 @@ function operationOptions(args: {
       return { kind: 'watermark', text: args.watermarkText };
     case 'page-numbers':
       return { kind: 'page-numbers', position: args.pageNumberPosition };
+    case 'redact':
+      return { kind: 'redact', rectangles: args.redactionRectangles };
     default:
       return { kind: 'none' };
   }
@@ -123,6 +137,8 @@ export default function ToolWorkspace({ tool }: ToolWorkspaceProps) {
   const [splitMode, setSplitMode] = useState<'range' | 'single'>('range');
   const [watermarkText, setWatermarkText] = useState('CONFIDENTIAL');
   const [rotation, setRotation] = useState(90);
+  const [redactionSelection, setRedactionSelection] = useState('1,20,20,20,10');
+  const [history, setHistory] = useState<WorkspaceHistoryEntry[]>([]);
   const [pageNumberPosition, setPageNumberPosition] = useState<
     'bottom-center' | 'bottom-right' | 'top-center'
   >('bottom-center');
@@ -131,7 +147,11 @@ export default function ToolWorkspace({ tool }: ToolWorkspaceProps) {
 
   useEffect(() => {
     transmitTelemetry(createToolSelectedEvent(toolSlug));
+    const historyTimer = window.setTimeout(() => {
+      setHistory(readWorkspaceHistory(window.sessionStorage));
+    }, 0);
     return () => {
+      window.clearTimeout(historyTimer);
       activeOperationRef.current?.cancel();
       activeOperationRef.current = null;
     };
@@ -270,6 +290,10 @@ export default function ToolWorkspace({ tool }: ToolWorkspaceProps) {
         splitEveryPage: toolSlug === 'split' && splitMode === 'single',
         ...(indices.length ? { selectedPageCount: indices.length } : {}),
       });
+      const redactionRectangles =
+        toolSlug === 'redact'
+          ? parseRedactionRectangles(redactionSelection, admission.aggregatePages)
+          : [];
       if (
         toolSlug === 'watermark' &&
         (!watermarkText.trim() ||
@@ -280,35 +304,55 @@ export default function ToolWorkspace({ tool }: ToolWorkspaceProps) {
       }
 
       const operationId = crypto.randomUUID();
+      const createdAt = new Date().toISOString();
+      const inputs = admission.inputs.map((input) => ({
+        bytes: input.bytes.slice(0),
+        mimeType: input.mimeType as
+          | 'application/pdf'
+          | 'image/jpeg'
+          | 'image/png',
+      }));
+      const options = operationOptions({
+        tool: toolSlug,
+        splitMode,
+        indices,
+        rotation,
+        watermarkText,
+        pageNumberPosition,
+        redactionRectangles,
+      });
       const request: WorkerRequest = {
         type: 'execute',
         operationId,
+        createdAt,
         tool: toolSlug,
-        inputs: admission.inputs.map((input) => ({
-          bytes: input.bytes.slice(0),
-          mimeType: input.mimeType as
-            | 'application/pdf'
-            | 'image/jpeg'
-            | 'image/png',
-        })),
+        inputs,
         sourcePageCount: admission.aggregatePages,
-        options: operationOptions({
-          tool: toolSlug,
-          splitMode,
-          indices,
-          rotation,
-          watermarkText,
-          pageNumberPosition,
-        }),
+        options,
       };
 
       setOperationState('processing');
-      setStatusMessage('Processing locally in a dedicated browser worker.');
-      const activeOperation = startWorkerOperation(request);
-      activeOperationRef.current = activeOperation;
-      const result = await activeOperation.result;
-      if (activeOperationRef.current?.operationId !== operationId) return;
-      activeOperationRef.current = null;
+      setStatusMessage('Processing locally in this browser.');
+      const result = isAssuranceTool(toolSlug)
+        ? await import('@/lib/assurance/execute').then(({ executeAssuranceOperation }) =>
+            executeAssuranceOperation({
+              tool: toolSlug,
+              createdAt,
+              sources: inputs.map((input) => input.bytes),
+              sourcePageCount: admission.aggregatePages,
+              options,
+            }),
+          )
+        : await (async () => {
+            const activeOperation = startWorkerOperation(request);
+            activeOperationRef.current = activeOperation;
+            const workerResult = await activeOperation.result;
+            if (activeOperationRef.current?.operationId !== operationId) {
+              throw new OperationError('OPERATION_CANCELLED');
+            }
+            activeOperationRef.current = null;
+            return workerResult;
+          })();
 
       const filename = canonicalOutputFilename({
         tool: toolSlug,
@@ -319,7 +363,7 @@ export default function ToolWorkspace({ tool }: ToolWorkspaceProps) {
         splitEveryPage: toolSlug === 'split' && splitMode === 'single',
       });
       setOperationState('saving');
-      setStatusMessage('PDF generation completed locally. Choose where to save it.');
+      setStatusMessage('Output generation completed locally. Choose where to save it.');
       const delivery = await deliverOutput({
         data: result.output,
         filename,
@@ -334,6 +378,17 @@ export default function ToolWorkspace({ tool }: ToolWorkspaceProps) {
         durationMs,
         delivery: delivery.delivery,
       });
+      setHistory((current) =>
+        writeWorkspaceHistory(window.sessionStorage, [
+          {
+            operation: toolSlug,
+            completedAt: createdAt,
+            sourceCount: files.length,
+            assurance: toolSlug === 'redact' ? 'verified-bounded' : 'generated',
+          },
+          ...current,
+        ]),
+      );
       setFiles([]);
       setOperationState('success');
       setStatusMessage(
@@ -384,6 +439,15 @@ export default function ToolWorkspace({ tool }: ToolWorkspaceProps) {
               Current workflows process document bytes in this browser. AO-PDF
               records only the selected tool, outcome, duration, and coarse
               browser/runtime information—never filenames or document-derived data.
+            </p>
+            <p className="mt-2 text-xs leading-5 text-zinc-500">
+              Selected source bytes remain separate and unchanged. Generated outputs
+              are new files. Session history stores operation metadata only in this
+              browser tab and never stores source filenames, document text, or hashes.
+            </p>
+            <p className="mt-2 text-xs leading-5 text-amber-200/80">
+              This release supports Chromium on desktop and mobile. Firefox and
+              Safari/WebKit are unverified and unsupported.
             </p>
           </div>
         </div>
@@ -616,6 +680,38 @@ export default function ToolWorkspace({ tool }: ToolWorkspaceProps) {
         </fieldset>
       ) : null}
 
+      {files.length > 0 && toolSlug === 'redact' ? (
+        <section className="rounded-2xl border border-amber-500/30 bg-amber-500/5 p-5">
+          <h2 className="text-sm font-semibold text-amber-200">Redaction rectangles</h2>
+          <p className="mt-2 text-xs leading-5 text-zinc-400">
+            Enter one rectangle per line as page, x%, y%, width%, height%. Coordinates
+            start at the visible top-left. The supported output is rebuilt as image-only
+            pages; this is not a visual overlay.
+          </p>
+          <label className="mt-3 block text-sm text-zinc-300">
+            Rectangle list
+            <textarea
+              aria-label="Redaction rectangles"
+              value={redactionSelection}
+              onChange={(event) => setRedactionSelection(event.target.value)}
+              rows={4}
+              className="mt-2 w-full rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-3 font-mono text-sm text-zinc-100"
+            />
+          </label>
+          <p className="mt-3 text-xs leading-5 text-amber-200/80">
+            AO-PDF rejects forms, annotations, attachments, JavaScript, incremental
+            revisions, encryption, and malformed structures for this capability.
+          </p>
+          <p className="mt-2 text-xs leading-5 text-amber-200/80">
+            Raster reconstruction does not preserve selectable text, accessibility,
+            links, signatures, forms, attachments, metadata, or original document
+            structures. Bounded verification establishes tested recovery resistance
+            only, not universal irrecoverability. You are responsible for selecting
+            rectangles that cover every sensitive visible pixel.
+          </p>
+        </section>
+      ) : null}
+
       {files.length > 0 ? (
         <div className="flex flex-col gap-3 sm:flex-row">
           <button
@@ -692,6 +788,42 @@ export default function ToolWorkspace({ tool }: ToolWorkspaceProps) {
           </p>
         </section>
       ) : null}
+
+      <section className="rounded-2xl border border-zinc-800 bg-zinc-900/40 p-5">
+        <div className="flex items-center justify-between gap-4">
+          <div>
+            <h2 className="font-semibold text-zinc-200">Session-local workspace history</h2>
+            <p className="mt-1 text-xs text-zinc-500">
+              Metadata only; cleared when this browser tab session ends.
+            </p>
+          </div>
+          {history.length ? (
+            <button
+              type="button"
+              onClick={() => {
+                clearWorkspaceHistory(window.sessionStorage);
+                setHistory([]);
+              }}
+              className="min-h-11 rounded-lg border border-zinc-700 px-3 text-xs text-zinc-300"
+            >
+              Clear history
+            </button>
+          ) : null}
+        </div>
+        {history.length ? (
+          <ol className="mt-4 space-y-2 text-xs text-zinc-400">
+            {history.map((entry, index) => (
+              <li key={`${entry.completedAt}-${entry.operation}-${index}`} className="rounded-lg border border-zinc-800 p-3">
+                <span className="font-medium text-zinc-200">{entry.operation}</span>
+                {' · '}{entry.sourceCount} source{entry.sourceCount === 1 ? '' : 's'}
+                {' · '}{entry.assurance === 'verified-bounded' ? 'bounded verification passed' : 'output generated'}
+              </li>
+            ))}
+          </ol>
+        ) : (
+          <p className="mt-4 text-xs text-zinc-500">No completed operations in this tab session.</p>
+        )}
+      </section>
     </div>
   );
 }
