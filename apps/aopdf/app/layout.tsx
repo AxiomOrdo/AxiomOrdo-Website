@@ -16,7 +16,7 @@ const mono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://axiomordo.com'),
+  metadataBase: new URL('https://www.axiomordo.com'),
   title: {
     default: 'AO-PDF — Private PDF Tools by AxiomOrdo',
     template: '%s | AO-PDF',
