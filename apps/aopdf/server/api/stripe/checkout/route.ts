@@ -6,49 +6,57 @@ import { authOptions } from '@/lib/auth-options';
 import { getStripe, getStripePriceId } from '@/lib/stripe';
 import { prisma } from '@/lib/prisma';
 import { appPath } from '@/lib/paths';
-import { BILLING_CONFIGURED, unavailableResponse } from '@/lib/server-features';
+import {
+  BILLING_CONFIGURED,
+  COMMERCIAL_CONFIGURATION,
+  unavailableResponse,
+} from '@/lib/server-features';
+
+const REQUEST_ID = /^[A-Za-z0-9_-]{8,128}$/;
 
 export async function POST(request: NextRequest) {
-  if (!BILLING_CONFIGURED) return unavailableResponse('billing');
-  try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-
-    const { plan } = await request.json();
-    if (plan !== 'pro' && plan !== 'enterprise') {
-      return NextResponse.json({ error: 'Invalid plan' }, { status: 400 });
-    }
-    const userId = (session.user as any).id;
-    const origin = request.headers.get('origin') ?? '';
-    const stripe = getStripe();
-
-    let sub = await prisma.subscription.findUnique({ where: { userId } });
-    if (!sub) {
-      sub = await prisma.subscription.create({ data: { userId, plan: 'free', status: 'active' } });
-    }
-
-    let customerId = sub?.stripeCustomerId;
-    if (!customerId) {
-      const customer = await stripe.customers.create({
-        email: session.user?.email ?? '',
-        metadata: { userId },
-      });
-      customerId = customer.id;
-      await prisma.subscription.update({ where: { userId }, data: { stripeCustomerId: customerId } });
-    }
-
-    const checkoutSession = await stripe.checkout.sessions.create({
-      customer: customerId,
-      mode: 'subscription',
-      line_items: [{ price: getStripePriceId(plan), quantity: 1 }],
-      success_url: `${origin}${appPath('/dashboard')}?checkout=success`,
-      cancel_url: `${origin}${appPath('/pricing')}?checkout=cancelled`,
-      metadata: { userId, plan },
-    });
-
-    return NextResponse.json({ url: checkoutSession.url });
-  } catch (error: any) {
-    console.error('Checkout error:', error);
-    return NextResponse.json({ error: 'Failed to create checkout session' }, { status: 500 });
+  if (!BILLING_CONFIGURED || COMMERCIAL_CONFIGURATION.state !== 'ready') {
+    return unavailableResponse('billing');
   }
+  const session = await getServerSession(authOptions);
+  const userId = session?.user?.id;
+  const workspaceId = session?.user?.workspaceId;
+  if (!userId || !workspaceId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const body = await request.json() as Record<string, unknown>;
+  const planCode = typeof body.planCode === 'string' ? body.planCode : '';
+  const requestId = typeof body.requestId === 'string' ? body.requestId : '';
+  if (!REQUEST_ID.test(requestId) || !COMMERCIAL_CONFIGURATION.plans.some((plan) => plan.code === planCode)) {
+    return NextResponse.json({ error: 'Invalid checkout request' }, { status: 400 });
+  }
+  const membership = await prisma.membership.findUnique({
+    where: { workspaceId_userId: { workspaceId, userId } },
+    select: { role: true },
+  });
+  if (membership?.role !== 'OWNER') return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+  const stripe = getStripe();
+  let subscription = await prisma.subscription.findUnique({ where: { workspaceId } });
+  if (!subscription) return NextResponse.json({ error: 'Subscription record unavailable' }, { status: 409 });
+  let customerId = subscription.stripeCustomerId;
+  if (!customerId) {
+    const customer = await stripe.customers.create(
+      { email: session.user.email ?? undefined, metadata: { workspaceId } },
+      { idempotencyKey: `workspace-customer:${workspaceId}` },
+    );
+    customerId = customer.id;
+    subscription = await prisma.subscription.update({
+      where: { workspaceId },
+      data: { stripeCustomerId: customerId },
+    });
+  }
+  const origin = process.env.AOPDF_APP_ORIGIN as string;
+  const checkoutSession = await stripe.checkout.sessions.create({
+    customer: customerId,
+    mode: 'subscription',
+    line_items: [{ price: getStripePriceId(planCode), quantity: 1 }],
+    success_url: `${origin}${appPath('/dashboard')}?checkout=success`,
+    cancel_url: `${origin}${appPath('/pricing')}?checkout=cancelled`,
+    metadata: { workspaceId, planCode },
+  }, { idempotencyKey: `checkout:${workspaceId}:${requestId}` });
+  if (!checkoutSession.url) return NextResponse.json({ error: 'Checkout URL unavailable' }, { status: 502 });
+  return NextResponse.json({ url: checkoutSession.url });
 }

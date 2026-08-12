@@ -1,4 +1,5 @@
 import { OperationError } from '@/governance/operation-errors';
+import { TOOL_LIMITS } from '@/governance/tool-limits';
 import type { WorkerRequest, WorkerResponse, WorkerSuccess } from './protocol';
 
 export interface ActiveWorkerOperation {
@@ -36,7 +37,7 @@ export function startWorkerOperation(
       settled = true;
       cleanup();
       reject(new OperationError('PROCESSING_TIMEOUT'));
-    }, 120_000);
+    }, TOOL_LIMITS[request.tool].timeoutMs);
 
     const finish = () => {
       cleanup();

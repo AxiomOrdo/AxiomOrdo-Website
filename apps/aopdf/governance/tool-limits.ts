@@ -35,6 +35,7 @@ export interface ToolLimits {
 
 export const MEBIBYTE = 1_048_576;
 export const MAX_ESTIMATED_WORKING_BYTES = 1_073_741_824;
+export const PRINTABLE_LATIN_PATTERN = /^[\x20-\x7e\u00a0-\u00ff]+$/;
 
 const COMMON = {
   maxFileBytes: 100 * MEBIBYTE,
@@ -156,5 +157,15 @@ export function isAdmittedToolSlug(value: unknown): value is AdmittedToolSlug {
   return (
     typeof value === 'string' &&
     (ADMITTED_TOOL_SLUGS as readonly string[]).includes(value)
+  );
+}
+
+export function isValidWatermarkText(value: string): boolean {
+  const limit = TOOL_LIMITS.watermark.maxWatermarkCharacters ?? 0;
+  return (
+    value.length > 0 &&
+    value.trim().length > 0 &&
+    value.length <= limit &&
+    PRINTABLE_LATIN_PATTERN.test(value)
   );
 }

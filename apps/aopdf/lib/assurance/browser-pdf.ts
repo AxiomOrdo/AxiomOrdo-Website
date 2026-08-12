@@ -16,12 +16,14 @@ type PdfJsModule = typeof import('pdfjs-dist/types/src/pdf');
 let pdfJsPromise: Promise<PdfJsModule> | undefined;
 
 function loadPdfJs(): Promise<PdfJsModule> {
-  pdfJsPromise ??=
-    typeof window === 'undefined'
-      ? import(/* webpackIgnore: true */ 'pdfjs-dist/legacy/build/pdf.mjs') as Promise<PdfJsModule>
-      : import('./pdfjs-browser-loader').then(({ loadBrowserPdfJs }) =>
-          loadBrowserPdfJs() as Promise<PdfJsModule>,
-        );
+  const isBrowserRuntime =
+    typeof window !== 'undefined' ||
+    'importScripts' in globalThis;
+  pdfJsPromise ??= isBrowserRuntime
+    ? import('./pdfjs-browser-loader').then(({ loadBrowserPdfJs }) =>
+        loadBrowserPdfJs() as Promise<PdfJsModule>,
+      )
+    : import(/* webpackIgnore: true */ 'pdfjs-dist/legacy/build/pdf.mjs') as Promise<PdfJsModule>;
   return pdfJsPromise;
 }
 

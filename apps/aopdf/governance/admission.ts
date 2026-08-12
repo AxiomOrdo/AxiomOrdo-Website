@@ -31,6 +31,24 @@ const IMAGE_MIMES = new Set(['image/jpeg', 'image/png']);
 const PAGE_OBJECT_OVERHEAD = 65_536;
 const OUTPUT_DOCUMENT_OVERHEAD = 262_144;
 
+function startsWith(bytes: ArrayBuffer, signature: readonly number[]): boolean {
+  const view = new Uint8Array(bytes, 0, Math.min(bytes.byteLength, signature.length));
+  return (
+    view.length === signature.length &&
+    signature.every((byte, index) => view[index] === byte)
+  );
+}
+
+function hasExpectedSignature(tool: AdmittedToolSlug, input: AdmissionInput): boolean {
+  if (tool !== 'images-to-pdf') {
+    return startsWith(input.bytes, [0x25, 0x50, 0x44, 0x46, 0x2d]);
+  }
+  if (input.mimeType === 'image/png') {
+    return startsWith(input.bytes, [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
+  }
+  return startsWith(input.bytes, [0xff, 0xd8, 0xff]);
+}
+
 function isAllowedType(tool: AdmittedToolSlug, input: AdmissionInput): boolean {
   if (tool === 'images-to-pdf') {
     return (
@@ -88,6 +106,11 @@ export async function admitInputs(args: {
 
   if (args.inputs.some((input) => !isAllowedType(args.tool, input))) {
     throw new OperationError('FILE_TYPE_UNSUPPORTED');
+  }
+  if (args.inputs.some((input) => !hasExpectedSignature(args.tool, input))) {
+    throw new OperationError(
+      args.tool === 'images-to-pdf' ? 'FILE_TYPE_UNSUPPORTED' : 'PDF_CORRUPTED',
+    );
   }
   if (args.inputs.some((input) => input.size > limits.maxFileBytes)) {
     throw new OperationError('FILE_TOO_LARGE');

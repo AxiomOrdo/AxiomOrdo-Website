@@ -1,0 +1,21 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "incremental": false,
+    "types": ["node"],
+    "noEmit": true
+  },
+  "include": [
+    "next-env.d.ts",
+    "governance/**/*.ts",
+    "lib/auth-options.ts",
+    "lib/commercial/**/*.ts",
+    "lib/paths.ts",
+    "lib/prisma.ts",
+    "lib/server-features.ts",
+    "lib/stripe.ts",
+    "server/**/*.ts",
+    "types/next-auth.d.ts"
+  ],
+  "exclude": ["node_modules", "out/**", ".next/**"]
+}

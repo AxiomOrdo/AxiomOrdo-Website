@@ -102,5 +102,7 @@ warnings are not proven threats.
 | `nanoid` | `3.3.17` | MIT | patched transitive PostCSS dependency | pinned by override |
 | `pypdf` | `6.15.0` | BSD-3-Clause | independent-reader evidence only | pinned with artifact hashes; not shipped |
 
-No server-side processing, OCR, encryption library, account, billing, database,
-API or production infrastructure is added by this packet.
+No server-side document processing, OCR, encryption support or document-content
+persistence is present. A later commercial foundation is retained as disabled,
+separately compiled server source; it is excluded from the static product and
+cannot activate without the gates in `commercial-foundation.md`.

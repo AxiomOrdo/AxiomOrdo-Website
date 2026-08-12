@@ -39,8 +39,8 @@ network boundary.
 | C30 | delete-pages | stale worker response | ignore | — | only active result accepted | active contract only | governed event only | Chromium | `tests/worker-client.test.ts` |
 | C31 | watermark | printable Latin text | admit | — | watermarked PDF | supported info dictionary preserved | local-only | all | `tests/pdf-operations.test.ts` |
 | C32 | watermark | 120-character text | admit | — | watermarked PDF | supported info dictionary preserved | local-only | Chromium | `tests/pdf-operations.test.ts` |
-| C33 | watermark | 121-character text | reject | WATERMARK_TEXT_INVALID | none | unchanged source | no worker request | all | `tests/pdf-operations.test.ts` |
-| C34 | watermark | non-printable text | reject | WATERMARK_TEXT_INVALID | none | unchanged source | no worker request | all | `tests/pdf-operations.test.ts` |
+| C33 | watermark | 121-character text | reject | WATERMARK_TEXT_INVALID | none | unchanged source | no worker request | all | `tests/admission.test.ts` |
+| C34 | watermark | non-printable text | reject | WATERMARK_TEXT_INVALID | none | unchanged source | no worker request | all | `tests/admission.test.ts` |
 | C35 | watermark | runtime timeout | fail | PROCESSING_TIMEOUT | none | unchanged source | governed event only | Chromium | `tests/worker-client.test.ts` |
 | C36 | watermark | route change during processing | cancel | OPERATION_CANCELLED | none | unchanged source | cancelled event only | mobile Chromium | browser test |
 | C37 | page-numbers | metadata-bearing PDF | admit | — | numbered PDF | supported info dictionary preserved | local-only | all | `tests/pdf-operations.test.ts` |

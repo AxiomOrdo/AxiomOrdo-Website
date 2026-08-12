@@ -47,6 +47,7 @@ import {
 } from '@/governance/telemetry-contract';
 import {
   isAdmittedToolSlug,
+  isValidWatermarkText,
   TOOL_LIMITS,
   type AdmittedToolSlug,
 } from '@/governance/tool-limits';
@@ -59,7 +60,6 @@ import {
   writeWorkspaceHistory,
 } from '@/lib/assurance/workspace-history';
 import {
-  isAssuranceTool,
   type RedactionRectangle,
   type WorkspaceHistoryEntry,
 } from '@/lib/assurance/types';
@@ -143,6 +143,7 @@ export default function ToolWorkspace({ tool }: ToolWorkspaceProps) {
     'bottom-center' | 'bottom-right' | 'top-center'
   >('bottom-center');
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const statusRef = useRef<HTMLDivElement>(null);
   const activeOperationRef = useRef<ActiveWorkerOperation | null>(null);
 
   useEffect(() => {
@@ -157,13 +158,18 @@ export default function ToolWorkspace({ tool }: ToolWorkspaceProps) {
     };
   }, [toolSlug]);
 
+  useEffect(() => {
+    if (errorCode || operationState === 'success' || operationState === 'cancelled') {
+      statusRef.current?.focus();
+    }
+  }, [errorCode, operationState]);
+
   const reportFailure = useCallback(
     (error: unknown, startedAt?: number) => {
       const operationError = toOperationError(error);
       const cancelled =
         operationError.code === 'OPERATION_CANCELLED' ||
         operationError.code === 'SAVE_CANCELLED';
-      setFiles([]);
       setErrorCode(operationError.code);
       setOperationState(cancelled ? 'cancelled' : 'failed');
       setStatusMessage(ERROR_DEFINITIONS[operationError.code].message);
@@ -294,12 +300,7 @@ export default function ToolWorkspace({ tool }: ToolWorkspaceProps) {
         toolSlug === 'redact'
           ? parseRedactionRectangles(redactionSelection, admission.aggregatePages)
           : [];
-      if (
-        toolSlug === 'watermark' &&
-        (!watermarkText.trim() ||
-          watermarkText.length > (limits.maxWatermarkCharacters ?? 0) ||
-          !/^[\x20-\x7e\u00a0-\u00ff]+$/.test(watermarkText))
-      ) {
+      if (toolSlug === 'watermark' && !isValidWatermarkText(watermarkText)) {
         throw new OperationError('WATERMARK_TEXT_INVALID');
       }
 
@@ -333,26 +334,13 @@ export default function ToolWorkspace({ tool }: ToolWorkspaceProps) {
 
       setOperationState('processing');
       setStatusMessage('Processing locally in this browser.');
-      const result = isAssuranceTool(toolSlug)
-        ? await import('@/lib/assurance/execute').then(({ executeAssuranceOperation }) =>
-            executeAssuranceOperation({
-              tool: toolSlug,
-              createdAt,
-              sources: inputs.map((input) => input.bytes),
-              sourcePageCount: admission.aggregatePages,
-              options,
-            }),
-          )
-        : await (async () => {
-            const activeOperation = startWorkerOperation(request);
-            activeOperationRef.current = activeOperation;
-            const workerResult = await activeOperation.result;
-            if (activeOperationRef.current?.operationId !== operationId) {
-              throw new OperationError('OPERATION_CANCELLED');
-            }
-            activeOperationRef.current = null;
-            return workerResult;
-          })();
+      const activeOperation = startWorkerOperation(request);
+      activeOperationRef.current = activeOperation;
+      const result = await activeOperation.result;
+      if (activeOperationRef.current?.operationId !== operationId) {
+        throw new OperationError('OPERATION_CANCELLED');
+      }
+      activeOperationRef.current = null;
 
       const filename = canonicalOutputFilename({
         tool: toolSlug,
@@ -467,9 +455,32 @@ export default function ToolWorkspace({ tool }: ToolWorkspaceProps) {
         </ul>
       </section>
 
+      <nav aria-label="Operation progress" className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-4">
+        <ol className="grid grid-cols-2 gap-2 text-xs sm:grid-cols-4">
+          {([
+            ['Select', files.length > 0 || operationState !== 'idle'],
+            ['Validate', !['idle', 'validating'].includes(operationState)],
+            ['Process', ['saving', 'success'].includes(operationState)],
+            ['Save', operationState === 'success'],
+          ] as const).map(([label, complete]) => (
+            <li
+              key={String(label)}
+              className={`rounded-lg border px-3 py-2 ${
+                complete
+                  ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-200'
+                  : 'border-zinc-800 text-zinc-500'
+              }`}
+            >
+              {label}
+            </li>
+          ))}
+        </ol>
+      </nav>
+
       {files.length === 0 ? (
         <button
           type="button"
+          aria-describedby="file-input-help"
           className="relative w-full min-h-52 border-2 border-dashed border-zinc-800 hover:border-indigo-500/50 bg-zinc-900/40 hover:bg-zinc-900/80 rounded-2xl p-10 text-center transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400"
           onClick={() => fileInputRef.current?.click()}
           onDragOver={(event) => event.preventDefault()}
@@ -482,7 +493,7 @@ export default function ToolWorkspace({ tool }: ToolWorkspaceProps) {
           <span className="mt-4 block text-lg font-semibold text-zinc-200">
             Drop files here, or browse
           </span>
-          <span className="mt-1 block text-xs text-zinc-500">
+          <span id="file-input-help" className="mt-1 block text-xs text-zinc-500">
             {toolSlug === 'images-to-pdf'
               ? 'JPG or PNG; image limits are checked before processing'
               : 'PDF; encrypted documents are rejected'}
@@ -572,6 +583,7 @@ export default function ToolWorkspace({ tool }: ToolWorkspaceProps) {
       <input
         ref={fileInputRef}
         type="file"
+        aria-label={`Choose files for ${tool.name}`}
         className="sr-only"
         multiple={limits.maxFiles > 1}
         accept={acceptTypes}
@@ -746,6 +758,9 @@ export default function ToolWorkspace({ tool }: ToolWorkspaceProps) {
       ) : null}
 
       <div
+        ref={statusRef}
+        role={errorCode ? 'alert' : 'status'}
+        tabIndex={-1}
         aria-live="polite"
         aria-atomic="true"
         className={`rounded-xl border p-4 text-sm ${
@@ -765,9 +780,20 @@ export default function ToolWorkspace({ tool }: ToolWorkspaceProps) {
           <div>
             <p>{statusMessage}</p>
             {errorCode ? (
-              <p className="mt-1 text-xs text-zinc-400">
-                {ERROR_DEFINITIONS[errorCode].recovery} ({errorCode})
-              </p>
+              <>
+                <p className="mt-1 text-xs text-zinc-400">
+                  {ERROR_DEFINITIONS[errorCode].recovery} ({errorCode})
+                </p>
+                {files.length > 0 ? (
+                  <button
+                    type="button"
+                    onClick={() => void runProcess()}
+                    className="mt-3 min-h-11 rounded-lg border border-rose-400/40 px-4 text-xs font-semibold text-rose-100"
+                  >
+                    Retry with these files
+                  </button>
+                ) : null}
+              </>
             ) : null}
           </div>
         </div>

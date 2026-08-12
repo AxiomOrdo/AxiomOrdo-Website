@@ -3,13 +3,20 @@ export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
-import { ACCOUNTS_CONFIGURED, unavailableResponse } from '@/lib/server-features';
+import {
+  ACCOUNTS_CONFIGURED,
+  COMMERCIAL_CONFIGURATION,
+  unavailableResponse,
+} from '@/lib/server-features';
 
 export async function POST(request: NextRequest) {
   if (!ACCOUNTS_CONFIGURED) return unavailableResponse('accounts');
   try {
-    const { email, password, name } = await request.json();
-    if (!email || !password) {
+    const body = await request.json() as Record<string, unknown>;
+    const email = typeof body.email === 'string' ? body.email.trim().toLowerCase() : '';
+    const password = typeof body.password === 'string' ? body.password : '';
+    const name = typeof body.name === 'string' ? body.name.trim() : '';
+    if (!/^\S+@\S+\.\S+$/.test(email) || password.length < 12 || password.length > 128) {
       return NextResponse.json({ error: 'Email and password are required' }, { status: 400 });
     }
     const existing = await prisma.user.findUnique({ where: { email } });
@@ -17,13 +24,32 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'An account with this email already exists' }, { status: 409 });
     }
     const hashedPassword = await bcrypt.hash(password, 12);
+    if (COMMERCIAL_CONFIGURATION.state !== 'ready') return unavailableResponse('accounts');
     const user = await prisma.user.create({
-      data: { email, hashedPassword, name: name ?? email.split('@')[0] },
+      data: {
+        email,
+        hashedPassword,
+        name: name || null,
+        memberships: {
+          create: {
+            role: 'OWNER',
+            workspace: {
+              create: {
+                displayName: name || 'Personal workspace',
+                subscription: {
+                  create: {
+                    planCode: COMMERCIAL_CONFIGURATION.defaultPlanCode,
+                    state: 'INACTIVE',
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
     });
-    await prisma.subscription.create({ data: { userId: user.id, plan: 'free', status: 'active' } });
     return NextResponse.json({ id: user.id, email: user.email, name: user.name }, { status: 201 });
-  } catch (error: any) {
-    console.error('Signup error:', error);
+  } catch {
     return NextResponse.json({ error: 'Failed to create account' }, { status: 500 });
   }
 }

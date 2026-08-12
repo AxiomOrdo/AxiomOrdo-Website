@@ -8,34 +8,32 @@ import { ACCOUNTS_CONFIGURED, unavailableResponse } from '@/lib/server-features'
 
 export async function GET() {
   if (!ACCOUNTS_CONFIGURED) return unavailableResponse('accounts');
-  try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-
-    const userId = (session.user as any).id;
-    const [subscription, apiKeys, todayUsage, totalUsage] = await Promise.all([
-      prisma.subscription.findUnique({ where: { userId } }),
-      prisma.apiKey.findMany({ where: { userId, isActive: true }, select: { id: true, name: true, prefix: true, lastUsed: true, createdAt: true } }),
-      prisma.usageLog.count({ where: { userId, createdAt: { gte: new Date(new Date().setHours(0, 0, 0, 0)) } } }),
-      prisma.usageLog.count({ where: { userId } }),
-    ]);
-
-    const recentUsage = await prisma.usageLog.findMany({
-      where: { userId },
-      orderBy: { createdAt: 'desc' },
+  const session = await getServerSession(authOptions);
+  const userId = session?.user?.id;
+  const workspaceId = session?.user?.workspaceId;
+  if (!userId || !workspaceId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const membership = await prisma.membership.findUnique({
+    where: { workspaceId_userId: { workspaceId, userId } },
+    select: { role: true, workspace: { select: { displayName: true } } },
+  });
+  if (!membership) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+  const [subscription, totalUsage, recentUsage] = await Promise.all([
+    prisma.subscription.findUnique({
+      where: { workspaceId },
+      select: { planCode: true, state: true, stripeCustomerId: true, stripePeriodEnd: true },
+    }),
+    prisma.usageEvent.count({ where: { workspaceId } }),
+    prisma.usageEvent.findMany({
+      where: { workspaceId },
+      orderBy: [{ occurredAt: 'desc' }, { id: 'desc' }],
       take: 10,
-      select: { id: true, tool: true, fileSize: true, status: true, createdAt: true },
-    });
-
-    return NextResponse.json({
-      subscription: subscription ?? { plan: 'free', status: 'active' },
-      apiKeys: apiKeys ?? [],
-      todayUsage,
-      totalUsage,
-      recentUsage: recentUsage ?? [],
-    });
-  } catch (error: any) {
-    console.error('Dashboard error:', error);
-    return NextResponse.json({ error: 'Failed to load dashboard' }, { status: 500 });
-  }
+      select: { id: true, tool: true, outcome: true, occurredAt: true },
+    }),
+  ]);
+  return NextResponse.json({
+    workspace: { displayName: membership.workspace.displayName, role: membership.role },
+    subscription,
+    totalUsage,
+    recentUsage,
+  });
 }

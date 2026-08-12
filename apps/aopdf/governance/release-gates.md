@@ -43,8 +43,9 @@ reviewed and locked with `M1_STATUS = VERIFIED`.
 
 ## Scope lock
 
-Accounts, databases, API keys, Stripe, server-side document uploads, cross-session
+Accounts, databases, Stripe, server-side document uploads, cross-session
 document history, OCR, Office conversion, password protection or unlocking,
-unlisted PDF operations and document-derived telemetry remain prohibited. The
-four document-assurance operations admitted by AOPDF-DOCUMENT-ASSURANCE-V1 are
-bounded by `document-assurance-v1.md` and create no server or production authority.
+unlisted PDF operations and document-derived telemetry remain outside the live
+static product. The four document-assurance operations are bounded by
+`document-assurance-v1.md`. Disabled commercial source creates no activation or
+production authority; apply `commercial-foundation.md` separately.
