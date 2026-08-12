@@ -14,6 +14,7 @@ import {
   splitEveryPage,
 } from '@/lib/pdf/operations';
 import { toOperationError } from '@/governance/operation-errors';
+import { executeAssuranceOperation } from '@/lib/assurance/execute';
 import type {
   WorkerRequest,
   WorkerResponse,
@@ -102,8 +103,19 @@ workerScope.onmessage = async (event: MessageEvent<WorkerRequest>) => {
       case 'inspect':
       case 'compare':
       case 'evidence-manifest':
-      case 'redact':
-        throw new Error('Assurance operation routed to the wrong executor.');
+      case 'redact': {
+        const result = await executeAssuranceOperation({
+          tool: request.tool,
+          createdAt: request.createdAt,
+          sources: buffers,
+          sourcePageCount: request.sourcePageCount,
+          options: request.options,
+        });
+        output = result.output;
+        mimeType = result.mimeType;
+        outputPageCount = result.outputPageCount;
+        break;
+      }
     }
 
     const transferable =

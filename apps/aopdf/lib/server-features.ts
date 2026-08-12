@@ -1,22 +1,19 @@
-import { ACCOUNTS_ENABLED, BILLING_ENABLED } from '@/lib/features';
+import { readCommercialConfiguration } from '@/lib/commercial/config';
 
-export const ACCOUNTS_CONFIGURED =
-  ACCOUNTS_ENABLED &&
-  Boolean(process.env.DATABASE_URL) &&
-  Boolean(process.env.NEXTAUTH_SECRET);
-
+export const COMMERCIAL_CONFIGURATION = readCommercialConfiguration(process.env);
+export const ACCOUNTS_CONFIGURED = COMMERCIAL_CONFIGURATION.state === 'ready';
 export const BILLING_CONFIGURED =
-  BILLING_ENABLED &&
-  ACCOUNTS_CONFIGURED &&
-  Boolean(process.env.STRIPE_SECRET_KEY) &&
-  Boolean(process.env.STRIPE_WEBHOOK_SECRET) &&
-  Boolean(process.env.STRIPE_PRO_PRICE_ID) &&
-  Boolean(process.env.STRIPE_ENTERPRISE_PRICE_ID);
+  COMMERCIAL_CONFIGURATION.state === 'ready' &&
+  COMMERCIAL_CONFIGURATION.billingReady;
 
 export function unavailableResponse(feature: 'accounts' | 'billing'): Response {
   return Response.json(
     {
       error: `${feature === 'accounts' ? 'Account' : 'Billing'} infrastructure is not enabled.`,
+      state: COMMERCIAL_CONFIGURATION.state,
+      ...(COMMERCIAL_CONFIGURATION.state === 'invalid'
+        ? { missing: COMMERCIAL_CONFIGURATION.missing }
+        : {}),
     },
     { status: 503 },
   );

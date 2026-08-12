@@ -16,11 +16,12 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null;
-        const user = await prisma.user.findUnique({ where: { email: credentials.email } });
+        const email = credentials.email.trim().toLowerCase();
+        const user = await prisma.user.findUnique({ where: { email } });
         if (!user || !user.hashedPassword) return null;
         const isValid = await bcrypt.compare(credentials.password, user.hashedPassword);
         if (!isValid) return null;
-        return { id: user.id, email: user.email, name: user.name, role: user.role };
+        return { id: user.id, email: user.email, name: user.name };
       },
     }),
   ],
@@ -29,13 +30,20 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }: any) {
       if (user) {
         token.id = user.id;
-        token.role = user.role;
+        const membership = await prisma.membership.findFirst({
+          where: { userId: user.id },
+          orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
+          select: { workspaceId: true, role: true },
+        });
+        token.workspaceId = membership?.workspaceId;
+        token.role = membership?.role;
       }
       return token;
     },
     async session({ session, token }: any) {
       if (session?.user) {
         (session.user as any).id = token.id;
+        (session.user as any).workspaceId = token.workspaceId;
         (session.user as any).role = token.role;
       }
       return session;

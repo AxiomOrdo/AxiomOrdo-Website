@@ -2,7 +2,11 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { PDFDocument } from 'pdf-lib';
 import { admitInputs, type AdmissionInput } from '../governance/admission';
-import { MEBIBYTE } from '../governance/tool-limits';
+import {
+  isValidWatermarkText,
+  MEBIBYTE,
+  TOOL_LIMITS,
+} from '../governance/tool-limits';
 
 async function pdfInput(
   name = 'document.pdf',
@@ -58,6 +62,19 @@ test('admission requires governed MIME and extension pairs', async () => {
       admitInputs({ tool: 'merge', inputs: [first, second] }),
     ),
     'FILE_TYPE_UNSUPPORTED',
+  );
+});
+
+test('admission verifies file signatures instead of trusting names and MIME types', async () => {
+  const disguisedPdf: AdmissionInput = {
+    name: 'disguised.pdf',
+    mimeType: 'application/pdf',
+    size: 8,
+    bytes: Uint8Array.from([0x89, 0x50, 0x4e, 0x47, 1, 2, 3, 4]).buffer,
+  };
+  assert.equal(
+    await errorCode(() => admitInputs({ tool: 'rotate', inputs: [disguisedPdf] })),
+    'PDF_CORRUPTED',
   );
 });
 
@@ -165,8 +182,8 @@ test('image and estimated-working-memory limits reject before execution', async 
   const image = (name: string, pixels: number): AdmissionInput => ({
     name,
     mimeType: 'image/png',
-    size: 1,
-    bytes: new ArrayBuffer(1),
+    size: 8,
+    bytes: Uint8Array.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]).buffer,
     imagePixels: pixels,
   });
   assert.equal(
@@ -190,4 +207,29 @@ test('image and estimated-working-memory limits reject before execution', async 
     ),
     'ESTIMATED_MEMORY_LIMIT',
   );
+});
+
+test('the authoritative registry exposes every required exact limit', () => {
+  for (const limits of Object.values(TOOL_LIMITS)) {
+    assert.equal(limits.maxFileBytes, 100 * MEBIBYTE);
+    assert.equal(limits.maxAggregateBytes, 250 * MEBIBYTE);
+    assert.equal(limits.timeoutMs, 120_000);
+    assert.equal(limits.maxEstimatedWorkingBytes, 1_073_741_824);
+    assert.equal(limits.minPagePoints, 3);
+    assert.equal(limits.maxPagePoints, 14_400);
+  }
+  assert.equal(TOOL_LIMITS.merge.maxFiles, 20);
+  assert.equal(TOOL_LIMITS['images-to-pdf'].maxFiles, 20);
+  assert.equal(TOOL_LIMITS.split.maxSplitOutputs, 200);
+  assert.equal(TOOL_LIMITS['images-to-pdf'].maxImagePixels, 40_000_000);
+  assert.equal(TOOL_LIMITS['images-to-pdf'].maxAggregateImagePixels, 200_000_000);
+  assert.equal(TOOL_LIMITS.watermark.maxWatermarkCharacters, 120);
+});
+
+test('watermark text uses the registry boundary and printable Latin contract', () => {
+  assert.equal(isValidWatermarkText('A'.repeat(120)), true);
+  assert.equal(isValidWatermarkText('A'.repeat(121)), false);
+  assert.equal(isValidWatermarkText('   '), false);
+  assert.equal(isValidWatermarkText('Confidential – internal'), false);
+  assert.equal(isValidWatermarkText('Confidential - internal'), true);
 });

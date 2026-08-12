@@ -17,8 +17,8 @@ function run(command, args, cwd) {
     cwd,
     env: {
       ...process.env,
-      NEXT_PUBLIC_AOPDF_ACCOUNTS_ENABLED: "false",
-      NEXT_PUBLIC_AOPDF_BILLING_ENABLED: "false",
+      AOPDF_COMMERCIAL_ENABLED: "false",
+      AOPDF_BILLING_ENABLED: "false",
       NEXT_TELEMETRY_DISABLED: "1",
     },
     stdio: "inherit",
