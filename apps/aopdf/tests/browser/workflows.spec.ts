@@ -2,6 +2,7 @@ import { expect, test } from '@playwright/test';
 import JSZip from 'jszip';
 import { PDFDocument, StandardFonts } from 'pdf-lib';
 import { execFileSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { resolve } from 'node:path';
 
 async function pdfFixture(pageCount = 2): Promise<Buffer> {
@@ -36,6 +37,8 @@ const onePixelPng = Buffer.from(
   'base64',
 );
 
+const digest = (bytes: Uint8Array) => createHash('sha256').update(bytes).digest('hex');
+
 const tools = [
   'merge',
   'split',
@@ -64,11 +67,18 @@ test.beforeEach(async ({ page }) => {
 for (const tool of tools) {
   test(`${tool} completes through the browser-local worker`, async ({ page }) => {
     const transmittedBodies: string[] = [];
+    const sourceBuffers: Buffer[] = [];
     page.on('request', (request) => {
       if (request.method() !== 'GET') transmittedBodies.push(request.postData() ?? '');
     });
 
     await page.goto(`/ao-pdf/tools/${tool}/`);
+    await expect(
+      page.getByText('This release supports Chromium on desktop and mobile.'),
+    ).toBeVisible();
+    await expect(
+      page.getByText('Firefox and Safari/WebKit are unverified and unsupported.'),
+    ).toBeVisible();
     await page.waitForFunction(() => typeof window.va === 'function');
     await page.waitForFunction((expectedTool) => {
       const queue = (
@@ -94,20 +104,24 @@ for (const tool of tools) {
     }, tool);
     const input = page.locator('input[type=file]');
     if (tool === 'images-to-pdf') {
+      sourceBuffers.push(onePixelPng, onePixelPng);
       await input.setInputFiles([
         { name: 'first.png', mimeType: 'image/png', buffer: onePixelPng },
         { name: 'second.png', mimeType: 'image/png', buffer: onePixelPng },
       ]);
     } else {
       const buffer = await pdfFixture();
+      sourceBuffers.push(buffer);
       const files = [
         { name: 'fixture.pdf', mimeType: 'application/pdf', buffer },
       ];
       if (tool === 'merge' || tool === 'compare') {
+        const second = await pdfFixture(1);
+        sourceBuffers.push(second);
         files.push({
           name: 'second.pdf',
           mimeType: 'application/pdf',
-          buffer: await pdfFixture(1),
+          buffer: second,
         });
       }
       await input.setInputFiles(files);
@@ -134,6 +148,13 @@ for (const tool of tools) {
     expect(transmitted).not.toContain('%PDF');
     expect(transmitted).not.toContain('fixture.pdf');
     expect(transmitted).not.toContain('Browser fixture');
+    expect(transmitted).not.toContain('CONFIDENTIAL');
+    expect(transmitted).not.toContain('1,20,20,20,10');
+    for (const source of sourceBuffers) expect(transmitted).not.toContain(digest(source));
+    const sessionState = await page.evaluate(() => JSON.stringify({ ...window.sessionStorage }));
+    expect(sessionState).not.toContain('fixture');
+    expect(sessionState).not.toContain('Browser fixture');
+    for (const source of sourceBuffers) expect(sessionState).not.toContain(digest(source));
   });
 }
 
@@ -147,6 +168,8 @@ test('redaction bundle contains a reopenable image-only PDF and bounded verifica
     buffer: source,
   });
   await page.getByLabel('Redaction rectangles').fill('1,15,15,70,25');
+  await expect(page.getByText(/tested recovery resistance only/i)).toBeVisible();
+  await expect(page.getByText(/responsible for selecting rectangles/i)).toBeVisible();
   const downloadPromise = page.waitForEvent('download');
   await page.getByRole('button', { name: 'Process locally' }).click();
   const download = await downloadPromise;
@@ -167,8 +190,6 @@ test('redaction bundle contains a reopenable image-only PDF and bounded verifica
     sources: Array<{ sha256: string }>;
     outputs: Array<{ role: string; sha256: string }>;
   };
-  const { createHash } = await import('node:crypto');
-  const digest = (bytes: Uint8Array) => createHash('sha256').update(bytes).digest('hex');
   expect(parsedManifest.sources[0]?.sha256).toBe(digest(source));
   expect(parsedManifest.outputs.find((output) => output.role === 'redacted.pdf')?.sha256)
     .toBe(digest(redacted as Uint8Array));

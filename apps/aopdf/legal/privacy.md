@@ -10,7 +10,7 @@ AO-PDF is provided by AxiomOrdo Ltd. Questions may be sent to hello@axiomordo.co
 
 ## Browser-local document processing
 
-The thirteen currently admitted AO-PDF workflows process document bytes locally in your browser. AO-PDF does not upload document contents to an AxiomOrdo server or retain generated files. A tab-scoped workspace history stores only operation type, completion time, source count, generated output name and bounded result classification in browser session storage. It does not store source filenames, document contents, extracted text or hashes, and the browser clears it when the tab session ends. Your browser handles the native save or fallback download.
+The thirteen currently admitted AO-PDF workflows process document bytes locally in your browser. AO-PDF does not upload document contents to an AxiomOrdo server or retain generated files. A tab-scoped workspace history stores only operation type, completion time, source count and bounded result classification in browser session storage. It does not store source or output filenames, document contents, extracted text or hashes, and the browser clears it when the tab session ends. Your browser handles the native save or fallback download.
 
 ## Analytics
 

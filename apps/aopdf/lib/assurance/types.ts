@@ -125,6 +125,5 @@ export interface WorkspaceHistoryEntry {
   readonly operation: AdmittedToolSlug;
   readonly completedAt: string;
   readonly sourceCount: number;
-  readonly outputFilename: string;
   readonly assurance: 'generated' | 'verified-bounded';
 }

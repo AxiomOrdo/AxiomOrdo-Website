@@ -384,7 +384,6 @@ export default function ToolWorkspace({ tool }: ToolWorkspaceProps) {
             operation: toolSlug,
             completedAt: createdAt,
             sourceCount: files.length,
-            outputFilename: filename,
             assurance: toolSlug === 'redact' ? 'verified-bounded' : 'generated',
           },
           ...current,
@@ -445,6 +444,10 @@ export default function ToolWorkspace({ tool }: ToolWorkspaceProps) {
               Selected source bytes remain separate and unchanged. Generated outputs
               are new files. Session history stores operation metadata only in this
               browser tab and never stores source filenames, document text, or hashes.
+            </p>
+            <p className="mt-2 text-xs leading-5 text-amber-200/80">
+              This release supports Chromium on desktop and mobile. Firefox and
+              Safari/WebKit are unverified and unsupported.
             </p>
           </div>
         </div>
@@ -699,6 +702,13 @@ export default function ToolWorkspace({ tool }: ToolWorkspaceProps) {
             AO-PDF rejects forms, annotations, attachments, JavaScript, incremental
             revisions, encryption, and malformed structures for this capability.
           </p>
+          <p className="mt-2 text-xs leading-5 text-amber-200/80">
+            Raster reconstruction does not preserve selectable text, accessibility,
+            links, signatures, forms, attachments, metadata, or original document
+            structures. Bounded verification establishes tested recovery resistance
+            only, not universal irrecoverability. You are responsible for selecting
+            rectangles that cover every sensitive visible pixel.
+          </p>
         </section>
       ) : null}
 
@@ -806,7 +816,6 @@ export default function ToolWorkspace({ tool }: ToolWorkspaceProps) {
               <li key={`${entry.completedAt}-${entry.operation}-${index}`} className="rounded-lg border border-zinc-800 p-3">
                 <span className="font-medium text-zinc-200">{entry.operation}</span>
                 {' · '}{entry.sourceCount} source{entry.sourceCount === 1 ? '' : 's'}
-                {' · '}{entry.outputFilename}
                 {' · '}{entry.assurance === 'verified-bounded' ? 'bounded verification passed' : 'output generated'}
               </li>
             ))}

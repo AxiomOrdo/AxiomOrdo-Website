@@ -151,12 +151,15 @@ test('workspace history stores bounded metadata only and can be cleared', () => 
     operation: 'inspect',
     completedAt: '2026-08-11T00:00:00.000Z',
     sourceCount: 1,
-    outputFilename: 'document-ao-pdf-inspection.zip',
     assurance: 'generated',
   };
-  writeWorkspaceHistory(storage, [entry]);
+  const legacyEntry = { ...entry, outputFilename: 'source-ao-pdf-inspection.zip' };
+  writeWorkspaceHistory(storage, [legacyEntry]);
   assert.deepEqual(readWorkspaceHistory(storage), [entry]);
-  assert.doesNotMatch([...values.values()].join(''), /source\.pdf|%PDF|sha256/i);
+  assert.doesNotMatch(
+    [...values.values()].join(''),
+    /source-ao-pdf|\.pdf|\.zip|%PDF|sha256/i,
+  );
   clearWorkspaceHistory(storage);
   assert.deepEqual(readWorkspaceHistory(storage), []);
 });

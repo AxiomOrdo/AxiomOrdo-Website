@@ -4,25 +4,34 @@ import { isAdmittedToolSlug } from '@/governance/tool-limits';
 const KEY = 'aopdf.assurance.workspace-history.v1';
 const LIMIT = 20;
 
-function isEntry(value: unknown): value is WorkspaceHistoryEntry {
-  if (!value || typeof value !== 'object') return false;
+function normalizeEntry(value: unknown): WorkspaceHistoryEntry | null {
+  if (!value || typeof value !== 'object') return null;
   const item = value as Record<string, unknown>;
-  return (
-    isAdmittedToolSlug(item.operation) &&
-    typeof item.completedAt === 'string' &&
-    Number.isFinite(Date.parse(item.completedAt)) &&
-    typeof item.sourceCount === 'number' &&
-    Number.isInteger(item.sourceCount) &&
-    item.sourceCount > 0 &&
-    typeof item.outputFilename === 'string' &&
-    (item.assurance === 'generated' || item.assurance === 'verified-bounded')
-  );
+  if (
+    !isAdmittedToolSlug(item.operation) ||
+    typeof item.completedAt !== 'string' ||
+    !Number.isFinite(Date.parse(item.completedAt)) ||
+    typeof item.sourceCount !== 'number' ||
+    !Number.isInteger(item.sourceCount) ||
+    item.sourceCount <= 0 ||
+    (item.assurance !== 'generated' && item.assurance !== 'verified-bounded')
+  ) {
+    return null;
+  }
+  return {
+    operation: item.operation,
+    completedAt: item.completedAt,
+    sourceCount: item.sourceCount,
+    assurance: item.assurance,
+  };
 }
 
 export function readWorkspaceHistory(storage: Storage): WorkspaceHistoryEntry[] {
   try {
     const parsed: unknown = JSON.parse(storage.getItem(KEY) ?? '[]');
-    return Array.isArray(parsed) ? parsed.filter(isEntry).slice(0, LIMIT) : [];
+    return Array.isArray(parsed)
+      ? parsed.map(normalizeEntry).filter((entry): entry is WorkspaceHistoryEntry => entry !== null).slice(0, LIMIT)
+      : [];
   } catch {
     return [];
   }
@@ -32,7 +41,10 @@ export function writeWorkspaceHistory(
   storage: Storage,
   entries: readonly WorkspaceHistoryEntry[],
 ): WorkspaceHistoryEntry[] {
-  const bounded = entries.filter(isEntry).slice(0, LIMIT);
+  const bounded = entries
+    .map(normalizeEntry)
+    .filter((entry): entry is WorkspaceHistoryEntry => entry !== null)
+    .slice(0, LIMIT);
   storage.setItem(KEY, JSON.stringify(bounded));
   return bounded;
 }
