@@ -1,6 +1,18 @@
 {
   "redirects": [
     {
+      "source": "/",
+      "has": [{ "type": "host", "value": "axiomordo.com" }],
+      "destination": "https://www.axiomordo.com/",
+      "permanent": true
+    },
+    {
+      "source": "/:path*/",
+      "has": [{ "type": "host", "value": "axiomordo.com" }],
+      "destination": "https://www.axiomordo.com/:path*/",
+      "permanent": true
+    },
+    {
       "source": "/:path*",
       "has": [{ "type": "host", "value": "axiomordo.com" }],
       "destination": "https://www.axiomordo.com/:path*",
