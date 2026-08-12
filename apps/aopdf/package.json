@@ -8,8 +8,8 @@
     "lint": "eslint app components governance lib scripts tests workers playwright.config.ts",
     "typecheck": "tsc --noEmit",
     "test": "tsx --test tests/**/*.test.ts",
-    "test:browser": "playwright test",
-    "test:reader-evidence": "playwright test --project=chromium --grep \"redaction bundle contains\"",
+    "test:browser": "node scripts/run-browser-tests.mjs",
+    "test:reader-evidence": "node scripts/run-browser-tests.mjs --project=chromium --grep \"redaction bundle contains\"",
     "sync:csp": "node scripts/sync-csp-hashes.mjs",
     "verify:csp": "node scripts/verify-csp-hashes.mjs"
   },
