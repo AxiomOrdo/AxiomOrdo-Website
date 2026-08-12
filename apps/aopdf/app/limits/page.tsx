@@ -7,7 +7,7 @@ import { TOOL_LIMITS } from '@/governance/tool-limits';
 
 export const metadata: Metadata = {
   title: 'Operating Limits',
-  description: 'Governed input, processing and output limits for all nine AO-PDF workflows.',
+  description: 'Governed input, processing, assurance and output limits for all thirteen AO-PDF workflows.',
 };
 
 export default function LimitsPage() {
@@ -21,10 +21,13 @@ export default function LimitsPage() {
             AO-PDF Operating Limits
           </h1>
           <p className="mt-4 text-sm leading-7 text-zinc-400 sm:text-base">
-            Every workflow processes locally in a dedicated browser worker. The
-            common boundary is 100 MiB per file, 250 MiB aggregate, 500 PDF
+            Every workflow processes locally. Transformations use the AO-PDF
+            operation worker; assurance parsing uses PDF.js&apos;s local worker while
+            local rendering, hashing and packaging remain in the browser. The common
+            boundary is 100 MiB per file, 250 MiB aggregate, up to 500 PDF
             pages, a 120-second timeout and a 1,024 MiB estimated working-memory
-            limit. Encrypted PDFs are unsupported.
+            limit. Permanent redaction is additionally capped at 50 pages.
+            Encrypted PDFs are unsupported.
           </p>
         </header>
 

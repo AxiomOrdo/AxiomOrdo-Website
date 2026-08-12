@@ -1,12 +1,33 @@
 import { expect, test } from '@playwright/test';
-import { PDFDocument } from 'pdf-lib';
+import JSZip from 'jszip';
+import { PDFDocument, StandardFonts } from 'pdf-lib';
+import { execFileSync } from 'node:child_process';
+import { resolve } from 'node:path';
 
 async function pdfFixture(pageCount = 2): Promise<Buffer> {
   const document = await PDFDocument.create({ updateMetadata: false });
   document.setTitle('Browser fixture');
+  const font = await document.embedFont(StandardFonts.Helvetica);
   for (let index = 0; index < pageCount; index += 1) {
-    document.addPage([300, 400]);
+    const page = document.addPage([300, 400]);
+    page.drawText('SECRET Browser fixture', { x: 60, y: 300, size: 18, font });
   }
+  return Buffer.from(await document.save({ useObjectStreams: false }));
+}
+
+async function annotatedPdfFixture(): Promise<Buffer> {
+  const document = await PDFDocument.create({ updateMetadata: false });
+  const page = document.addPage([300, 400]);
+  const field = document.getForm().createTextField('reviewer');
+  field.addToPage(page, { x: 30, y: 30, width: 100, height: 20 });
+  return Buffer.from(await document.save({ useObjectStreams: false }));
+}
+
+async function scannedPdfFixture(): Promise<Buffer> {
+  const document = await PDFDocument.create({ updateMetadata: false });
+  const image = await document.embedPng(onePixelPng);
+  const page = document.addPage([100, 100]);
+  page.drawImage(image, { x: 0, y: 0, width: 100, height: 100 });
   return Buffer.from(await document.save({ useObjectStreams: false }));
 }
 
@@ -25,6 +46,10 @@ const tools = [
   'page-numbers',
   'flatten',
   'images-to-pdf',
+  'inspect',
+  'compare',
+  'evidence-manifest',
+  'redact',
 ] as const;
 
 test.beforeEach(async ({ page }) => {
@@ -78,7 +103,7 @@ for (const tool of tools) {
       const files = [
         { name: 'fixture.pdf', mimeType: 'application/pdf', buffer },
       ];
-      if (tool === 'merge') {
+      if (tool === 'merge' || tool === 'compare') {
         files.push({
           name: 'second.pdf',
           mimeType: 'application/pdf',
@@ -95,7 +120,12 @@ for (const tool of tools) {
 
     const downloadPromise = page.waitForEvent('download');
     await page.getByRole('button', { name: 'Process locally' }).click();
-    const download = await downloadPromise;
+    const download = await Promise.race([
+      downloadPromise,
+      page.getByText(/\([A-Z_]+\)$/).waitFor({ timeout: 15_000 }).then(async () => {
+        throw new Error(`Workflow failed: ${await page.getByText(/\([A-Z_]+\)$/).textContent()}`);
+      }),
+    ]);
     await expect(page.getByText('Download started. Your browser is handling the download.')).toBeVisible();
     expect(download.suggestedFilename()).toMatch(/^.*ao-pdf.*\.(pdf|zip)$/);
     await expect(page.getByRole('heading', { name: 'Local processing summary' })).toBeVisible();
@@ -105,6 +135,122 @@ for (const tool of tools) {
     expect(transmitted).not.toContain('fixture.pdf');
     expect(transmitted).not.toContain('Browser fixture');
   });
+}
+
+test('redaction bundle contains a reopenable image-only PDF and bounded verification', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'chromium', 'Detailed artifact inspection runs once in Chromium.');
+  await page.goto('/ao-pdf/tools/redact/');
+  const source = await pdfFixture(1);
+  await page.locator('input[type=file]').setInputFiles({
+    name: 'sensitive.pdf',
+    mimeType: 'application/pdf',
+    buffer: source,
+  });
+  await page.getByLabel('Redaction rectangles').fill('1,15,15,70,25');
+  const downloadPromise = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Process locally' }).click();
+  const download = await downloadPromise;
+  const path = await download.path();
+  assertPath(path);
+  const archive = await JSZip.loadAsync(await import('node:fs/promises').then((fs) => fs.readFile(path)));
+  const redacted = await archive.file('redacted.pdf')?.async('uint8array');
+  const verification = await archive.file('redaction-verification.json')?.async('string');
+  const manifest = await archive.file('evidence-manifest.json')?.async('string');
+  expect(redacted).toBeTruthy();
+  expect(verification).toContain('"passed": true');
+  expect(manifest).toContain('does not prove');
+  expect(Buffer.from(redacted as Uint8Array).includes(Buffer.from('SECRET'))).toBe(false);
+  const reopened = await PDFDocument.load(redacted as Uint8Array, { updateMetadata: false });
+  expect(reopened.getPageCount()).toBe(1);
+  expect(reopened.getForm().getFields()).toHaveLength(0);
+  const parsedManifest = JSON.parse(manifest as string) as {
+    sources: Array<{ sha256: string }>;
+    outputs: Array<{ role: string; sha256: string }>;
+  };
+  const { createHash } = await import('node:crypto');
+  const digest = (bytes: Uint8Array) => createHash('sha256').update(bytes).digest('hex');
+  expect(parsedManifest.sources[0]?.sha256).toBe(digest(source));
+  expect(parsedManifest.outputs.find((output) => output.role === 'redacted.pdf')?.sha256)
+    .toBe(digest(redacted as Uint8Array));
+  await import('node:fs/promises').then((fs) =>
+    fs.writeFile(testInfo.outputPath('redacted-output.pdf'), redacted as Uint8Array),
+  );
+  const readerEvidence = JSON.parse(
+    execFileSync(
+      process.env.AOPDF_PYPDF_PYTHON ?? 'python3',
+      [
+        resolve(process.cwd(), 'tests/evidence/verify_redacted_pdf.py'),
+        testInfo.outputPath('redacted-output.pdf'),
+        '--expected-pages',
+        '1',
+        '--forbidden-text',
+        'SECRET',
+      ],
+      { encoding: 'utf8' },
+    ),
+  ) as {
+    passed: boolean;
+    reader: string;
+    assertions: Record<string, boolean>;
+  };
+  expect(readerEvidence.passed).toBe(true);
+  expect(readerEvidence.reader).toBe('pypdf 6.15.0');
+  expect(Object.values(readerEvidence.assertions).every(Boolean)).toBe(true);
+});
+
+test('scanned page redaction completes without OCR', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'chromium', 'Scanned artifact flow runs once in Chromium.');
+  await page.goto('/ao-pdf/tools/redact/');
+  await page.locator('input[type=file]').setInputFiles({
+    name: 'scan.pdf',
+    mimeType: 'application/pdf',
+    buffer: await scannedPdfFixture(),
+  });
+  await page.getByLabel('Redaction rectangles').fill('1,10,10,30,30');
+  const downloadPromise = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Process locally' }).click();
+  await downloadPromise;
+  await expect(page.getByText('Download started. Your browser is handling the download.')).toBeVisible();
+});
+
+test('redaction rejects annotated content instead of weakening the claim', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'chromium', 'Unsupported-content flow runs once in Chromium.');
+  await page.goto('/ao-pdf/tools/redact/');
+  await page.locator('input[type=file]').setInputFiles({
+    name: 'annotated.pdf',
+    mimeType: 'application/pdf',
+    buffer: await annotatedPdfFixture(),
+  });
+  await page.getByRole('button', { name: 'Process locally' }).click();
+  await expect(page.getByText(/\(REDACTION_CONTENT_UNSUPPORTED\)$/)).toBeVisible();
+});
+
+test('malformed and encrypted files fail with distinct governed errors', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'chromium', 'Admission failures run once in Chromium.');
+  await page.goto('/ao-pdf/tools/inspect/');
+  const input = page.locator('input[type=file]');
+  await input.setInputFiles({
+    name: 'broken.pdf',
+    mimeType: 'application/pdf',
+    buffer: Buffer.from([1, 2, 3, 4, 5]),
+  });
+  await expect(page.getByText(/\(PDF_CORRUPTED\)$/)).toBeVisible();
+
+  const valid = await pdfFixture(1);
+  const encrypted = Buffer.from(
+    valid.toString('latin1').replace(/\/Root (\d+ \d+ R)/, '/Root $1\n/Encrypt $1'),
+    'latin1',
+  );
+  await input.setInputFiles({
+    name: 'encrypted.pdf',
+    mimeType: 'application/pdf',
+    buffer: encrypted,
+  });
+  await expect(page.getByText(/\(ENCRYPTED_PDF_UNSUPPORTED\)$/)).toBeVisible();
+});
+
+function assertPath(path: string | null): asserts path is string {
+  expect(path).not.toBeNull();
 }
 
 test('limits and legal routes are reachable', async ({ page }) => {

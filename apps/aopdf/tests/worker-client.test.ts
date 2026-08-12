@@ -30,6 +30,7 @@ function request(operationId: string): WorkerRequest {
   return {
     type: 'execute',
     operationId,
+    createdAt: '2026-08-11T00:00:00.000Z',
     tool: 'rotate',
     inputs: [{
       bytes: new ArrayBuffer(1),

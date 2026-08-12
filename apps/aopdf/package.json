@@ -9,6 +9,7 @@
     "typecheck": "tsc --noEmit",
     "test": "tsx --test tests/**/*.test.ts",
     "test:browser": "playwright test",
+    "test:reader-evidence": "playwright test --project=chromium --grep \"redaction bundle contains\"",
     "sync:csp": "node scripts/sync-csp-hashes.mjs",
     "verify:csp": "node scripts/verify-csp-hashes.mjs"
   },
@@ -34,12 +35,14 @@
     "lucide-react": "1.28.0",
     "next": "16.2.12",
     "pdf-lib": "^1.17.1",
+    "pdfjs-dist": "5.4.624",
     "react": "19.2.8",
     "react-dom": "19.2.8"
   },
   "overrides": {
     "brace-expansion": "5.0.9",
     "minimatch": "10.2.6",
+    "nanoid": "3.3.17",
     "postcss": "8.5.25",
     "sharp": "0.35.3"
   }

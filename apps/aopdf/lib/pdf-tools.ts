@@ -8,7 +8,7 @@ export interface PdfTool {
   name: string;
   description: string;
   icon: string;
-  category: 'Organize' | 'Edit' | 'Convert' | 'Optimize';
+  category: 'Assure' | 'Organize' | 'Edit' | 'Convert' | 'Optimize';
   clientSide: true;
   status: 'available' | 'beta';
   statusNote?: string;
@@ -24,6 +24,10 @@ export const PDF_TOOLS: readonly PdfTool[] = [
   { slug: 'page-numbers', name: 'Add Page Numbers', description: 'Insert page numbers at one supported position on every page.', icon: 'Hash', category: 'Edit', clientSide: true, status: 'available' },
   { slug: 'flatten', name: 'Flatten Form Fields', description: 'Flatten only the supported, regression-tested AcroForm field types.', icon: 'PanelTopClose', category: 'Edit', clientSide: true, status: 'available' },
   { slug: 'images-to-pdf', name: 'Images to PDF', description: 'Create one PDF from up to 20 JPG or PNG images, without OCR.', icon: 'ImagePlus', category: 'Convert', clientSide: true, status: 'available' },
+  { slug: 'inspect', name: 'Inspect PDF', description: 'Report detected structure, content classes, warnings, and explicit inspection limits.', icon: 'ScanSearch', category: 'Assure', clientSide: true, status: 'available' },
+  { slug: 'compare', name: 'Compare Documents', description: 'Compare extracted text, page geometry, annotations, and rendered page appearances.', icon: 'Columns2', category: 'Assure', clientSide: true, status: 'beta', statusNote: 'Rendered comparison uses a fixed 96 DPI view and does not establish equivalence.' },
+  { slug: 'evidence-manifest', name: 'Evidence Manifest', description: 'Create local SHA-256 source records with machine-readable and readable manifests.', icon: 'FileKey2', category: 'Assure', clientSide: true, status: 'available' },
+  { slug: 'redact', name: 'Permanent Redaction', description: 'Remove selected visible regions by rebuilding supported pages as verified image-only output.', icon: 'ShieldX', category: 'Assure', clientSide: true, status: 'beta', statusNote: 'Complex document structures are rejected; output is image-only.' },
 ] as const;
 
 if (
@@ -33,7 +37,7 @@ if (
   throw new Error('PDF_TOOLS must match the governed admitted tool registry.');
 }
 
-export const TOOL_CATEGORIES = ['Organize', 'Edit', 'Convert', 'Optimize'] as const;
+export const TOOL_CATEGORIES = ['Assure', 'Organize', 'Edit', 'Convert', 'Optimize'] as const;
 
 export function getToolBySlug(slug: string): PdfTool | undefined {
   return PDF_TOOLS.find((tool) => tool.slug === slug);

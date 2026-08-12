@@ -1,5 +1,6 @@
 import type { OperationErrorCode } from '@/governance/operation-errors';
 import type { AdmittedToolSlug } from '@/governance/tool-limits';
+import type { RedactionRectangle } from '@/lib/assurance/types';
 
 export type WorkerOptions =
   | { readonly kind: 'none' }
@@ -10,7 +11,8 @@ export type WorkerOptions =
   | {
       readonly kind: 'page-numbers';
       readonly position: 'bottom-center' | 'bottom-right' | 'top-center';
-    };
+    }
+  | { readonly kind: 'redact'; readonly rectangles: readonly RedactionRectangle[] };
 
 export interface WorkerInput {
   readonly bytes: ArrayBuffer;
@@ -20,6 +22,7 @@ export interface WorkerInput {
 export interface WorkerRequest {
   readonly type: 'execute';
   readonly operationId: string;
+  readonly createdAt: string;
   readonly tool: AdmittedToolSlug;
   readonly inputs: WorkerInput[];
   readonly sourcePageCount: number;

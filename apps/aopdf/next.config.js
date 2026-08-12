@@ -11,6 +11,17 @@ const nextConfig = {
     ignoreBuildErrors: false,
   },
   images: { unoptimized: true },
+  webpack(config) {
+    config.module.rules.push({
+      test: /pdf(?:\.worker)?\.mjs$/,
+      resourceQuery: /aopdf-static-module/,
+      type: 'asset/resource',
+      generator: {
+        filename: 'static/chunks/[name].[contenthash][ext]',
+      },
+    });
+    return config;
+  },
   generateBuildId: async () => 'aopdf-governed-2026-07-31',
 };
 

@@ -18,6 +18,10 @@ export const OPERATION_ERROR_CODES = [
   'DOWNLOAD_FALLBACK_FAILED',
   'WATERMARK_TEXT_INVALID',
   'FORM_TYPE_UNSUPPORTED',
+  'BROWSER_RENDERING_UNSUPPORTED',
+  'REDACTION_SELECTION_INVALID',
+  'REDACTION_CONTENT_UNSUPPORTED',
+  'REDACTION_VERIFICATION_FAILED',
   'PROCESSING_FAILED',
 ] as const;
 
@@ -104,6 +108,22 @@ export const ERROR_DEFINITIONS: Record<OperationErrorCode, ErrorDefinition> = {
   FORM_TYPE_UNSUPPORTED: {
     message: 'The document contains an unsupported form field type.',
     recovery: 'Use a PDF containing only the form fields listed in the limitations.',
+  },
+  BROWSER_RENDERING_UNSUPPORTED: {
+    message: 'This browser cannot provide the isolated canvas required for page assurance.',
+    recovery: 'Use a current browser with OffscreenCanvas support.',
+  },
+  REDACTION_SELECTION_INVALID: {
+    message: 'The redaction rectangle is outside the supported page area.',
+    recovery: 'Enter a valid page and percentage coordinates contained within that page.',
+  },
+  REDACTION_CONTENT_UNSUPPORTED: {
+    message: 'Permanent redaction is unavailable for this document structure.',
+    recovery: 'Remove forms, annotations, attachments, JavaScript, or incremental revisions in a trusted editor before retrying.',
+  },
+  REDACTION_VERIFICATION_FAILED: {
+    message: 'The generated redaction did not pass bounded structural verification.',
+    recovery: 'Do not use the output. Try a simpler supported document or use a trusted specialist redaction tool.',
   },
   PROCESSING_FAILED: {
     message: 'The PDF operation could not be completed.',

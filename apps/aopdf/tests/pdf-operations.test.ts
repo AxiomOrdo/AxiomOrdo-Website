@@ -196,5 +196,9 @@ test('only implemented tools are marked available or beta', () => {
     'page-numbers',
     'flatten',
     'images-to-pdf',
+    'inspect',
+    'compare',
+    'evidence-manifest',
+    'redact',
   ]);
 });

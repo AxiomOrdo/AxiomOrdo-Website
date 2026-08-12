@@ -1,6 +1,6 @@
 ---
-effectiveDate: "2026-07-31"
-revisionId: "aopdf-terms-2026-07-31-r1"
+effectiveDate: "2026-08-11"
+revisionId: "aopdf-terms-2026-08-11-r2"
 reviewStatus: "operational-draft"
 ---
 
@@ -10,11 +10,11 @@ These operational-draft terms govern use of AO-PDF, a service provided by AxiomO
 
 ## Service boundary
 
-AO-PDF provides only the nine workflows displayed as available. Processing occurs locally in the browser for those workflows. Accounts, paid plans, server-side document processing, persistent histories, OCR, Office conversion, password unlocking or protection, secure redaction and unlisted PDF operations are not part of the current service.
+AO-PDF provides only the thirteen workflows displayed as available. Processing occurs locally in the browser for those workflows. Permanent redaction is limited to supported inputs that can be reconstructed as image-only pages and pass the disclosed bounded verification checks. Accounts, paid plans, server-side document processing, cross-session document histories, OCR, Office conversion, password unlocking or protection, and unlisted PDF operations are not part of the current service.
 
 ## Your responsibility
 
-You must have authority to process each document and must review every generated output before relying on it. AO-PDF does not guarantee that document structure, unsupported metadata, annotations, signatures, XFA content or untested form widgets will be preserved.
+You must have authority to process each document and must review every generated output before relying on it. Inspection warnings are not threat findings, comparison does not establish semantic or legal equivalence, and a hash manifest is not proof of authenticity, ownership, chronology, admissibility or chain of custody. AO-PDF does not guarantee that document structure, unsupported metadata, annotations, signatures, XFA content or untested form widgets will be preserved.
 
 ## Availability and limits
 

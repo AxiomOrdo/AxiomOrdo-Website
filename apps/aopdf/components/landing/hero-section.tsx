@@ -19,12 +19,12 @@ export default function HeroSection() {
           </div>
 
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight mb-6">
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400">Private PDF Workflows</span>
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400">Browser-Local Document Assurance</span>
             <br />With Explicit Boundaries
           </h1>
 
           <p className="text-lg text-zinc-400 max-w-2xl mx-auto mb-10 leading-relaxed">
-            Use nine governed browser-local workflows with visible limits, stable failures and no document upload.
+            Inspect, compare, hash, redact supported content, and transform PDFs with visible limits, stable failures, and no document upload.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">

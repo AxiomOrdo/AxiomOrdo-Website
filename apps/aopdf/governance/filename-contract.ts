@@ -34,7 +34,11 @@ export function canonicalOutputFilename(args: {
   if (args.tool === 'split') {
     return `${base}-ao-pdf-pages-${args.canonicalRange ?? 'selected'}.pdf`;
   }
-  const operation: Record<Exclude<AdmittedToolSlug, 'merge' | 'split' | 'images-to-pdf'>, string> = {
+  if (args.tool === 'inspect') return `${base}-ao-pdf-inspection.zip`;
+  if (args.tool === 'compare') return 'ao-pdf-document-comparison.zip';
+  if (args.tool === 'evidence-manifest') return 'ao-pdf-evidence-manifest.zip';
+  if (args.tool === 'redact') return `${base}-ao-pdf-redacted-assurance.zip`;
+  const operation: Record<Exclude<AdmittedToolSlug, 'merge' | 'split' | 'images-to-pdf' | 'inspect' | 'compare' | 'evidence-manifest' | 'redact'>, string> = {
     compress: 'optimized',
     rotate: 'rotated',
     'delete-pages': 'pages-removed',

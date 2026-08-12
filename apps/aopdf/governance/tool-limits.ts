@@ -8,6 +8,10 @@ export const ADMITTED_TOOL_SLUGS = [
   'page-numbers',
   'flatten',
   'images-to-pdf',
+  'inspect',
+  'compare',
+  'evidence-manifest',
+  'redact',
 ] as const;
 
 export type AdmittedToolSlug = (typeof ADMITTED_TOOL_SLUGS)[number];
@@ -110,6 +114,40 @@ export const TOOL_LIMITS: Record<AdmittedToolSlug, ToolLimits> = {
     limitations: [
       'Only JPG and PNG images are supported.',
       'Each image becomes one PDF page and no OCR is performed.',
+    ],
+  },
+  inspect: {
+    ...SINGLE_PDF,
+    limitations: [
+      'Findings are parser-observable facts and warnings, not threat verdicts.',
+      'Embedded content is identified only where the browser parser exposes it.',
+    ],
+  },
+  compare: {
+    ...COMMON,
+    minFiles: 2,
+    maxFiles: 2,
+    limitations: [
+      'Text extraction does not perform OCR on scanned pages.',
+      'Rendered comparison is fixed at 96 DPI and does not establish semantic or legal equivalence.',
+    ],
+  },
+  'evidence-manifest': {
+    ...COMMON,
+    minFiles: 1,
+    maxFiles: 20,
+    limitations: [
+      'SHA-256 records byte equality only.',
+      'A manifest does not prove authenticity, ownership, chronology, admissibility, or chain of custody.',
+    ],
+  },
+  redact: {
+    ...SINGLE_PDF,
+    maxAggregatePages: 50,
+    limitations: [
+      'Supported inputs are reconstructed as image-only pages at 144 DPI before redaction rectangles are burned into the pixels.',
+      'Annotations, attachments, forms, JavaScript, incremental revisions, encryption, and malformed PDFs are rejected.',
+      'The output loses selectable text, accessibility structure, links, forms, signatures, attachments, and metadata.',
     ],
   },
 };
