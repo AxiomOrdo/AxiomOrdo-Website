@@ -25,6 +25,10 @@ export const metadata: Metadata = {
   alternates: {
     canonical: '/ao-pdf/',
   },
+  robots: {
+    index: true,
+    follow: true,
+  },
   icons: {
     icon: '/ao-pdf/favicon.svg',
     shortcut: '/ao-pdf/favicon.svg',
