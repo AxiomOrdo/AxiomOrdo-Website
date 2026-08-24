@@ -77,6 +77,8 @@
     { "source": "/meriden-compliance/insights/maritime-qhse/why-work-should-not-start-just-because-the-permit-is-approved/", "destination": "/articles/why-work-should-not-start-just-because-the-permit-is-approved.html" },
     { "source": "/meriden-compliance/insights/maritime-qhse/false-assurance-maritime-compliance", "destination": "/articles/false-assurance-maritime-compliance.html" },
     { "source": "/meriden-compliance/insights/maritime-qhse/false-assurance-maritime-compliance/", "destination": "/articles/false-assurance-maritime-compliance.html" },
+    { "source": "/meriden-compliance/insights", "destination": "/architecture-v2/routes/meriden-compliance/insights.html" },
+    { "source": "/meriden-compliance/insights/:path*", "destination": "/architecture-v2/routes/meriden-compliance/insights/:path*.html" },
     { "source": "/authors/phillip-inzaghi", "destination": "/architecture-v2/routes/authors/phillip-inzaghi.html" },
     { "source": "/verilog", "destination": "/architecture-v2/routes/verilog.html" },
     { "source": "/emissary", "destination": "/architecture-v2/routes/emissary.html" },
@@ -103,9 +105,11 @@
     { "source": "/contact", "destination": "/architecture-v2/routes/contact.html" },
     { "source": "/meriden/ards-founding-panel", "destination": "/architecture-v2/routes/meriden/ards-founding-panel.html" },
     { "source": "/meriden/resources", "destination": "/architecture-v2/routes/meriden/resources.html" },
+    { "source": "/meriden/resources/30-day-ai-rollout-plan-for-maritime-teams", "destination": "/architecture-v2/routes/meriden/resources/30-day-ai-rollout-plan-for-maritime-teams.html" },
+    { "source": "/meriden/resources/30-day-ai-rollout-plan-for-maritime-teams/", "destination": "/architecture-v2/routes/meriden/resources/30-day-ai-rollout-plan-for-maritime-teams.html" },
+    { "source": "/meriden/resources/:path*", "destination": "/architecture-v2/routes/meriden/resources/:path*.html" },
     { "source": "/meriden/psc-readiness", "destination": "/meriden/psc-readiness-review.html" },
     { "source": "/meriden/ai-governance", "destination": "/architecture-v2/routes/meriden/ai-governance.html" },
-    { "source": "/meriden/management-systems", "destination": "/architecture-v2/routes/meriden/management-systems.html" },
-    { "source": "/(.*)", "destination": "/index.html" }
+    { "source": "/meriden/management-systems", "destination": "/architecture-v2/routes/meriden/management-systems.html" }
   ]
 }
