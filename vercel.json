@@ -101,6 +101,8 @@
     { "source": "/trust", "destination": "/architecture-v2/routes/trust.html" },
     { "source": "/trust/:path*", "destination": "/architecture-v2/routes/trust/:path*.html" },
     { "source": "/legal", "destination": "/architecture-v2/routes/legal.html" },
+    { "source": "/legal/ico-registration", "destination": "/legal/ico-registration/index.html" },
+    { "source": "/legal/ico-registration/", "destination": "/legal/ico-registration/index.html" },
     { "source": "/legal/:path*", "destination": "/architecture-v2/routes/legal/:path*.html" },
     { "source": "/contact", "destination": "/architecture-v2/routes/contact.html" },
     { "source": "/meriden/ards-founding-panel", "destination": "/architecture-v2/routes/meriden/ards-founding-panel.html" },

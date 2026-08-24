@@ -17,6 +17,7 @@ export default function Footer() {
           <Link href="/privacy" className="hover:text-zinc-400 transition-colors">Privacy</Link>
           <Link href="/terms" className="hover:text-zinc-400 transition-colors">Terms</Link>
           <Link href="/acceptable-use" className="hover:text-zinc-400 transition-colors">Acceptable use</Link>
+          <a href="/legal/ico-registration/" className="hover:text-zinc-400 transition-colors">ICO registration</a>
         </div>
         <p className="text-xs text-zinc-600">© 2026 AxiomOrdo Ltd</p>
       </div>

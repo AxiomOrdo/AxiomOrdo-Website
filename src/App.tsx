@@ -370,6 +370,7 @@ const ARDS_URL =
   "https://ards.axiomordo.com/";
 
 const SITE_URL = "https://www.axiomordo.com";
+const ICO_REGISTRATION_PATH = "/legal/ico-registration/";
 const MERIDEN_PATH = "/meriden-compliance";
 const MERIDEN_INSIGHTS_PATH = `${MERIDEN_PATH}/insights`;
 
@@ -737,6 +738,9 @@ function GroupFooter({ brand }: { brand?: { name: string; accent: string } }) {
             </a>
             <a href={ARDS_URL} target="_blank" rel="noopener noreferrer" className="transition hover:text-white/65">
               ARDS Standard
+            </a>
+            <a href={ICO_REGISTRATION_PATH} className="transition hover:text-white/65">
+              ICO registration ZC216112
             </a>
             {brands.map((b) => (
               <Link key={b.key} to={b.href} className="transition hover:text-white/65">
