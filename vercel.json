@@ -1,5 +1,7 @@
 {
   "redirects": [
+    { "source": "/gatezero", "destination": "https://gate-zero.tech/", "permanent": true },
+    { "source": "/gatezero/", "destination": "https://gate-zero.tech/", "permanent": true },
     {
       "source": "/",
       "has": [{ "type": "host", "value": "axiomordo.com" }],
