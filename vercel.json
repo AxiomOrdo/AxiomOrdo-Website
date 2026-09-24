@@ -1,7 +1,5 @@
 {
   "redirects": [
-    { "source": "/gatezero", "destination": "https://gate-zero.tech/", "permanent": true },
-    { "source": "/gatezero/", "destination": "https://gate-zero.tech/", "permanent": true },
     {
       "source": "/",
       "has": [{ "type": "host", "value": "axiomordo.com" }],
@@ -20,6 +18,8 @@
       "destination": "https://www.axiomordo.com/:path*",
       "permanent": true
     },
+    { "source": "/gatezero", "destination": "https://gate-zero.tech/", "permanent": true },
+    { "source": "/gatezero/", "destination": "https://gate-zero.tech/", "permanent": true },
     { "source": "/aopdf", "destination": "/ao-pdf/", "permanent": true },
     { "source": "/aopdf/", "destination": "/ao-pdf/", "permanent": true },
     { "source": "/aopdf/acceptable-use/", "destination": "/ao-pdf/acceptable-use/", "permanent": true },
