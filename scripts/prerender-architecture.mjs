@@ -40,8 +40,8 @@ const groups = {
 
 const details = {
   "/platforms/meriden": {
-    title: "Meriden maritime compliance",
-    description: "Meriden supports audit readiness, management-system implementation and maritime AI governance with evidence designed for real operations.",
+    title: "Meriden Compliance — an AxiomOrdo brand",
+    description: "Meriden Compliance publishes practical maritime resources and articles under its own brand within the AxiomOrdo group.",
   },
   "/meriden/resources/30-day-ai-rollout-plan-for-maritime-teams/": {
     title: "30-Day AI rollout plan for maritime teams",
@@ -137,7 +137,7 @@ const groupContent = {
     section: "Platform portfolio",
     intro: "Each platform has a defined regulatory domain, user, evidence model and decision output.",
     cards: [
-      ["Meriden", "Maritime compliance, audit readiness and management-system transition.", "/platforms/meriden"],
+      ["Meriden", "Maritime resources and articles from an AxiomOrdo brand.", "/platforms/meriden"],
       ["Sentinel", "EUDR due-diligence evidence traced from product to plot.", "/sentinel"],
       ["ClearMark", "SKU-level PFAS exposure and evidence classification.", "/clearmark"],
       ["VeriLog", "Structured audit evidence before the external auditor arrives.", "/verilog"],
@@ -225,6 +225,14 @@ const groupContent = {
 };
 
 function staticContent(route) {
+  if (route === "/platforms/meriden") return {
+    section: "Visit Meriden Compliance",
+    intro: "The Meriden website is the home of its product catalogue and articles. Product purchases are completed in Meriden’s Shopify store.",
+    cards: [
+      ["Shop", "Browse current maritime resources, prices and available editions.", "https://www.meridencompliance.com/shop"],
+      ["Articles", "Read Phillip Inzaghi on maritime QHSE, safety and responsible AI use.", "https://www.meridencompliance.com/insights"],
+    ],
+  };
   const parts = route.split("/").filter(Boolean);
   const group = groupContent[parts[0]];
   if (group && parts.length === 1) return group;
@@ -309,15 +317,16 @@ function sitemapRoutes() {
   return routes;
 }
 
-const sourceRoutes = sitemapRoutes();
+const isMeridenPublication = route => route === "/meriden-compliance" || route.startsWith("/meriden-compliance/");
+const sourceRoutes = sitemapRoutes().filter(route => !isMeridenPublication(route));
 const routes = [...new Set([...sourceRoutes, ...explicitRoutes, ...Object.keys(legacyRoutes)])]
   .filter((route) => explicitRoutes.includes(route) || legacyRoutes[route] || Object.keys(groups).some((group) => route === `/${group}` || route.startsWith(`/${group}/`)) || route.startsWith("/meriden/"))
-  .filter((route) => route !== "/")
+  .filter((route) => route !== "/" && !isMeridenPublication(route))
   .sort();
 
 const sitemapUrls = [
   "/",
-  ...new Set([...sourceRoutes, ...explicitRoutes, ...Object.keys(legacyRoutes)].filter((route) => route !== "/")),
+  ...new Set([...sourceRoutes, ...explicitRoutes, ...Object.keys(legacyRoutes)].filter((route) => route !== "/" && !isMeridenPublication(route))),
 ].sort();
 const sitemapXml = [
   '<?xml version="1.0" encoding="UTF-8"?>',
