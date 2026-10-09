@@ -44,6 +44,5 @@ jobs:
         working-directory: apps/aopdf
       - run: npx playwright install --with-deps chromium
         working-directory: apps/aopdf
-      - run: npm run generate:samples
+      - run: npm run build
       - run: npm run test:google-start
-      - run: npm run build:site
