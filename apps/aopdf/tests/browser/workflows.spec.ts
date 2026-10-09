@@ -281,6 +281,13 @@ test('limits and legal routes are reachable', async ({ page }) => {
   }
 });
 
+test('public product identifies and links to its operating company', async ({ page }) => {
+  await page.goto('/ao-pdf/');
+  await expect(
+    page.getByRole('link', { name: '© 2026 AxiomOrdo Ltd' }),
+  ).toHaveAttribute('href', 'https://www.axiomordo.com/');
+});
+
 test('operation controls remain usable at governed responsive widths', async ({ page }) => {
   for (const width of [320, 375, 768]) {
     await page.setViewportSize({ width, height: 800 });

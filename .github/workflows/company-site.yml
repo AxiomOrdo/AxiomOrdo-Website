@@ -1,0 +1,49 @@
+name: Company Site Gate
+
+on:
+  pull_request:
+    paths:
+      - "src/**"
+      - "index.html"
+      - "public/samples/**"
+      - "public/architecture-v2/**"
+      - "scripts/generate-google-start-samples.mjs"
+      - "scripts/prerender-architecture.mjs"
+      - "tests/google-start-website.test.mjs"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/company-site.yml"
+  push:
+    branches: [main]
+    paths:
+      - "src/**"
+      - "index.html"
+      - "public/samples/**"
+      - "public/architecture-v2/**"
+      - "scripts/generate-google-start-samples.mjs"
+      - "scripts/prerender-architecture.mjs"
+      - "tests/google-start-website.test.mjs"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/company-site.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm ci --ignore-scripts
+        working-directory: apps/aopdf
+      - run: npx playwright install --with-deps chromium
+        working-directory: apps/aopdf
+      - run: npm run generate:samples
+      - run: npm run test:google-start
+      - run: npm run build:site

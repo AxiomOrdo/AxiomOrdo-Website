@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "npm run build:aopdf && npm run build:site",
     "build:aopdf": "node scripts/build-aopdf.mjs",
-    "build:site": "node scripts/prerender-architecture.mjs && vite build",
+    "build:site": "npm run generate:samples && node scripts/prerender-architecture.mjs && vite build",
+    "generate:samples": "node scripts/generate-google-start-samples.mjs",
+    "test:google-start": "node --test tests/google-start-website.test.mjs",
     "preview": "vite preview"
   },
   "dependencies": {

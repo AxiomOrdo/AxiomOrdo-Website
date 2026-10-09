@@ -1820,6 +1820,11 @@ function PhillipAuthorPage() {
 function AxiomOrdoHome() {
   return (
     <main className="text-white" style={{ background: "#050810" }}>
+      <PageSeo
+        title="AxiomOrdo | Regulatory Intelligence and Document Evidence Software"
+        description="AxiomOrdo Ltd develops document-processing and regulatory evidence software. Try AO-PDF in your browser and explore the Gate Zero product demonstration."
+        canonicalPath="/"
+      />
       <GroupNav />
 
       {/* ── Hero ── */}
@@ -1897,6 +1902,61 @@ function AxiomOrdoHome() {
         </div>
       </section>
 
+      {/* ── Operational public product ── */}
+      <section className="border-y border-white/8 bg-cyan-300/[0.04] py-24 sm:py-32">
+        <div className="mx-auto max-w-7xl px-5 sm:px-8">
+          <div className="grid gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-cyan-200">
+                Live operational product
+              </p>
+              <h2 className="mt-5 text-3xl font-semibold tracking-tight text-white sm:text-5xl">
+                Try AO-PDF with two synthetic documents.
+              </h2>
+              <p className="mt-6 max-w-2xl text-lg leading-8 text-white/60">
+                AO-PDF is AxiomOrdo&apos;s public browser-based document tool. Open
+                the working interface, add both clearly labelled synthetic PDFs,
+                merge them and download the two-page result. No account is required.
+              </p>
+              <a
+                href="/ao-pdf/"
+                className="mt-8 inline-flex rounded-full bg-cyan-200 px-6 py-3 font-semibold text-slate-950 transition hover:bg-cyan-100"
+              >
+                Open AO-PDF →
+              </a>
+            </div>
+            <div className="rounded-2xl border border-white/10 bg-[#07101d] p-7 sm:p-9">
+              <h3 className="text-xl font-semibold text-white">Reviewer walkthrough</h3>
+              <ol className="mt-5 space-y-4 text-base leading-7 text-white/60">
+                <li><span className="font-semibold text-white">1.</span> Download both synthetic source documents below.</li>
+                <li><span className="font-semibold text-white">2.</span> Open AO-PDF and add both files to the merge workspace.</li>
+                <li><span className="font-semibold text-white">3.</span> Merge and download the resulting two-page PDF.</li>
+              </ol>
+              <div className="mt-7 grid gap-3">
+                <a
+                  href="/samples/axiomordo-synthetic-source-a.pdf"
+                  download
+                  className="rounded-xl border border-white/10 px-5 py-4 font-semibold text-cyan-200 transition hover:border-cyan-200/40"
+                >
+                  Download synthetic source document A
+                </a>
+                <a
+                  href="/samples/axiomordo-synthetic-source-b.pdf"
+                  download
+                  className="rounded-xl border border-white/10 px-5 py-4 font-semibold text-cyan-200 transition hover:border-cyan-200/40"
+                >
+                  Download synthetic source document B
+                </a>
+              </div>
+              <p className="mt-5 text-sm leading-6 text-white/40">
+                The files contain fictional Gateway 2 project information created
+                solely for this public demonstration.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ── Platform Grid ── */}
       <section id="platforms" className="py-24 sm:py-32" style={{ background: "rgba(255,255,255,0.02)" }}>
         <div className="mx-auto max-w-7xl px-5 sm:px-8">
@@ -1904,9 +1964,9 @@ function AxiomOrdoHome() {
             <p className="text-xs font-semibold uppercase tracking-[0.24em] text-cyan-200">Our flagship project</p>
             <h2 id="gate-zero-flagship" className="mt-5 text-4xl font-semibold tracking-tight text-white sm:text-6xl">Gate Zero</h2>
             <p className="mt-5 max-w-3xl text-2xl leading-snug tracking-tight text-white sm:text-3xl">See what’s missing from your submission before you send it.</p>
-            <p className="mt-5 max-w-2xl text-base leading-7 text-white/65">Explore a synthetic example, inspect the recorded findings and download a sample handover. See how Gate Zero makes document issues and outstanding actions easier to review.</p>
+            <p className="mt-5 max-w-2xl text-base leading-7 text-white/65">Gate Zero is AxiomOrdo&apos;s paid SaaS product for traceable document and evidence review. It is progressing through controlled pilot qualification, with recurring workspace subscriptions as its intended commercial model. Explore its public synthetic tools and product workflow.</p>
             <a href="https://gate-zero.tech/" className="mt-8 inline-flex rounded-full bg-cyan-200 px-6 py-3 font-semibold text-slate-950 transition hover:bg-cyan-100">Explore Gate Zero ↗</a>
-            <p className="mt-4 text-sm text-white/50">Public demonstration · Synthetic documents · Recorded engine results</p>
+            <p className="mt-4 text-sm text-white/50">Public product demonstration · Synthetic material · Pilot qualification</p>
           </article>
           <p className="text-xs font-semibold uppercase tracking-[0.28em] text-white/35">
             Our Platforms
@@ -2018,27 +2078,35 @@ function AxiomOrdoHome() {
           <div className="grid gap-16 lg:grid-cols-[1fr_1.1fr]">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.28em] text-white/35">
-                Founded On
+                Founder and current core team
               </p>
               <h2 className="mt-5 text-3xl font-semibold tracking-tight text-white sm:text-5xl">
-                Domain knowledge.
-                <br />
-                Not consulting it.
+                Phillip Inzaghi
               </h2>
+              <p className="mt-5 text-base leading-7 text-white/50">
+                Sole founder and director of AxiomOrdo Ltd.
+              </p>
             </div>
             <div className="space-y-6 text-lg leading-8 text-white/55">
               <p>
-                AxiomOrdo was founded by an ISM Lead Auditor and Officer of the
-                Watch with 20+ years of maritime QHSE experience — not a
-                technology background looking for a compliance market.
+                Phillip is AxiomOrdo&apos;s sole founder, director and current core
+                team. He leads product direction, regulatory evidence design and
+                commercial development across AO-PDF and Gate Zero.
               </p>
               <p>
-                Every platform, every obligation mapping, and every classification
-                rule is built from operational reality: ISM Code audits, port
-                state control inspections, STCW compliance, MLC 2006 management,
-                and hands-on engagement with the regulatory frameworks our
-                platforms serve.
+                His background includes more than 20 years in maritime QHSE,
+                including work as an ISM Lead Auditor and Officer of the Watch.
+                AxiomOrdo Ltd is registered in England and Wales under company
+                number 17179868.
               </p>
+              <a
+                href="https://find-and-update.company-information.service.gov.uk/company/17179868/officers"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex rounded-full border border-white/15 px-6 py-3 text-sm font-semibold text-white transition hover:border-cyan-200/50 hover:text-cyan-200"
+              >
+                Verify Phillip Inzaghi at Companies House ↗
+              </a>
               <div className="mt-8 flex flex-wrap gap-3">
                 {[
                   "ISM Lead Auditor",
@@ -2058,6 +2126,32 @@ function AxiomOrdoHome() {
                 ))}
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Venture funding ── */}
+      <section className="px-5 py-16 sm:px-8 sm:py-20">
+        <div className="mx-auto max-w-7xl rounded-[2rem] border border-amber-200/30 bg-amber-200/[0.07] p-8 sm:p-12">
+          <p className="text-xs font-semibold uppercase tracking-[0.28em] text-amber-200">
+            Investment enquiries
+          </p>
+          <div className="mt-5 grid gap-8 lg:grid-cols-[1fr_auto] lg:items-center">
+            <div>
+              <h2 className="text-3xl font-semibold tracking-tight text-white sm:text-5xl">
+                AxiomOrdo is seeking venture funding.
+              </h2>
+              <p className="mt-5 max-w-3xl text-lg leading-8 text-white/60">
+                We welcome conversations with investors who understand regulated
+                software, document intelligence and the need for traceable evidence.
+              </p>
+            </div>
+            <a
+              href="mailto:sales@axiomordo.com?subject=Venture%20funding%20enquiry"
+              className="inline-flex justify-center rounded-full bg-amber-200 px-7 py-4 font-semibold text-slate-950 transition hover:bg-amber-100"
+            >
+              Contact sales@axiomordo.com
+            </a>
           </div>
         </div>
       </section>
