@@ -1,0 +1,51 @@
+%PDF-1.4
+%AXIO
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+5 0 obj
+<< /Length 430 >>
+stream
+BT
+/F1 11 Tf
+54 760 Td
+(SYNTHETIC DEMONSTRATION DOCUMENT) Tj
+0 -28 Td
+(Gateway 2 evidence register - source A) Tj
+0 -28 Td
+(Fictional project reference: AO-DEMO-001) Tj
+0 -28 Td
+(Illustrative fire strategy evidence record for public product testing.) Tj
+0 -28 Td
+(This file contains no customer, project or regulatory submission data.) Tj
+0 -28 Td
+(Use it with the second sample in AO-PDF to create a two-page merged file.) Tj
+ET
+endstream
+endobj
+6 0 obj
+<< /Title (Synthetic Gateway 2 Source A) /Author (AxiomOrdo Ltd) /Subject (Synthetic AO-PDF demonstration source) /Creator (AxiomOrdo deterministic sample generator) >>
+endobj
+xref
+0 7
+0000000000 65535 f 
+0000000015 00000 n 
+0000000064 00000 n 
+0000000121 00000 n 
+0000000247 00000 n 
+0000000317 00000 n 
+0000000797 00000 n 
+trailer
+<< /Size 7 /Root 1 0 R /Info 6 0 R >>
+startxref
+981
+%%EOF

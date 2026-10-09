@@ -39,6 +39,10 @@ const groups = {
 };
 
 const details = {
+  "/company/about": {
+    title: "About AxiomOrdo Ltd",
+    description: "Meet AxiomOrdo founder Phillip Inzaghi, verify the company record, try AO-PDF and explore Gate Zero's public product demonstration.",
+  },
   "/platforms/meriden": {
     title: "Meriden maritime compliance",
     description: "Meriden supports audit readiness, management-system implementation and maritime AI governance with evidence designed for real operations.",
@@ -228,6 +232,18 @@ function staticContent(route) {
   const parts = route.split("/").filter(Boolean);
   const group = groupContent[parts[0]];
   if (group && parts.length === 1) return group;
+  if (route === "/company/about") {
+    return {
+      section: "Company, founder and products",
+      intro: "AxiomOrdo Ltd is the company developing and operating AO-PDF and Gate Zero. Phillip Inzaghi is its sole founder, director and current core team.",
+      cards: [
+        ["Phillip Inzaghi", "Verify AxiomOrdo Ltd's founder and director through the public Companies House record.", "https://find-and-update.company-information.service.gov.uk/company/17179868/officers"],
+        ["AO-PDF", "Use AxiomOrdo's operational browser-based document interface without creating an account.", "/ao-pdf/"],
+        ["Gate Zero", "Explore AxiomOrdo's paid SaaS product as it progresses through controlled pilot qualification.", "https://gate-zero.tech/"],
+        ["Venture funding", "AxiomOrdo is seeking venture funding. Contact sales@axiomordo.com for investment enquiries.", "mailto:sales@axiomordo.com?subject=Venture%20funding%20enquiry"],
+      ],
+    };
+  }
   if (route === "/meriden/resources/30-day-ai-rollout-plan-for-maritime-teams/") {
     return {
       section: "Implementation guide",
@@ -259,6 +275,7 @@ function staticCardsHtml(cards) {
 
 const explicitRoutes = [
   "/contact",
+  "/company/about",
   "/legal",
   "/meriden/resources/30-day-ai-rollout-plan-for-maritime-teams/",
   "/platforms/meriden",
