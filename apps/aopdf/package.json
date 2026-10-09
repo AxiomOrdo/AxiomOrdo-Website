@@ -11,6 +11,7 @@
     "test": "tsx --test tests/**/*.test.ts",
     "test:browser": "node scripts/run-browser-tests.mjs",
     "test:reader-evidence": "node scripts/run-browser-tests.mjs --project=chromium --grep \"redaction bundle contains\"",
+    "audit:production": "node scripts/audit-production.mjs",
     "sync:csp": "node scripts/sync-csp-hashes.mjs",
     "verify:csp": "node scripts/verify-csp-hashes.mjs"
   },
