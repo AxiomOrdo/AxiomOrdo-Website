@@ -3,6 +3,7 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "redirects": [
+    { "source": "/da/workspace", "destination": "/da/workspace/", "permanent": false },
     {
       "source": "/",
       "has": [{ "type": "host", "value": "axiomordo.com" }],
@@ -58,7 +59,6 @@
     }
   ],
   "rewrites": [
-    { "source": "/da/workspace", "destination": "https://da-trial-67645337660.europe-west2.run.app/da/workspace/" },
     { "source": "/da/workspace/", "destination": "https://da-trial-67645337660.europe-west2.run.app/da/workspace/" },
     { "source": "/da", "destination": "https://da-trial-67645337660.europe-west2.run.app/da" },
     { "source": "/da/", "destination": "https://da-trial-67645337660.europe-west2.run.app/da/" },

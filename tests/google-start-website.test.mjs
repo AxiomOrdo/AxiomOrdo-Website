@@ -226,10 +226,11 @@ test("Document Assurance is discoverable separately from AO-PDF", async () => {
       assert.ok(route, `Missing public trial proxy: ${source}`);
       assert.match(route.destination, /^https:\/\/da-trial-[a-z0-9.-]+\.run\.app\/da/);
     }
-    for (const source of ["/da/workspace", "/da/workspace/"]) {
+    for (const source of ["/da/workspace/"]) {
       const workspace = config.rewrites.find((entry) => entry.source === source);
       assert.ok(workspace.destination.endsWith("/da/workspace/"), "Keep the loopback worksheet base slash through the proxy");
     }
+    assert.ok(config.redirects.some((entry) => entry.source === "/da/workspace" && entry.destination === "/da/workspace/"));
     assert.ok(config.redirects.some((entry) => entry.source === "/docassurance" && entry.destination === "/da"));
   } finally {
     await page.close();
