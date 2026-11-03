@@ -365,7 +365,7 @@ const unreleasedBrandKeys = new Set([
 // ─────────────────────────────────────────────────────────────────────────────
 
 const ARDS_URL =
-  (process.env.REACT_APP_ARDS_URL &&
+  (typeof process !== "undefined" && process.env.REACT_APP_ARDS_URL &&
     process.env.REACT_APP_ARDS_URL.trim()) ||
   "https://ards.axiomordo.com/";
 
@@ -671,6 +671,9 @@ function GroupNav() {
           </div>
         </Link>
         <div className="flex items-center gap-5 text-sm font-medium">
+          <a href="/da" className="hidden text-white/65 transition hover:text-white lg:inline">
+            Document Assurance
+          </a>
           <a href="/ao-pdf" className="hidden text-white/65 transition hover:text-white lg:inline">
             AO-PDF
           </a>
@@ -1899,6 +1902,15 @@ function AxiomOrdoHome() {
             records to maritime QHSE — AxiomOrdo platforms are built by domain
             experts, for domain experts.
           </p>
+        </div>
+      </section>
+
+      <section className="border-y border-white/8 bg-teal-300/[0.04] py-16 sm:py-24">
+        <div className="mx-auto max-w-7xl px-5 sm:px-8">
+          <p className="text-xs font-semibold uppercase tracking-[0.28em] text-teal-200">Document Assurance Tree</p>
+          <h2 className="mt-5 text-3xl font-semibold tracking-tight text-white sm:text-5xl">Choose your headings. Download a Word draft.</h2>
+          <p className="mt-6 max-w-3xl text-lg leading-8 text-white/60">Try the current Document Assurance workflow: enter fictional sample notes, select standard or custom report headings, review every point and download a diagnostic Word document. Sample information only; existing review holds remain.</p>
+          <a href="/da" className="mt-8 inline-flex rounded-full bg-teal-200 px-6 py-3 font-semibold text-slate-950 transition hover:bg-teal-100">Try Document Assurance →</a>
         </div>
       </section>
 

@@ -208,3 +208,26 @@ test("pre-rendered company page connects the founder, products and funding conta
   assert.match(html, /AxiomOrdo is seeking venture funding/);
   assert.match(html, /mailto:sales@axiomordo\.com\?subject=Venture%20funding%20enquiry/);
 });
+
+
+test("Document Assurance is discoverable separately from AO-PDF", async () => {
+  const page = await browser.newPage();
+  try {
+    const errors = [];
+    page.on("pageerror", (error) => errors.push(error.message));
+    await page.goto(baseUrl);
+    assert.equal(await page.getByRole("link", { name: "Try Document Assurance →" }).getAttribute("href"), "/da");
+    assert.deepEqual(errors, []);
+    const config = JSON.parse(await readFile(new URL("../vercel.json", import.meta.url), "utf8"));
+    assert.equal(config.framework, "vite");
+    assert.equal(config.outputDirectory, "dist");
+    for (const source of ["/da", "/da/", "/da/:path*"]) {
+      const route = config.rewrites.find((entry) => entry.source === source);
+      assert.ok(route, `Missing public trial proxy: ${source}`);
+      assert.match(route.destination, /^https:\/\/da-trial-[a-z0-9.-]+\.run\.app\/da/);
+    }
+    assert.ok(config.redirects.some((entry) => entry.source === "/docassurance" && entry.destination === "/da"));
+  } finally {
+    await page.close();
+  }
+});
