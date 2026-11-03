@@ -40,11 +40,28 @@ needed. The DA check exercises the actual notes/heading/custom-heading workflow,
 validates downloaded Word XML and preserved report holds, and checks anonymous
 isolation plus download revocation on desktop and mobile.
 
-Local build, nine website tests and the local DA browser flow have passed.
-Public-domain verification and deployment identity must be recorded separately.
+Local build, nine website tests and the DA browser flow have passed.
+The public www domain also passed desktop (1280 px) and mobile (390 px) checks:
+notes, standard/custom headings, actual Word XML, preserved service-return hold,
+anonymous isolation and revoked old downloads. `/docassurance` redirects to `/da`;
+slashless workspace links redirect to the required trailing-slash URL.
+
+Public-check packet: DA-PUBLIC-TRIAL-LIVE-CHECK. Lifecycle: QUALIFICATION.
+Status: VERIFIED for the sample-only public trial. No professional service or
+merged-main readiness is asserted.
+
+Deployed website source: `0bfd00a0e13ea5e663b3bb1cdd33dc7ec10ff862`.
+Production Vercel deployment: `dpl_GQTXU7RaPShfDEmQpuAHFqnZateH` (READY),
+built from that exact pushed commit. Runtime source:
+`253c5a29a2d1465350473e7d40638994a42470eb`, Cloud Run revision
+`da-trial-00002-j4g` in the dedicated Meriden London project.
+This later documentation update does not change either deployed application.
 The source branches are not a claim of merged-main GitHub CI qualification.
 The shared static-export audit initially blocked on Next.js 16.4.0 advisories.
 A bounded patch to Next.js and its matching ESLint configuration at 16.4.4 restores
 the existing audit gate with four documented static-export exceptions. Its
-allowlist was not expanded. No Next.js application server is deployed for the
-Document Assurance Python gateway.
+allowlist was not expanded. The patch passed typecheck, lint, 53 unit tests,
+CSP verification and the browser rerun (38 passed, four existing skips). An initial
+cold development-server refresh reset one redaction test; the targeted recheck
+and full rerun passed. No tests were weakened. No Next.js application server is
+deployed for the Document Assurance Python gateway.
