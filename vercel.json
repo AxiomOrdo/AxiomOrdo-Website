@@ -58,6 +58,8 @@
     }
   ],
   "rewrites": [
+    { "source": "/da/workspace", "destination": "https://da-trial-67645337660.europe-west2.run.app/da/workspace/" },
+    { "source": "/da/workspace/", "destination": "https://da-trial-67645337660.europe-west2.run.app/da/workspace/" },
     { "source": "/da", "destination": "https://da-trial-67645337660.europe-west2.run.app/da" },
     { "source": "/da/", "destination": "https://da-trial-67645337660.europe-west2.run.app/da/" },
     { "source": "/da/:path*", "destination": "https://da-trial-67645337660.europe-west2.run.app/da/:path*" },

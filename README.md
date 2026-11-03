@@ -43,6 +43,8 @@ isolation plus download revocation on desktop and mobile.
 Local build, nine website tests and the local DA browser flow have passed.
 Public-domain verification and deployment identity must be recorded separately.
 The source branches are not a claim of merged-main GitHub CI qualification.
-The pre-existing Next.js dependency security recommendation belongs to the
-separate AO-PDF maintenance workstream; no Next.js application server is deployed
-for the Document Assurance Python gateway.
+The shared static-export audit initially blocked on Next.js 16.4.0 advisories.
+A bounded patch to Next.js and its matching ESLint configuration at 16.4.4 restores
+the existing audit gate with four documented static-export exceptions. Its
+allowlist was not expanded. No Next.js application server is deployed for the
+Document Assurance Python gateway.
