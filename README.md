@@ -11,8 +11,8 @@ and a downloadable diagnostic Word draft. `/docassurance` redirects to `/da`.
 This is separate from AO-PDF. The preparation engine remains in the AxiomOrdo
 core repository at `apps/meriden/operator_trial_server.py`. The website proxies
 the dedicated London Cloud Run gateway; it does not copy the engine. Core
-implementation branch: `work/da-usability-upgrade`, source
-`ee1c613ecc879dfb2ebe89fa806c9ad01c81a590`.
+implementation branch: `work/da-sample-watermark`, source
+`b1403d28c55b5232f5c0ce7562a7012b7c28acfa`.
 
 Use fictional sample information only. The server uses temporary isolated sessions;
 access lasts at most 15 minutes and can end earlier after restart. No account,
@@ -53,8 +53,8 @@ merged-main readiness is asserted.
 Deployed website source: `0bfd00a0e13ea5e663b3bb1cdd33dc7ec10ff862`.
 Production Vercel deployment: `dpl_GQTXU7RaPShfDEmQpuAHFqnZateH` (READY),
 built from that exact pushed commit. Runtime source:
-`ee1c613ecc879dfb2ebe89fa806c9ad01c81a590`, Cloud Run revision
-`da-trial-00003-h44` in the dedicated Meriden London project.
+`b1403d28c55b5232f5c0ce7562a7012b7c28acfa`, Cloud Run revision
+`da-trial-00004-5vt` in the dedicated Meriden London project.
 This later documentation update does not change either deployed application.
 The source branches are not a claim of merged-main GitHub CI qualification.
 The shared static-export audit initially blocked on Next.js 16.4.0 advisories.
@@ -82,3 +82,16 @@ skips, plus lint, types and fingerprints.
 This upgrade changed the backend image only. The deployed frontend source and
 Vercel deployment above remain current; this branch's added browser tests and
 status documentation do not imply a new frontend release or merged-main CI.
+
+
+## SAMPLE-marked Word drafts
+
+Fresh diagnostic Word downloads now repeat a large diagonal SAMPLE watermark and
+"Created using AXIOMORDO technology" at the top and bottom. Default header/footer
+parts are included before preparation and hashing. The public desktop/mobile
+browser checks from `946658f9f0dd514e098389c070f0d12384c1e381` verified the markings,
+original body text, retained return hold and downloaded-byte SHA-256 against the
+change record. Core checks passed 1,341 tests (15 existing opt-in skips), lint,
+types and fingerprints. An isolated LibreOffice render checked an 11-page sample;
+Microsoft Word UI testing is not asserted. This backend release needs no new
+frontend deployment. Source branches remain separate from main merge-readiness.
