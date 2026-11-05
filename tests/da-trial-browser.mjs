@@ -17,11 +17,29 @@ try {
     const context = await browser.newContext({ viewport, acceptDownloads: true });
     const page = await context.newPage();
     page.setDefaultTimeout(15000);
+    if(process.env.DA_DEBUG){
+      page.on('request', request => console.log('REQUEST',request.method(),new URL(request.url()).pathname));
+      page.on('response', response => console.log('RESPONSE',response.status(),new URL(response.url()).pathname));
+      page.on('pageerror', error => console.log('PAGE ERROR',error.message));
+    }
     const errors = [];
     page.on('pageerror', error => errors.push(error.message));
     await page.goto(base + '/da');
     await page.getByRole('button', {name:'Start a sample trial'}).click();
     await page.waitForURL('**/da/workspace/');
+    await page.waitForFunction(() => document.querySelector('#da-session-time')?.textContent.includes('remaining'));
+    assert.equal(await page.locator('#saveCase').isDisabled(),true);
+    await page.locator('#file').setInputFiles({name:'fictional.txt',mimeType:'text/plain',buffer:Buffer.from('Fictional file notes retained until explicit replacement.')});
+    await page.waitForFunction(() => document.querySelector('#notes')?.readOnly === true);
+    page.once('dialog', dialog => dialog.dismiss());
+    await page.getByRole('button', {name:'Use fictional example',exact:true}).click();
+    assert.equal(await page.locator('#notes').inputValue(), 'Fictional file notes retained until explicit replacement.');
+    page.once('dialog', dialog => dialog.accept());
+    await page.getByRole('button', {name:'Use fictional example',exact:true}).click();
+    assert.ok((await page.locator('#notes').inputValue()).startsWith('Fictional sample:'));
+    assert.equal(await page.locator('#notes').evaluate(input => input.readOnly), false);
+    assert.equal(await page.locator('#ack').isChecked(), false);
+    assert.equal(await page.locator('#lineAck').isChecked(), false);
     await page.locator('#notes').fill(note);
     await page.locator('#propose').click();
     await page.locator('#lineAck').check();
@@ -34,17 +52,52 @@ try {
     await page.getByLabel('New section heading ', {exact:true}).fill('Sample observations');
     await page.getByRole('button', {name:'Add custom section',exact:true}).click();
     await page.waitForFunction(() => !!document.querySelector('#sections input[value="custom:sample_observations"]'));
-    for (const checkbox of await page.locator('#sections input[type=checkbox]').all()) await checkbox.uncheck();
+    const first = page.locator('#sections input[type=checkbox]').first();
+    if (!(await page.locator('#sections input:checked').count())) await first.check();
+    await page.evaluate(async () => {await invalidation;});
+    let invalidations = 0;
+    const countInvalidations = request => {if(request.url().endsWith('/invalidate')) invalidations++};
+    page.on('request', countInvalidations);
+    const cleared = page.waitForResponse(response => response.url().endsWith('/invalidate') && response.status() === 200);
+    await page.getByRole('button', {name:'Clear headings',exact:true}).click();
+    await cleared;
+    page.off('request', countInvalidations);
+    assert.equal(invalidations, 1, 'Bulk selection must revoke once');
+    assert.equal(await page.locator('#sections input:checked').count(), 0);
+    await page.getByRole('searchbox', {name:'Find a report heading'}).fill('alarm');
+    assert.equal(await page.locator('#sections label:visible').count(), 1);
+    await page.getByRole('searchbox', {name:'Find a report heading'}).fill('');
     await page.locator('#sections input[value="ALARM"]').check();
     await page.locator('#sections input[value="custom:sample_observations"]').check();
     const row = page.locator('#points fieldset').first();
+    assert.equal(await page.locator('#da-review-progress').innerText(), '0 of 1 note decisions confirmed');
+    await page.getByRole('button', {name:'Go to next unreviewed note'}).click();
+    assert.equal(await row.locator('select').first().evaluate(input => input === document.activeElement), true);
     await row.getByLabel(/^Decision /).selectOption('include');
     await row.getByLabel(/^Report section /).selectOption('ALARM');
     await row.getByLabel('I have reviewed this note and decision').check();
+    assert.equal(await page.locator('#da-review-progress').innerText(), '1 of 1 note decisions confirmed');
+    for(const action of ['Save synthetic case','Export section profile']){
+      if(action==='Export section profile'){
+        const details=page.locator('details').filter({has:page.getByText('Custom headings and saved section profiles',{exact:true})});
+        if((await details.getAttribute('open'))===null) await page.getByText('Custom headings and saved section profiles',{exact:true}).click();
+      }
+      const pendingExport=page.waitForEvent('download');
+      await page.getByRole('button', {name:action,exact:true}).click();
+      await pendingExport;
+      await page.waitForFunction(() => document.querySelector('#da-review-progress')?.textContent === '0 of 1 note decisions confirmed');
+      assert.equal(await page.getByRole('button', {name:'Go to next unreviewed note'}).isEnabled(),true);
+      await row.getByLabel('I have reviewed this note and decision').check();
+    }
     await page.getByRole('button', {name:'Review decisions and create draft',exact:true}).click();
     const word = page.getByRole('link', {name:'Download Word review draft (.docx)',exact:true});
     await word.waitFor();
     const href = await word.getAttribute('href');
+    assert.ok((await page.locator('#da-step').innerText()).includes('Step 3'));
+    await page.getByRole('searchbox', {name:'Find a report heading'}).fill('no matching heading');
+    assert.equal(await word.count(), 1, 'Display-only search must retain the draft');
+    assert.equal((await context.request.get(base + href)).status(), 200);
+    await page.getByRole('searchbox', {name:'Find a report heading'}).fill('');
     const pending = page.waitForEvent('download');
     await word.click();
     const download = await pending;
@@ -71,8 +124,20 @@ try {
     await page.waitForFunction(() => !document.querySelector('#results'));
     const stale = await context.request.get(base + href);
     assert.equal(stale.status(), 404);
+    assert.equal(await page.locator('#da-review-progress').innerText(), '0 of 1 note decisions confirmed');
+    await page.route('**/da/session', route => route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({expires_in:1,lifetime:900})}));
+    await page.reload();
+    await page.waitForFunction(() => document.querySelector('#da-session-time')?.textContent === 'Session ended');
+    assert.ok((await page.locator('#da-session-message').innerText()).includes('Copy any sample text'));
+    assert.equal(await page.locator('#save').isDisabled(), true);
+    assert.equal(await page.getByRole('link', {name:'Return to trial start',exact:true}).getAttribute('href'), '/da');
+    await page.unroute('**/da/session');
+    await page.route('**/da/session', route => route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({expires_in:90,lifetime:900})}));
+    await page.goto(base + '/da/workspace/notes');
+    await page.waitForFunction(() => document.querySelector('#da-session-message')?.textContent.includes('Copy your sample notes'));
+    assert.ok((await page.locator('#da-session-message').innerText()).includes('Case saving becomes available on the review worksheet'));
     assert.deepEqual(errors, []);
-    console.log(`PASS ${viewport.width}px: notes, custom/standard headings, actual Word, retained holds, isolation and stale link refusal`);
+    console.log(`PASS ${viewport.width}px: example consent, heading search/bulk selection, review progress, Word, retained holds, isolation, revocation and expiry guidance`);
     await context.close();
   }
 } finally {
