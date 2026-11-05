@@ -2,6 +2,57 @@
 
 Company website source for `https://www.axiomordo.com`.
 
+## Company and trial notices — 5 November 2026
+
+Packet `DA-PUBLIC-NOTICES`, lifecycle EXECUTION: publish accurate company and
+operational disclosures. Current publication is VERIFIED for the checks below;
+full legal/privacy qualification and WCAG conformance are not asserted.
+
+All 109 built HTML pages include AxiomOrdo Ltd, company 17179868, registered in
+England and Wales, 128 City Road, London, United Kingdom, EC1V 2NX, and
+sales@axiomordo.com. The owner confirmed the company is not VAT registered;
+no VAT number is displayed. Corporate privacy, cookies/device storage, terms and
+accessibility pages at `/legal/*` now contain substantive notices. The four trial
+notices are separate at `/da/privacy`, `/da/cookies`, `/da/terms` and
+`/da/accessibility`, with working links from the trial.
+
+Automatic Google Ads, Speed Insights and the diagnostic trace loader were
+disabled. Previously stored `axiomordo.trace.v1` data is not represented as
+erased. Current DA uses page memory, with no application cookie, saved browser
+draft or 15-minute timer. London document generation is distinguished from
+Vercel delivery, provider logs and possible international processing.
+
+Required dependencies PROVEN: current deployed architecture/source, official
+company record, owner-confirmed VAT/contact, existing hosting and gallery bundle.
+The maximum Vercel retention across all categories and the company's specific
+provider transfer agreements remain UNCLEAR; the notices disclose this and do
+not claim complete privacy qualification. Accessibility is a WCAG 2.2 AA target
+with known limits, including untagged sample PDFs and incomplete assistive-
+technology assessment. No runtime, entitlement, certification or regulatory
+authority was created; paid customer processing remains gated.
+
+Production Vercel deployment `dpl_PN1D5DJ3c3sbN1mysVZFWmydYRyf` is READY,
+with www/apex aliases, source `e90cdefeb9009cd2a2c3df4029a92460788a765c`.
+The current DA public source is `9758fcd2fefab4cc96f6b330a47ad862fc741e7f`,
+Cloud Run revision `da-trial-00009-h88`, 100 percent traffic in `europe-west2`.
+The unchanged reviewed gallery and full runtime digest are recorded in core
+`docs/document-assurance/trial-notices-release.md`.
+
+Checks: full website/AO-PDF build and strict TypeScript passed; 22 focused
+corporate-notice/footer/Google-Start tests passed; all 109 built HTML footers
+were audited. Live desktop/mobile checks passed for corporate and trial notices,
+company footers, gallery order, skip-link focus, absent automatic trackers and
+fresh-browser cookies/storage. Live Free acceptance passed at both sizes with
+real marked Word downloads and entitlement/API refusal checks. No merged-main
+GitHub CI claim is made.
+
+Scope: shared footer/policy data and components, root HTML, AO-PDF footer/error
+page, production static generation and matching tests. Protected generator
+changes were necessary because the legal routes and standalone pages bypass
+React; direct static/no-JS/idempotence/CSP-preservation tests cover them.
+No dependency policy or private engine was changed. Next qualification work is
+provider retention/transfer and a fuller accessibility assessment.
+
 ## Branded report gallery
 
 `https://www.axiomordo.com/da/gallery` shows three actual report designs:
@@ -12,7 +63,8 @@ Use this style links to Business settings preview/export, with customer access
 and report qualification still gated. The existing Free builder stays three sections.
 
 The gallery assets live in the existing public Cloud Run image; Vercel routing
-and frontend deployment remain unchanged. Public runtime source and exact hashes
+is unchanged. The notice publication above supersedes the earlier frontend
+deployment status. Public gallery source and exact hashes
 are recorded in core `docs/document-assurance/branded-gallery-release.md`.
 Verify desktop/mobile samples and download parity with:
 
@@ -33,14 +85,15 @@ The Free image contains no private preparation engine. It processes text in
 memory, with no application cookies, saved content or browser storage. Provider
 request metadata and browser form restoration remain separate privacy boundaries.
 
-Public runtime source `666bfcf`, revision `da-trial-00005-vf4`, image
+Earlier Free runtime source `666bfcf`, revision `da-trial-00005-vf4`, image
 `europe-west2-docker.pkg.dev/meriden-da-trial-931795/da-trial/free@sha256:2b9690ebf4095608ca1c79a7f637664828d118861906096e85a6dae9cce6795b`.
 Actual public desktop/mobile acceptance passed using
 `DA_BASE_URL=https://www.axiomordo.com node tests/da-freemium-browser.mjs`:
 three text fields, preview, locked-feature explanation, actual Word XML, SAMPLE
 marks/attribution, forged-tier/fourth-heading rejection, old engine API denial and
-no application browser persistence. No Vercel frontend redeployment was required;
-existing production routing/deployment remains as recorded below.
+no application browser persistence. No Vercel frontend redeployment was required
+for that earlier Free release; the notice publication above records the current
+frontend deployment.
 
 Private Pro/Business work is in `AxiomOrdo/AxiomOrdo` on
 `work/da-report-builder-tiers`; see its `docs/document-assurance/commercial-platform-status.md`.
