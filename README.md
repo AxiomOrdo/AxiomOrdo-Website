@@ -11,8 +11,8 @@ and a downloadable diagnostic Word draft. `/docassurance` redirects to `/da`.
 This is separate from AO-PDF. The preparation engine remains in the AxiomOrdo
 core repository at `apps/meriden/operator_trial_server.py`. The website proxies
 the dedicated London Cloud Run gateway; it does not copy the engine. Core
-implementation branch: `work/da-public-trial`, source
-`253c5a29a2d1465350473e7d40638994a42470eb`.
+implementation branch: `work/da-usability-upgrade`, source
+`ee1c613ecc879dfb2ebe89fa806c9ad01c81a590`.
 
 Use fictional sample information only. The server uses temporary isolated sessions;
 access lasts at most 15 minutes and can end earlier after restart. No account,
@@ -53,8 +53,8 @@ merged-main readiness is asserted.
 Deployed website source: `0bfd00a0e13ea5e663b3bb1cdd33dc7ec10ff862`.
 Production Vercel deployment: `dpl_GQTXU7RaPShfDEmQpuAHFqnZateH` (READY),
 built from that exact pushed commit. Runtime source:
-`253c5a29a2d1465350473e7d40638994a42470eb`, Cloud Run revision
-`da-trial-00002-j4g` in the dedicated Meriden London project.
+`ee1c613ecc879dfb2ebe89fa806c9ad01c81a590`, Cloud Run revision
+`da-trial-00003-h44` in the dedicated Meriden London project.
 This later documentation update does not change either deployed application.
 The source branches are not a claim of merged-main GitHub CI qualification.
 The shared static-export audit initially blocked on Next.js 16.4.0 advisories.
@@ -65,3 +65,20 @@ CSP verification and the browser rerun (38 passed, four existing skips). An init
 cold development-server refresh reset one redaction test; the targeted recheck
 and full rerun passed. No tests were weakened. No Next.js application server is
 deployed for the Document Assurance Python gateway.
+
+
+## Usability upgrade verified 5 November 2026
+
+The hosted gateway now adds fictional examples with replacement consent, searchable
+headings, one-request bulk selection changes, note-confirmation progress and
+page-appropriate session expiry/recovery guidance. Existing Word and source-review
+holds remain. Browser checks from `9c642528eac36d50b772001a0b21bc32713bb2fd` passed
+on the public www route at desktop and mobile widths, including case/profile export
+counter resets, real Word XML, isolation and revoked links. Client expiry guidance
+is simulated in the browser test; actual server expiry is covered separately by
+gateway tests. Core app/contract checks passed 1,340 tests with 15 existing opt-in
+skips, plus lint, types and fingerprints.
+
+This upgrade changed the backend image only. The deployed frontend source and
+Vercel deployment above remain current; this branch's added browser tests and
+status documentation do not imply a new frontend release or merged-main CI.
