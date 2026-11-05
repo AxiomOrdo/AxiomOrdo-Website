@@ -2,6 +2,28 @@
 
 Company website source for `https://www.axiomordo.com`.
 
+## Branded report gallery
+
+`https://www.axiomordo.com/da/gallery` shows three actual report designs:
+AxiomOrdo Executive Professional, Meriden Minimalist and ARDS Bold/Experimental.
+ARDS is an explicitly labelled demonstration identity. All three have real
+three-page SAMPLE Word/PDF documents, rendered page/detail previews and downloads.
+Use this style links to Business settings preview/export, with customer access
+and report qualification still gated. The existing Free builder stays three sections.
+
+The gallery assets live in the existing public Cloud Run image; Vercel routing
+and frontend deployment remain unchanged. Public runtime source and exact hashes
+are recorded in core `docs/document-assurance/branded-gallery-release.md`.
+Verify desktop/mobile samples and download parity with:
+
+```sh
+DA_BASE_URL=https://www.axiomordo.com node tests/da-gallery-browser.mjs
+```
+
+This check downloads real reports, verifies every image/document hash, navigates
+all pages/detail views, exercises Business local export and confirms no tier grant.
+It does not claim customer activation or merged-main CI.
+
 ## Current Document Assurance Free builder — 5 November 2026
 
 Public `https://www.axiomordo.com/da` now offers exactly Introduction, Discussion
