@@ -17,6 +17,10 @@ try{
   await page.goto(base+'/da');
   await page.getByRole('heading',{name:'Basic report builder',exact:true}).waitFor();
   assert.equal(await page.locator('textarea').count(),3);
+  const oversized='X'.repeat(17000);await page.getByLabel('Introduction',{exact:true}).fill(oversized);
+  assert.equal((await page.getByLabel('Introduction',{exact:true}).inputValue()).length,17000,'Oversize paste must stay intact until explicit refusal');
+  await page.getByRole('button',{name:'Download SAMPLE Word'}).click();
+  assert.match(await page.locator('#status').textContent(),/Shorten your text/);
   await page.getByLabel('Introduction',{exact:true}).fill('Fictional opening <literal> & source.');
   await page.getByLabel('Discussion',{exact:true}).fill('A fictional discussion with two lines.\nSecond line.');
   await page.getByLabel('Conclusion',{exact:true}).fill('An example conclusion.');
@@ -38,6 +42,11 @@ try{
   assert.match(header,/string="SAMPLE"/);assert.match(header,/Created using AXIOMORDO technology/);
   assert.match(await zip.file('word/footer1.xml').async('string'),/Created using AXIOMORDO technology/);
   await page.waitForFunction(()=>document.querySelector('#status').textContent.includes('download is ready'));
+  await page.route('**/da/basic/report',route=>route.fulfill({status:429,contentType:'application/json',body:'{\"error\":\"SERVICE_BUSY\"}'}));
+  await page.getByRole('button',{name:'Download SAMPLE Word'}).click();
+  await page.waitForFunction(()=>document.querySelector('#status').textContent.includes('Wait one minute'));
+  assert.equal(await page.getByLabel('Introduction',{exact:true}).inputValue(),'Fictional opening <literal> & source.');
+  await page.unroute('**/da/basic/report');
   assert.equal(await page.evaluate(()=>localStorage.length),0);
   assert.equal((await context.cookies()).length,0);
   const forged=await page.evaluate(async()=>{const r=await fetch('/da/basic/report',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({preset:'basic',tier:'business',sections:{introduction:'x',discussion:'y',conclusion:'z',findings:'Fourth'}})});return r.status;});

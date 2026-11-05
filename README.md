@@ -2,7 +2,36 @@
 
 Company website source for `https://www.axiomordo.com`.
 
-## Document Assurance Tree public trial
+## Current Document Assurance Free builder — 5 November 2026
+
+Public `https://www.axiomordo.com/da` now offers exactly Introduction, Discussion
+and Conclusion, direct text entry, preview and a SAMPLE Word download. Locked
+Pro/Business features are visible, with no invented price or active subscription.
+The Free image contains no private preparation engine. It processes text in
+memory, with no application cookies, saved content or browser storage. Provider
+request metadata and browser form restoration remain separate privacy boundaries.
+
+Public runtime source `666bfcf`, revision `da-trial-00005-vf4`, image
+`europe-west2-docker.pkg.dev/meriden-da-trial-931795/da-trial/free@sha256:2b9690ebf4095608ca1c79a7f637664828d118861906096e85a6dae9cce6795b`.
+Actual public desktop/mobile acceptance passed using
+`DA_BASE_URL=https://www.axiomordo.com node tests/da-freemium-browser.mjs`:
+three text fields, preview, locked-feature explanation, actual Word XML, SAMPLE
+marks/attribution, forged-tier/fourth-heading rejection, old engine API denial and
+no application browser persistence. No Vercel frontend redeployment was required;
+existing production routing/deployment remains as recorded below.
+
+Private Pro/Business work is in `AxiomOrdo/AxiomOrdo` on
+`work/da-report-builder-tiers`; see its `docs/document-assurance/commercial-platform-status.md`.
+Customer sign-in, customer documents and billing remain gated. This website change
+adds acceptance tooling/status only, with no merged-main CI claim.
+
+## Historical public trial
+
+The following describes the previous engine-backed synthetic trial. It is retained
+as historical evidence. Its advanced endpoints are no longer public. The old
+`tests/da-trial-browser.mjs` applies to an explicit internal historical gateway,
+not the current public Free builder.
+
 
 Packet: DA-WEBSITE-ROUTE. Lifecycle: EXECUTION. Objective: make the existing
 Document Assurance Tree sample trial available at `/da`, with heading selection
@@ -31,7 +60,7 @@ not stop at the noninteractive fallback HTML.
 npm ci
 npm run build
 npm run test:google-start
-DA_BASE_URL=https://www.axiomordo.com node tests/da-trial-browser.mjs
+DA_BASE_URL=http://127.0.0.1:8767 node tests/da-trial-browser.mjs
 ```
 
 The build installs existing AO-PDF dependencies and creates its static export.
