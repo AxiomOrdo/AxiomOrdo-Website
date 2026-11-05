@@ -1,6 +1,7 @@
 // Live integration check: run only against an explicitly selected sample-trial origin.
 // npm ci && (cd apps/aopdf && npm ci --ignore-scripts) supplies the existing tools.
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
 import { readFile, mkdtemp, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -104,7 +105,13 @@ try {
     assert.equal(download.suggestedFilename(), 'section-review-preview.docx');
     const filename = join(directory, `draft-${viewport.width}.docx`);
     await download.saveAs(filename);
-    const zip = await JSZip.loadAsync(await readFile(filename));
+    const downloadedBytes = await readFile(filename);
+    const zip = await JSZip.loadAsync(downloadedBytes);
+    const header = await zip.file('word/header1.xml').async('string');
+    const footer = await zip.file('word/footer1.xml').async('string');
+    assert.match(header, /<v:textpath[^>]+string="SAMPLE"/);
+    assert.ok(header.includes('Created using AXIOMORDO technology'));
+    assert.ok(footer.includes('Created using AXIOMORDO technology'));
     const xml = await zip.file('word/document.xml').async('string');
     assert.ok(xml.includes(note));
     assert.ok(xml.includes('Alarm'));
@@ -113,6 +120,7 @@ try {
     const evidence = await context.request.get(base + await evidenceLink.getAttribute('href'));
     const record = await evidence.json();
     assert.equal(record.section_docx_review.service_return_permitted, false);
+    assert.equal(record.section_docx_review.sha256, createHash('sha256').update(downloadedBytes).digest('hex'));
     assert.ok((await page.locator('#results').innerText()).includes('holds remain'));
     const stranger = await browser.newContext();
     const isolated = await stranger.request.get(base + href);
