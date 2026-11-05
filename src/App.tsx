@@ -7,7 +7,7 @@ import {
   Navigate,
   useLocation,
 } from "react-router-dom";
-import { SpeedInsights } from "@vercel/speed-insights/react";
+import { CompanyIdentity, CorporatePolicyLinks, CorporateNoticeContent, corporateNotices, company } from "./components/CorporateNotices";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Types
@@ -452,34 +452,6 @@ const placeholderArticles: PlaceholderArticle[] = [
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────
-// ClearMark Decision System
-// ─────────────────────────────────────────────────────────────────────────────
-
-const pfasDecisions = [
-  {
-    label: "Green",
-    outcome: "Clear",
-    detail:
-      "Evidence is sufficient to defend the product family without immediate testing.",
-    tone: "border-emerald-400 text-emerald-700",
-  },
-  {
-    label: "Amber",
-    outcome: "Investigate",
-    detail:
-      "Evidence gaps exist at component, supplier, or material level and require targeted follow-up.",
-    tone: "border-amber-400 text-amber-700",
-  },
-  {
-    label: "Red",
-    outcome: "Restrict",
-    detail:
-      "The product cannot be defended and should be held, remediated, or tested before exposure increases.",
-    tone: "border-rose-400 text-rose-700",
-  },
-];
-
-// ─────────────────────────────────────────────────────────────────────────────
 // Utility — scroll to top on route change
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -754,14 +726,15 @@ function GroupFooter({ brand }: { brand?: { name: string; accent: string } }) {
               </Link>
             ))}
             <a
-              href="mailto:hello@axiomordo.com"
+              href={`mailto:${company.contactEmail}`}
               className="transition hover:text-white/65"
             >
               Contact
             </a>
           </div>
         </div>
-        <p className="mt-12 text-xs text-white/18">
+        <div className="mt-10 space-y-6"><CompanyIdentity /><CorporatePolicyLinks /></div>
+        <p className="mt-12 text-xs text-white/60">
           © {new Date().getFullYear()} AxiomOrdo Ltd. All rights reserved.
         </p>
       </div>
@@ -2177,12 +2150,22 @@ function AxiomOrdoHome() {
 // App Router
 // ─────────────────────────────────────────────────────────────────────────────
 
+function CorporateNoticePage({ slug }: { slug: string }) {
+  const notice = corporateNotices.find((item) => item.slug === slug)!;
+  return <div className="min-h-screen bg-[#080d18] text-white">
+    <PageSeo title={`${notice.title} | AxiomOrdo`} description={notice.description} canonicalPath={`/legal/${slug}`} />
+    <div className="mx-auto max-w-4xl px-6 pt-8"><Link className="text-cyan-200 underline" to="/">AxiomOrdo home</Link></div>
+    <CorporateNoticeContent slug={slug} />
+    <GroupFooter />
+  </div>;
+}
+
 export default function App() {
   return (
     <BrowserRouter>
       <ScrollToTop />
-      <SpeedInsights />
       <Routes>
+        {corporateNotices.map((notice) => <Route key={notice.slug} path={`/legal/${notice.slug}`} element={<CorporateNoticePage slug={notice.slug} />} />)}
         {/* Group home */}
         <Route path="/" element={<AxiomOrdoHome />} />
 

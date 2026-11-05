@@ -6,6 +6,8 @@ const templatePath = join(root, "public", "architecture-v2", "index.html");
 const outputRoot = join(root, "public", "architecture-v2", "routes");
 const sitemapRoot = join(root, "public", "sitemaps");
 const siteOrigin = "https://www.axiomordo.com";
+const corporate = JSON.parse(readFileSync(join(root, "src/lib/corporate-notices.json"), "utf8"));
+const corporateByRoute = Object.fromEntries(corporate.notices.map((notice) => [`/legal/${notice.slug}`, notice]));
 
 const groups = {
   platforms: {
@@ -274,6 +276,7 @@ function staticCardsHtml(cards) {
 }
 
 const explicitRoutes = [
+  ...Object.keys(corporateByRoute),
   "/contact",
   "/company/about",
   "/legal",
@@ -301,6 +304,7 @@ function pretty(value) {
 }
 
 function routeMetadata(route) {
+  if (corporateByRoute[route]) return corporateByRoute[route];
   if (legacyRoutes[route]) return legacyRoutes[route];
   if (details[route]) return details[route];
   const parts = route.split("/").filter(Boolean);
@@ -345,7 +349,17 @@ const sitemapXml = [
 ].join("\n");
 writeFileSync(join(root, "public", "sitemap.xml"), sitemapXml);
 
-const template = readFileSync(templatePath, "utf8");
+function linkedNoticeText(value) {
+  return escapeHtml(value).replace(/https:\/\/ico\.org\.uk\/make-a-complaint\/|\/(?:da\/(?:privacy|cookies|terms|accessibility)|ao-pdf\/(?:privacy|terms)\/)/g, (href) => `<a href="${href}">${href}</a>`);
+}
+
+function corporatePolicyHtml(notice) {
+  return `<div style="display:block;max-width:900px"><p>Corporate website · Effective ${escapeHtml(corporate.effectiveDate)}</p>${notice.sections.map((section) => `<section style="margin-top:32px"><h2>${escapeHtml(section.heading)}</h2>${section.paragraphs.map((paragraph) => `<p style="line-height:1.8">${linkedNoticeText(paragraph)}</p>`).join("")}</section>`).join("")}<aside aria-label="Product notices"><h2>Document Assurance trial notices</h2>${["privacy", "cookies", "terms", "accessibility"].map((slug) => `<a style="display:inline-block;margin:8px 20px 8px 0" href="/da/${slug}">Trial ${slug}</a>`).join("")}</aside></div>`;
+}
+
+const company = corporate.company;
+const companyFooter = `<div class="small" style="max-width:1240px;margin:0 auto;padding:0 24px 32px"><p>${escapeHtml(company.legalName)} · Registered in ${escapeHtml(company.jurisdiction)} · Company number <a href="${escapeHtml(company.companyRegisterUrl)}">${escapeHtml(company.companyNumber)}</a></p>${company.registeredOffice ? `<p>Registered office: ${escapeHtml(company.registeredOffice)}</p>` : ""}<p>Contact: <a href="mailto:${escapeHtml(company.contactEmail)}">${escapeHtml(company.contactEmail)}</a></p>${company.vatNumber ? `<p>VAT number: ${escapeHtml(company.vatNumber)}</p>` : ""}<nav aria-label="Corporate policies">${corporate.notices.map((notice) => `<a style="display:inline-block;margin:8px 20px 8px 0" href="/legal/${notice.slug}">${notice.slug === "terms" ? "Website terms" : pretty(notice.slug)}</a>`).join("")}</nav></div>`;
+const template = readFileSync(templatePath, "utf8").replace("</footer>", `${companyFooter}</footer>`);
 rmSync(outputRoot, { recursive: true, force: true });
 
 for (const route of routes) {
@@ -356,13 +370,14 @@ for (const route of routes) {
   const outputRoute = route.replace(/\/$/, "");
   const outputPath = join(outputRoot, `${outputRoute.slice(1)}.html`);
   mkdirSync(join(outputRoot, outputRoute.slice(1, outputRoute.lastIndexOf("/"))), { recursive: true });
+  const notice = corporateByRoute[route];
   const page = template
     .replace(/\n  <meta name="description"[^>]*\/>/, `\n  <meta name="description" content="${escapeHtml(metadata.description)}" />\n  <title>${escapeHtml(title)}</title>\n  <link rel="canonical" href="${escapeHtml(canonical)}" />`)
     .replace('<h1 id="title"></h1>', `<h1 id="title">${escapeHtml(metadata.title)}</h1>`)
     .replace('<p class="lede" id="lede"></p>', `<p class="lede" id="lede">${escapeHtml(metadata.description)}</p>`)
-    .replace('<h2 id="section-title"></h2>', `<h2 id="section-title">${escapeHtml(content.section)}</h2>`)
-    .replace('<p class="intro" id="section-intro"></p>', `<p class="intro" id="section-intro">${escapeHtml(content.intro)}</p>`)
-    .replace('<div class="grid" id="grid"></div>', `<div class="grid" id="grid">${staticCardsHtml(content.cards)}</div>`);
+    .replace('<h2 id="section-title"></h2>', `<h2 id="section-title">${escapeHtml(notice ? "Website policy" : content.section)}</h2>`)
+    .replace('<p class="intro" id="section-intro"></p>', `<p class="intro" id="section-intro">${escapeHtml(notice ? "Read the scoped notice below and use the separate product notices for trial services." : content.intro)}</p>`)
+    .replace('<div class="grid" id="grid"></div>', `<div class="${notice ? "policy-content" : "grid"}" id="grid">${notice ? corporatePolicyHtml(notice) : staticCardsHtml(content.cards)}</div>`);
   writeFileSync(outputPath, page);
 }
 
