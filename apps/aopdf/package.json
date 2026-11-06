@@ -24,7 +24,7 @@
     "@types/react-dom": "19.3.0",
     "autoprefixer": "10.6.1",
     "eslint": "9.39.5",
-    "eslint-config-next": "16.4.0",
+    "eslint-config-next": "16.4.5",
     "postcss": "8.5.30",
     "prisma": "6.19.3",
     "tailwindcss": "^4.3.3",
@@ -40,7 +40,7 @@
     "framer-motion": "12.43.0",
     "jszip": "^3.10.2",
     "lucide-react": "1.56.0",
-    "next": "16.4.0",
+    "next": "16.4.5",
     "next-auth": "4.24.15",
     "pdf-lib": "^1.17.1",
     "pdfjs-dist": "5.4.624",
@@ -51,8 +51,8 @@
   "overrides": {
     "brace-expansion": "5.0.9",
     "minimatch": "10.2.6",
-    "nanoid": "3.3.17",
+    "nanoid": "3.3.18",
     "postcss": "8.5.30",
-    "sharp": "0.35.3"
+    "sharp": "0.35.5"
   }
 }
