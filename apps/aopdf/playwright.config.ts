@@ -6,6 +6,9 @@ export default defineConfig({
   testDir: './tests/browser',
   timeout: 45_000,
   fullyParallel: false,
+  // Projects share one compiling dev server; concurrent route compilation can
+  // trigger Fast Refresh reloads that discard another project's file selection.
+  workers: 1,
   forbidOnly: Boolean(process.env.CI),
   retries: process.env.CI ? 1 : 0,
   reporter: [['list'], ['html', { open: 'never' }]],
