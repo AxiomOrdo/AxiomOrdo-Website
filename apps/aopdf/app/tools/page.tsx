@@ -1,3 +1,4 @@
+import Breadcrumbs from '@/components/breadcrumbs';
 import Navbar from '@/components/navbar';
 import Footer from '@/components/footer';
 import AmbientGlow from '@/components/ambient-glow';
@@ -16,6 +17,7 @@ export default function ToolsPage() {
       <AmbientGlow />
       <Navbar />
       <main className="flex-1 z-10 max-w-6xl mx-auto px-6 py-16 w-full">
+        <Breadcrumbs items={[{ name: 'AO-PDF', path: '/ao-pdf/' }, { name: 'Document Assurance Workspace', path: '/ao-pdf/tools/' }]} />
         <div className="text-center mb-12">
           <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-3">Document Assurance Workspace</h1>
           <p className="text-zinc-400 max-w-2xl mx-auto">Inspect, compare, hash, redact supported content, or transform PDFs inside one browser-local workspace with shared limits, source/output separation, and session-local history.</p>

@@ -1,3 +1,4 @@
+import { inlineScriptBodies } from "./inline-scripts.mjs";
 import { createHash } from 'node:crypto';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
@@ -37,10 +38,9 @@ for (const filename of htmlFiles(exportRoot)) {
       throw new Error(`External Next.js flight payload is missing: ${source}.`);
     }
   }
-  for (const match of html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script[^>]*>/gi)) {
-    if (!match[1]) continue;
+  for (const body of inlineScriptBodies(html)) {
     generated.add(
-      `sha256-${createHash('sha256').update(match[1]).digest('base64')}`,
+      `sha256-${createHash('sha256').update(body).digest('base64')}`,
     );
   }
 }

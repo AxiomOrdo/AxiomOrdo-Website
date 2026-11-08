@@ -1,3 +1,4 @@
+import { breadcrumbMarkup, breadcrumbStyle } from "./breadcrumbs.mjs";
 import { mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
@@ -330,6 +331,24 @@ function sitemapRoutes() {
   return routes;
 }
 
+const navigationNames = new Map(Object.values(groupContent).flatMap(group => group.cards.map(([name, , path]) => [path, name])));
+for (const [key, group] of Object.entries(groupContent)) navigationNames.set(`/${key}`, key === "company" ? "Company" : group.section.replace("Platform portfolio", "Platforms").replace("Solution areas", "Solutions").replace("Resource library", "Resources").replace("Trust documentation", "Trust").replace("Legal documents", "Legal"));
+const logicalParents = {
+  "/meriden": "/platforms/meriden",
+};
+function routeTrail(route, knownRoutes) {
+  const parts = route.replace(/\/$/, "").split("/").filter(Boolean);
+  const ancestors = [];
+  if (groupContent.platforms.cards.some(([, , path]) => path === route)) ancestors.push("/platforms");
+  for (let i = 1; i < parts.length; i++) {
+    const candidate = `/${parts.slice(0, i).join("/")}`;
+    const parent = logicalParents[candidate] ?? candidate;
+    if (knownRoutes.has(parent)) ancestors.push(parent);
+  }
+  const name = path => navigationNames.get(path) ?? routeMetadata(path).title.split(" | ")[0];
+  return [{ name: "Home", path: "/" }, ...[...new Set(ancestors)].filter(path => path !== route).map(path => ({ name: name(path), path })), { name: name(route), path: route }];
+}
+
 const sourceRoutes = sitemapRoutes();
 const routes = [...new Set([...sourceRoutes, ...explicitRoutes, ...Object.keys(legacyRoutes)])]
   .filter((route) => explicitRoutes.includes(route) || legacyRoutes[route] || Object.keys(groups).some((group) => route === `/${group}` || route.startsWith(`/${group}/`)) || route.startsWith("/meriden/"))
@@ -371,8 +390,11 @@ for (const route of routes) {
   const outputPath = join(outputRoot, `${outputRoute.slice(1)}.html`);
   mkdirSync(join(outputRoot, outputRoute.slice(1, outputRoute.lastIndexOf("/"))), { recursive: true });
   const notice = corporateByRoute[route];
+  const trail = routeTrail(route, new Set(routes));
   const page = template
     .replace(/\n  <meta name="description"[^>]*\/>/, `\n  <meta name="description" content="${escapeHtml(metadata.description)}" />\n  <title>${escapeHtml(title)}</title>\n  <link rel="canonical" href="${escapeHtml(canonical)}" />`)
+    .replace('<div class="crumbs" id="crumbs"></div>', breadcrumbMarkup(trail))
+    .replace("</head>", `${breadcrumbStyle}</head>`)
     .replace('<h1 id="title"></h1>', `<h1 id="title">${escapeHtml(metadata.title)}</h1>`)
     .replace('<p class="lede" id="lede"></p>', `<p class="lede" id="lede">${escapeHtml(metadata.description)}</p>`)
     .replace('<h2 id="section-title"></h2>', `<h2 id="section-title">${escapeHtml(notice ? "Website policy" : content.section)}</h2>`)
@@ -382,3 +404,31 @@ for (const route of routes) {
 }
 
 console.log(`prerender-architecture: generated ${routes.length} deterministic route pages`);
+
+// These deployment destinations use authored static HTML rather than the architecture template.
+const staticPages = [
+  ["ards-gateway/index.html", "ARDS", []],
+  ["legal/ico-registration/index.html", "ICO registration", [["Legal", "/legal"]]],
+  ["meriden/index.html", "Free PSC Self-Inspection Checklist", [["Meriden", "/platforms/meriden"]]],
+  ["meriden/ai-readiness-pilot.html", "30-Day Founding Operator Pilot", [["Meriden", "/platforms/meriden"]]],
+  ["meriden/psc-readiness-review.html", "Maritime Compliance & PSC Readiness Review", [["Meriden", "/platforms/meriden"]]],
+  ["meriden-qhse-hub/index.html", "Maritime QHSE", [["Meriden Compliance", "/meriden-compliance"], ["Insights", "/meriden-compliance/insights"]]],
+  ["articles/false-assurance-maritime-compliance.html", "False Assurance in Maritime Compliance: When Good Records Hide Poor Control", [["Meriden Compliance", "/meriden-compliance"], ["Insights", "/meriden-compliance/insights"], ["Maritime QHSE", "/meriden-compliance/insights/maritime-qhse"]]],
+  ["articles/why-work-should-not-start-just-because-the-permit-is-approved.html", "Why Work Should Not Start Just Because the Permit Is Approved", [["Meriden Compliance", "/meriden-compliance"], ["Insights", "/meriden-compliance/insights"], ["Maritime QHSE", "/meriden-compliance/insights/maritime-qhse"]]],
+];
+for (const [filename, name, parents] of staticPages) {
+  const target = join(root, "public", filename);
+  let html = readFileSync(target, "utf8");
+  const canonical = /<link[^>]*rel="canonical"[^>]*href="([^"]+)"/.exec(html)?.[1];
+  if (!canonical) throw new Error(`Missing canonical: ${filename}`);
+  // Replace only our own generated block, retaining all authored copy and schemas.
+  html = html.replace(/<style data-breadcrumbs>[\s\S]*?<\/style>/g, "")
+    .replace(/<nav class="site-breadcrumbs"[\s\S]*?<\/nav><script type="application\/ld\+json" data-breadcrumbs>[\s\S]*?<\/script>/g, "");
+  const trail = [{ name: "Home", path: "/" }, ...parents.map(([name, path]) => ({ name, path })), { name, path: new URL(canonical).pathname }];
+  html = html.replace("</head>", `${breadcrumbStyle}</head>`);
+  const markup = breadcrumbMarkup(trail);
+  if (/<main\b/.test(html)) html = html.replace(/<main\b[^>]*>/, tag => `${tag}${markup}`);
+  else if (html.includes('<header class="hero">')) html = html.replace('<header class="hero">', `${markup}<header class="hero">`);
+  else throw new Error(`Missing breadcrumb insertion point: ${filename}`);
+  writeFileSync(target, html);
+}
