@@ -409,6 +409,7 @@ console.log(`prerender-architecture: generated ${routes.length} deterministic ro
 const staticPages = [
   ["ards-gateway/index.html", "ARDS", []],
   ["legal/ico-registration/index.html", "ICO registration", [["Legal", "/legal"]]],
+  ["meriden/resources/index.html", "Resources", [["Meriden", "/platforms/meriden"]]],
   ["meriden/index.html", "Free PSC Self-Inspection Checklist", [["Meriden", "/platforms/meriden"]]],
   ["meriden/ai-readiness-pilot.html", "30-Day Founding Operator Pilot", [["Meriden", "/platforms/meriden"]]],
   ["meriden/psc-readiness-review.html", "Maritime Compliance & PSC Readiness Review", [["Meriden", "/platforms/meriden"]]],

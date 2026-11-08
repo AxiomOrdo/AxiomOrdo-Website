@@ -11,8 +11,12 @@ const mime = {'.html':'text/html','.js':'application/javascript','.css':'text/cs
 const fixture = createServer((req,res) => {
   try {
     const path = new URL(req.url,'http://fixture.invalid').pathname;
+    const direct = resolve(publicRoot, `.${path}`);
+    const directIndex = resolve(direct, 'index.html');
+    const staticFile = existsSync(direct) && statSync(direct).isFile() ? direct
+      : existsSync(directIndex) ? directIndex : undefined;
     let asset = path;
-    for(const rule of config.rewrites) {
+    for(const rule of staticFile ? [] : config.rewrites) {
       if(rule.source === path) { asset = rule.destination; break; }
       const token = rule.source.includes(':path*') ? ':path*' : rule.source.includes(':slug') ? ':slug' : null;
       if(!token) continue;
@@ -23,7 +27,7 @@ const fixture = createServer((req,res) => {
         asset = rule.destination.replace(token,segment); break;
       }
     }
-    let file = path === '/' ? resolve('dist/index.html') : resolve(publicRoot,`.${asset.startsWith('/ao-pdf/_next/') ? decodeURIComponent(asset) : asset}`);
+    let file = path === '/' ? resolve('dist/index.html') : staticFile ?? resolve(publicRoot,`.${asset.startsWith('/ao-pdf/_next/') ? decodeURIComponent(asset) : asset}`);
     if(!file.startsWith(`${publicRoot}/`) && path !== '/') throw new Error('outside fixture');
     if(existsSync(file) && statSync(file).isDirectory()) file = resolve(file,'index.html');
     if(path.startsWith('/ao-pdf/')) for(const header of config.headers.find(r => r.source === '/ao-pdf/(.*)').headers) res.setHeader(header.key,header.value);
@@ -36,7 +40,7 @@ test('breadcrumbs remain visible, keyboard accessible and stable with hydration 
   await new Promise(r => fixture.listen(0,'127.0.0.1',r));
   const origin = `http://127.0.0.1:${fixture.address().port}`;
   const browser = await playwright.chromium.launch();
-  const paths = ['/platforms/meriden','/company/about','/legal/ico-registration/','/ards','/meriden/psc-checklist','/meriden-compliance/insights/maritime-qhse/false-assurance-maritime-compliance','/ao-pdf/','/ao-pdf/tools/merge/','/ao-pdf/limits/','/ao-pdf/privacy/'];
+  const paths = ['/meriden/resources','/platforms/meriden','/company/about','/legal/ico-registration/','/ards','/meriden/psc-checklist','/meriden-compliance/insights/maritime-qhse/false-assurance-maritime-compliance','/ao-pdf/','/ao-pdf/tools/merge/','/ao-pdf/limits/','/ao-pdf/privacy/'];
   try {
     for(const javaScriptEnabled of [false,true]) for(const width of [360,1280]) {
       const context = await browser.newContext({javaScriptEnabled,viewport:{width,height:900}});
