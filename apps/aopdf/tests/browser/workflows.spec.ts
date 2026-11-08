@@ -310,7 +310,7 @@ test('keyboard navigation and reduced motion remain functional', async (
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/ao-pdf/tools/merge/');
   await page.keyboard.press('Tab');
-  await expect(page.getByRole('link', { name: 'AO-PDF' })).toBeFocused();
+  await expect(page.getByRole('banner').getByRole('link', { name: 'AO-PDF', exact: true })).toBeFocused();
   await page.keyboard.press('Tab');
   if (testInfo.project.name === 'mobile-chromium') {
     const menuButton = page.getByRole('button', { name: 'Open navigation' });
