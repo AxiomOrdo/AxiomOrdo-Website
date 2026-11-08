@@ -6,6 +6,9 @@ export default defineConfig({
   testDir: './tests/browser',
   timeout: 45_000,
   fullyParallel: false,
+  // Both projects share one compiling dev server and memory-intensive PDF workers.
+  // Serial execution prevents cross-project reloads and resource contention.
+  workers: 1,
   forbidOnly: Boolean(process.env.CI),
   retries: process.env.CI ? 1 : 0,
   reporter: [['list'], ['html', { open: 'never' }]],

@@ -3,6 +3,7 @@ import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import { createRequire } from "node:module";
 import { spawn } from "node:child_process";
+import { createServer } from "node:http";
 import test, { after, before } from "node:test";
 
 import playwright from "../apps/aopdf/node_modules/playwright/index.js";
@@ -14,6 +15,72 @@ const { chromium } = playwright;
 const baseUrl = "http://127.0.0.1:4176";
 let server;
 let browser;
+
+test("architecture breadcrumbs preserve URL encoding and configured routes cannot execute path markup", async () => {
+  const configuration = JSON.parse(await readFile(new URL('../vercel.json', import.meta.url), 'utf8'));
+  // Local fixture serves actual public assets using the checked-in architecture
+  // rewrite rules. Vite's SPA fallback does not implement Vercel rewrites.
+  const fixture = createServer(async (request, response) => {
+    try {
+      const pathname = new URL(request.url, 'http://fixture.invalid').pathname;
+      let destination = pathname;
+      for (const rule of configuration.rewrites) {
+        if (rule.source === pathname) { destination = rule.destination; break; }
+        const prefix = rule.source.split('/:path*')[0];
+        if (rule.source.endsWith('/:path*') && pathname.startsWith(`${prefix}/`)) {
+          destination = rule.destination.replace(':path*', pathname.slice(prefix.length + 1));
+          break;
+        }
+      }
+      // Do not decode attacker input or synthesize a fallback template. Unknown
+      // routes must resolve to an existing asset, just as configured in Vercel.
+      const asset = new URL(`../public${destination}`, import.meta.url);
+      if (!asset.href.startsWith(new URL('../public/', import.meta.url).href)) throw new Error('outside public');
+      const content = await readFile(asset);
+      response.writeHead(200, { 'Content-Type': destination.endsWith('.html') ? 'text/html' : 'application/octet-stream' });
+      response.end(content);
+    } catch {
+      response.writeHead(404, { 'Content-Type': 'text/plain' });
+      response.end('Not found');
+    }
+  });
+  await new Promise((resolve) => fixture.listen(0, '127.0.0.1', resolve));
+  const origin = `http://127.0.0.1:${fixture.address().port}`;
+  const page = await browser.newPage();
+  try {
+    await page.route('**/*', (route) => new URL(route.request().url()).origin === origin ? route.continue() : route.abort());
+    await page.addInitScript(() => { window.__breadcrumbExecuted = false; });
+    const ordinary = await page.goto(`${origin}/platforms/meriden`);
+    assert.equal(ordinary.status(), 200);
+    assert.deepEqual(await page.locator('#crumbs a').evaluateAll((links) => links.map((link) => [link.textContent, link.getAttribute('href')])), [
+      ['Home', '/'], ['Platforms', '/platforms'],
+    ]);
+    assert.equal(await page.locator('#crumbs [aria-current="page"]').textContent(), 'Meriden');
+    for (const payload of [
+      '<img src=x onerror="window.__breadcrumbExecuted=true">',
+      '%3Csvg%20onload%3Dwindow.__breadcrumbExecuted%3Dtrue%3E',
+      '&lt;img src=x onerror=window.__breadcrumbExecuted=true&gt;',
+      'space label', '日本語', 'nested/child', '%2522%253E%253Cscript%253E',
+    ]) {
+      const target = new URL(`/platforms/${payload}`, origin);
+      const result = await page.goto(target.href);
+      assert.equal(result.status(), 404, target.pathname);
+      assert.equal(await page.evaluate(() => window.location.pathname), target.pathname);
+      assert.equal(await page.evaluate(() => window.__breadcrumbExecuted), false);
+      assert.equal(await page.locator('#crumbs img, #crumbs svg, #crumbs script').count(), 0);
+      // The actual template remains reachable with arbitrary query/hash input;
+      // those inputs must not become breadcrumb labels or HTML nodes.
+      await page.goto(`${origin}/architecture-v2/index.html?label=${encodeURIComponent(payload)}#${encodeURIComponent(payload)}`);
+      assert.equal(await page.locator('#crumbs a').count(), 0);
+      assert.equal(await page.getByRole('navigation', { name: 'Breadcrumb', exact: true }).count(), 0);
+      assert.equal(await page.evaluate(() => window.__breadcrumbExecuted), false);
+      assert.equal(await page.locator('#crumbs img, #crumbs svg, #crumbs script').count(), 0);
+    }
+  } finally {
+    await page.close();
+    await new Promise((resolve) => fixture.close(resolve));
+  }
+});
 
 async function waitForServer() {
   for (let attempt = 0; attempt < 60; attempt += 1) {
@@ -207,4 +274,32 @@ test("pre-rendered company page connects the founder, products and funding conta
   assert.match(html, /https:\/\/gate-zero\.tech\//);
   assert.match(html, /AxiomOrdo is seeking venture funding/);
   assert.match(html, /mailto:sales@axiomordo\.com\?subject=Venture%20funding%20enquiry/);
+});
+
+
+test("Document Assurance is discoverable separately from AO-PDF", async () => {
+  const page = await browser.newPage();
+  try {
+    const errors = [];
+    page.on("pageerror", (error) => errors.push(error.message));
+    await page.goto(baseUrl);
+    assert.equal(await page.getByRole("link", { name: "Try Document Assurance →" }).getAttribute("href"), "/da");
+    assert.deepEqual(errors, []);
+    const config = JSON.parse(await readFile(new URL("../vercel.json", import.meta.url), "utf8"));
+    assert.equal(config.framework, "vite");
+    assert.equal(config.outputDirectory, "dist");
+    for (const source of ["/da", "/da/", "/da/:path*"]) {
+      const route = config.rewrites.find((entry) => entry.source === source);
+      assert.ok(route, `Missing public trial proxy: ${source}`);
+      assert.match(route.destination, /^https:\/\/da-trial-[a-z0-9.-]+\.run\.app\/da/);
+    }
+    for (const source of ["/da/workspace/"]) {
+      const workspace = config.rewrites.find((entry) => entry.source === source);
+      assert.ok(workspace.destination.endsWith("/da/workspace/"), "Keep the loopback worksheet base slash through the proxy");
+    }
+    assert.ok(config.redirects.some((entry) => entry.source === "/da/workspace" && entry.destination === "/da/workspace/"));
+    assert.ok(config.redirects.some((entry) => entry.source === "/docassurance" && entry.destination === "/da"));
+  } finally {
+    await page.close();
+  }
 });

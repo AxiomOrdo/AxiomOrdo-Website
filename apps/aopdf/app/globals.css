@@ -28,3 +28,10 @@
     @apply border-zinc-800;
   }
 }
+
+/* Breadcrumbs stay visible and wrap independently of the mobile header menu. */
+.aopdf-breadcrumbs { position: relative; z-index: 1; max-width: 72rem; margin: 0 auto 1.5rem; padding: .5rem 0; font-size: .875rem; color: #a1a1aa; }
+.aopdf-breadcrumbs ol { display: flex; flex-wrap: wrap; gap: .4rem .6rem; list-style: none; padding: 0; margin: 0; }
+.aopdf-breadcrumbs li { display: flex; align-items: baseline; gap: .6rem; min-width: 0; overflow-wrap: anywhere; }
+.aopdf-breadcrumbs a { color: #d4d4d8; text-decoration: underline; text-underline-offset: 3px; }
+.aopdf-breadcrumbs a:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }

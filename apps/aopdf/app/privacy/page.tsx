@@ -9,5 +9,5 @@ export const metadata: Metadata = {
 };
 
 export default function PrivacyPage() {
-  return <LegalDocumentPage document={readLegalDocument('privacy')} />;
+  return <LegalDocumentPage path="/ao-pdf/privacy/" document={readLegalDocument('privacy')} />;
 }

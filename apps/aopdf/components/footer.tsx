@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { FileText } from 'lucide-react';
+import corporate from '../../../src/lib/corporate-notices.json';
 
 export default function Footer() {
   return (
@@ -25,6 +26,11 @@ export default function Footer() {
         >
           © 2026 AxiomOrdo Ltd
         </a>
+      </div>
+      <div data-company-identifiers="true" className="max-w-7xl mx-auto px-6 mt-6 text-xs text-zinc-400 space-y-2">
+        <p>{corporate.company.legalName} · Registered in {corporate.company.jurisdiction} · Company number <a href={corporate.company.companyRegisterUrl} className="underline">{corporate.company.companyNumber}</a></p>
+        <p>Registered office: {corporate.company.registeredOffice}</p>
+        <p>Contact: <a href={`mailto:${corporate.company.contactEmail}`} className="underline">{corporate.company.contactEmail}</a></p>
       </div>
     </footer>
   );

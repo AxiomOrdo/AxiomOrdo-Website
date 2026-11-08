@@ -32,7 +32,6 @@ const hasPrerenderedContent=Boolean(document.getElementById('title')?.textConten
 if(!hasPrerenderedContent){document.title=`${page.title} | AxiomOrdo`;const md=document.querySelector('meta[name="description"]');if(md)md.content=page.lede;
 for(const [id,value] of [['eyebrow',page.eyebrow],['title',page.title],['lede',page.lede],['section-title',page.section],['section-intro',page.intro]]){const el=document.getElementById(id);if(el)el.textContent=value}
 const grid=document.getElementById('grid');if(grid)grid.innerHTML=page.cards.map(([t,d,h])=>`<article class="card"><h3>${t}</h3><p>${d}</p><a href="${h}">Open route →</a></article>`).join('');}
-const crumbs=document.getElementById('crumbs');if(crumbs)crumbs.innerHTML='<a href="/">Home</a>'+parts.map((p,i)=>` <span aria-hidden="true">/</span> <a href="/${parts.slice(0,i+1).join('/')}">${pretty(p)}</a>`).join('');
 document.querySelectorAll('#desktop-nav a').forEach(a=>{if(path===a.getAttribute('href')||path.startsWith(a.getAttribute('href')+'/'))a.setAttribute('aria-current','page')});
 const menu=document.getElementById('menu'),mobile=document.getElementById('mobile-nav');if(menu&&mobile)menu.addEventListener('click',()=>{const open=mobile.classList.toggle('open');menu.setAttribute('aria-expanded',String(open));menu.textContent=open?'Close':'Menu'});
 </script>

@@ -9,5 +9,5 @@ export const metadata: Metadata = {
 };
 
 export default function AcceptableUsePage() {
-  return <LegalDocumentPage document={readLegalDocument('acceptable-use')} />;
+  return <LegalDocumentPage path="/ao-pdf/acceptable-use/" document={readLegalDocument('acceptable-use')} />;
 }

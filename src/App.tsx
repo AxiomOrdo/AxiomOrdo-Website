@@ -7,7 +7,7 @@ import {
   Navigate,
   useLocation,
 } from "react-router-dom";
-import { SpeedInsights } from "@vercel/speed-insights/react";
+import { CompanyIdentity, CorporatePolicyLinks, CorporateNoticeContent, corporateNotices, company } from "./components/CorporateNotices";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Types
@@ -365,7 +365,7 @@ const unreleasedBrandKeys = new Set([
 // ─────────────────────────────────────────────────────────────────────────────
 
 const ARDS_URL =
-  (process.env.REACT_APP_ARDS_URL &&
+  (typeof process !== "undefined" && process.env.REACT_APP_ARDS_URL &&
     process.env.REACT_APP_ARDS_URL.trim()) ||
   "https://ards.axiomordo.com/";
 
@@ -448,34 +448,6 @@ const placeholderArticles: PlaceholderArticle[] = [
       "Why approved tools are not enough—and how verification, document control, competence and accountability apply when AI enters operational work.",
     category: "maritime-ai",
     status: "Published",
-  },
-];
-
-// ─────────────────────────────────────────────────────────────────────────────
-// ClearMark Decision System
-// ─────────────────────────────────────────────────────────────────────────────
-
-const pfasDecisions = [
-  {
-    label: "Green",
-    outcome: "Clear",
-    detail:
-      "Evidence is sufficient to defend the product family without immediate testing.",
-    tone: "border-emerald-400 text-emerald-700",
-  },
-  {
-    label: "Amber",
-    outcome: "Investigate",
-    detail:
-      "Evidence gaps exist at component, supplier, or material level and require targeted follow-up.",
-    tone: "border-amber-400 text-amber-700",
-  },
-  {
-    label: "Red",
-    outcome: "Restrict",
-    detail:
-      "The product cannot be defended and should be held, remediated, or tested before exposure increases.",
-    tone: "border-rose-400 text-rose-700",
   },
 ];
 
@@ -671,6 +643,9 @@ function GroupNav() {
           </div>
         </Link>
         <div className="flex items-center gap-5 text-sm font-medium">
+          <a href="/da" className="hidden text-white/65 transition hover:text-white lg:inline">
+            Document Assurance
+          </a>
           <a href="/ao-pdf" className="hidden text-white/65 transition hover:text-white lg:inline">
             AO-PDF
           </a>
@@ -751,14 +726,15 @@ function GroupFooter({ brand }: { brand?: { name: string; accent: string } }) {
               </Link>
             ))}
             <a
-              href="mailto:hello@axiomordo.com"
+              href={`mailto:${company.contactEmail}`}
               className="transition hover:text-white/65"
             >
               Contact
             </a>
           </div>
         </div>
-        <p className="mt-12 text-xs text-white/18">
+        <div className="mt-10 space-y-6"><CompanyIdentity /><CorporatePolicyLinks /></div>
+        <p className="mt-12 text-xs text-white/60">
           © {new Date().getFullYear()} AxiomOrdo Ltd. All rights reserved.
         </p>
       </div>
@@ -1902,6 +1878,15 @@ function AxiomOrdoHome() {
         </div>
       </section>
 
+      <section className="border-y border-white/8 bg-teal-300/[0.04] py-16 sm:py-24">
+        <div className="mx-auto max-w-7xl px-5 sm:px-8">
+          <p className="text-xs font-semibold uppercase tracking-[0.28em] text-teal-200">Document Assurance Tree</p>
+          <h2 className="mt-5 text-3xl font-semibold tracking-tight text-white sm:text-5xl">Choose your headings. Download a Word draft.</h2>
+          <p className="mt-6 max-w-3xl text-lg leading-8 text-white/60">Try the current Document Assurance workflow: enter fictional sample notes, select standard or custom report headings, review every point and download a diagnostic Word document. Sample information only; existing review holds remain.</p>
+          <a href="/da" className="mt-8 inline-flex rounded-full bg-teal-200 px-6 py-3 font-semibold text-slate-950 transition hover:bg-teal-100">Try Document Assurance →</a>
+        </div>
+      </section>
+
       {/* ── Operational public product ── */}
       <section className="border-y border-white/8 bg-cyan-300/[0.04] py-24 sm:py-32">
         <div className="mx-auto max-w-7xl px-5 sm:px-8">
@@ -2165,12 +2150,22 @@ function AxiomOrdoHome() {
 // App Router
 // ─────────────────────────────────────────────────────────────────────────────
 
+function CorporateNoticePage({ slug }: { slug: string }) {
+  const notice = corporateNotices.find((item) => item.slug === slug)!;
+  return <div className="min-h-screen bg-[#080d18] text-white">
+    <PageSeo title={`${notice.title} | AxiomOrdo`} description={notice.description} canonicalPath={`/legal/${slug}`} />
+    <div className="mx-auto max-w-4xl px-6 pt-8"><Link className="text-cyan-200 underline" to="/">AxiomOrdo home</Link></div>
+    <CorporateNoticeContent slug={slug} />
+    <GroupFooter />
+  </div>;
+}
+
 export default function App() {
   return (
     <BrowserRouter>
       <ScrollToTop />
-      <SpeedInsights />
       <Routes>
+        {corporateNotices.map((notice) => <Route key={notice.slug} path={`/legal/${notice.slug}`} element={<CorporateNoticePage slug={notice.slug} />} />)}
         {/* Group home */}
         <Route path="/" element={<AxiomOrdoHome />} />
 

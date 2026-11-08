@@ -1,5 +1,9 @@
 {
+  "framework": "vite",
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
   "redirects": [
+    { "source": "/da/workspace", "destination": "/da/workspace/", "permanent": false },
     {
       "source": "/",
       "has": [{ "type": "host", "value": "axiomordo.com" }],
@@ -18,6 +22,8 @@
       "destination": "https://www.axiomordo.com/:path*",
       "permanent": true
     },
+    { "source": "/docassurance", "destination": "/da", "permanent": true },
+    { "source": "/docassurance/", "destination": "/da", "permanent": true },
     { "source": "/gatezero", "destination": "https://gate-zero.tech/", "permanent": true },
     { "source": "/gatezero/", "destination": "https://gate-zero.tech/", "permanent": true },
     { "source": "/aopdf", "destination": "/ao-pdf/", "permanent": true },
@@ -53,6 +59,10 @@
     }
   ],
   "rewrites": [
+    { "source": "/da/workspace/", "destination": "https://da-trial-67645337660.europe-west2.run.app/da/workspace/" },
+    { "source": "/da", "destination": "https://da-trial-67645337660.europe-west2.run.app/da" },
+    { "source": "/da/", "destination": "https://da-trial-67645337660.europe-west2.run.app/da/" },
+    { "source": "/da/:path*", "destination": "https://da-trial-67645337660.europe-west2.run.app/da/:path*" },
     { "source": "/ao-pdf", "destination": "/ao-pdf/index.html" },
     { "source": "/ao-pdf/", "destination": "/ao-pdf/index.html" },
     { "source": "/ao-pdf/acceptable-use", "destination": "/ao-pdf/acceptable-use/index.html" },

@@ -1,3 +1,4 @@
+import { inlineScriptBodies } from "./inline-scripts.mjs";
 import { createHash } from 'node:crypto';
 import { readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
@@ -18,12 +19,9 @@ function htmlFiles(directory) {
 const hashes = new Set();
 for (const filename of htmlFiles(exportRoot)) {
   const html = readFileSync(filename, 'utf8');
-  for (const match of html.matchAll(
-    /<script(?:\s[^>]*)?>([\s\S]*?)<\/script[^>]*>/gi,
-  )) {
-    if (!match[1]) continue;
+  for (const body of inlineScriptBodies(html)) {
     hashes.add(
-      `'sha256-${createHash('sha256').update(match[1]).digest('base64')}'`,
+      `'sha256-${createHash('sha256').update(body).digest('base64')}'`,
     );
   }
 }

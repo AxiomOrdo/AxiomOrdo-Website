@@ -1,3 +1,4 @@
+import Breadcrumbs from '@/components/breadcrumbs';
 import Navbar from '@/components/navbar';
 import Footer from '@/components/footer';
 import AmbientGlow from '@/components/ambient-glow';
@@ -5,14 +6,17 @@ import type { LegalDocument } from '@/lib/legal-documents';
 
 export default function LegalDocumentPage({
   document,
+  path,
 }: {
   document: LegalDocument;
+  path: string;
 }) {
   return (
     <div className="flex min-h-screen flex-col">
       <AmbientGlow />
       <Navbar />
       <main className="z-10 mx-auto w-full max-w-3xl flex-1 px-4 py-12 sm:px-6 sm:py-16">
+        <Breadcrumbs items={[{ name: 'AO-PDF', path: '/ao-pdf/' }, { name: document.title, path }]} />
         <header className="border-b border-zinc-800 pb-8">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-indigo-400">
             {document.reviewStatus.replace('-', ' ')}

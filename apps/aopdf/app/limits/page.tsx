@@ -1,3 +1,4 @@
+import Breadcrumbs from '@/components/breadcrumbs';
 import type { Metadata } from 'next';
 import Navbar from '@/components/navbar';
 import Footer from '@/components/footer';
@@ -7,6 +8,7 @@ import { TOOL_LIMITS } from '@/governance/tool-limits';
 
 export const metadata: Metadata = {
   title: 'Operating Limits',
+  alternates: { canonical: '/ao-pdf/limits/' },
   description: 'Governed input, processing, assurance and output limits for all thirteen AO-PDF workflows.',
 };
 
@@ -16,6 +18,7 @@ export default function LimitsPage() {
       <AmbientGlow />
       <Navbar />
       <main className="z-10 mx-auto w-full max-w-6xl flex-1 px-4 py-12 sm:px-6 sm:py-16">
+        <Breadcrumbs items={[{ name: 'AO-PDF', path: '/ao-pdf/' }, { name: 'Operating Limits', path: '/ao-pdf/limits/' }]} />
         <header className="mx-auto max-w-3xl text-center">
           <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl">
             AO-PDF Operating Limits

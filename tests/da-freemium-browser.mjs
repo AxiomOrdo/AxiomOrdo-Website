@@ -1,0 +1,60 @@
+// Explicit bounded acceptance for the current public Free pathway.
+import assert from 'node:assert/strict';
+import {mkdtemp,readFile,rm} from 'node:fs/promises';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
+import playwright from '../apps/aopdf/node_modules/playwright/index.js';
+import JSZip from '../apps/aopdf/node_modules/jszip/lib/index.js';
+const base=process.env.DA_BASE_URL||'http://127.0.0.1:8768';
+assert.match(base,/^(http:\/\/127\.0\.0\.1:\d+|https:\/\/www\.axiomordo\.com)$/);
+const directory=await mkdtemp(join(tmpdir(),'da-free-'));
+const browser=await playwright.chromium.launch({headless:true});
+try{
+ for(const viewport of [{width:1280,height:900},{width:390,height:844}]){
+  const context=await browser.newContext({viewport,acceptDownloads:true});
+  const page=await context.newPage();page.setDefaultTimeout(15000);
+  const errors=[];page.on('response',r=>{if(process.env.DA_DEBUG)console.log(r.status(),new URL(r.url()).pathname);});page.on('pageerror',error=>errors.push(error.message));
+  await page.goto(base+'/da');
+  await page.getByRole('heading',{name:'Basic report builder',exact:true}).waitFor();
+  assert.equal(await page.locator('textarea').count(),3);
+  const oversized='X'.repeat(17000);await page.getByLabel('Introduction',{exact:true}).fill(oversized);
+  assert.equal((await page.getByLabel('Introduction',{exact:true}).inputValue()).length,17000,'Oversize paste must stay intact until explicit refusal');
+  await page.getByRole('button',{name:'Download SAMPLE Word'}).click();
+  assert.match(await page.locator('#status').textContent(),/Shorten your text/);
+  await page.getByLabel('Introduction',{exact:true}).fill('Fictional opening <literal> & source.');
+  await page.getByLabel('Discussion',{exact:true}).fill('A fictional discussion with two lines.\nSecond line.');
+  await page.getByLabel('Conclusion',{exact:true}).fill('An example conclusion.');
+  assert.equal(await page.locator('#preview-introduction').textContent(),'Fictional opening <literal> & source.');
+  assert.equal(await page.locator('#preview-introduction literal').count(),0);
+  await page.getByRole('button',{name:'Findings, requires Pro'}).click();
+  await page.getByRole('dialog').waitFor();
+  assert.match(await page.getByRole('dialog').innerText(),/not open for customer subscriptions/);
+  await page.getByRole('button',{name:'Back to the builder'}).click();
+  const pending=page.waitForEvent('download');
+  await page.getByRole('button',{name:'Download SAMPLE Word'}).click();
+  const download=await pending;
+  const file=join(directory,'sample-'+viewport.width+'.docx');await download.saveAs(file);
+  const zip=await JSZip.loadAsync(await readFile(file));
+  const doc=await zip.file('word/document.xml').async('string');
+  assert.equal((doc.match(/w:outlineLvl w:val="0"/g)||[]).length,3);
+  assert.match(doc,/Fictional opening &lt;literal&gt; &amp; source\./);
+  const header=await zip.file('word/header1.xml').async('string');
+  assert.match(header,/string="SAMPLE"/);assert.match(header,/Created using AXIOMORDO technology/);
+  assert.match(await zip.file('word/footer1.xml').async('string'),/Created using AXIOMORDO technology/);
+  await page.waitForFunction(()=>document.querySelector('#status').textContent.includes('download is ready'));
+  await page.route('**/da/basic/report',route=>route.fulfill({status:429,contentType:'application/json',body:'{\"error\":\"SERVICE_BUSY\"}'}));
+  await page.getByRole('button',{name:'Download SAMPLE Word'}).click();
+  await page.waitForFunction(()=>document.querySelector('#status').textContent.includes('Wait one minute'));
+  assert.equal(await page.getByLabel('Introduction',{exact:true}).inputValue(),'Fictional opening <literal> & source.');
+  await page.unroute('**/da/basic/report');
+  assert.equal(await page.evaluate(()=>localStorage.length),0);
+  assert.equal((await context.cookies()).length,0);
+  const forged=await page.evaluate(async()=>{const r=await fetch('/da/basic/report',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({preset:'basic',tier:'business',sections:{introduction:'x',discussion:'y',conclusion:'z',findings:'Fourth'}})});return r.status;});
+  assert.equal(forged,400);
+  const old=await page.evaluate(async()=>{const r=await fetch('/da/workspace/prepare',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});return r.status;});assert.equal(old,404);
+  assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
+  assert.deepEqual(errors,[]);
+  console.log(`PASS Free ${viewport.width}: preview, locked features, real marked DOCX, bypass refusal, no browser persistence`);
+  await context.close();
+ }
+}finally{await browser.close();await rm(directory,{recursive:true,force:true});}

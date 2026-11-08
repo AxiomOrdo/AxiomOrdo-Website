@@ -1,3 +1,4 @@
+import Breadcrumbs from '@/components/breadcrumbs';
 import Navbar from '@/components/navbar';
 import Footer from '@/components/footer';
 import AmbientGlow from '@/components/ambient-glow';
@@ -13,6 +14,7 @@ export default function HomePage() {
       <AmbientGlow />
       <Navbar />
       <main className="flex-1 z-10">
+        <Breadcrumbs items={[{ name: 'AO-PDF', path: '/ao-pdf/' }]} />
         <HeroSection />
         <FeaturesGrid />
         <ToolShowcase />

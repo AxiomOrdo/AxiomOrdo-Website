@@ -9,5 +9,5 @@ export const metadata: Metadata = {
 };
 
 export default function TermsPage() {
-  return <LegalDocumentPage document={readLegalDocument('terms')} />;
+  return <LegalDocumentPage path="/ao-pdf/terms/" document={readLegalDocument('terms')} />;
 }

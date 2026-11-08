@@ -1,0 +1,163 @@
+{
+  "company": {
+    "legalName": "AxiomOrdo Ltd",
+    "companyNumber": "17179868",
+    "jurisdiction": "England and Wales",
+    "registeredOffice": "128 City Road, London, United Kingdom, EC1V 2NX",
+    "contactEmail": "sales@axiomordo.com",
+    "vatNumber": null,
+    "companyRegisterUrl": "https://find-and-update.company-information.service.gov.uk/company/17179868",
+    "vatRegistrationStatus": "not_registered"
+  },
+  "effectiveDate": "5 November 2026",
+  "notices": [
+    {
+      "slug": "privacy",
+      "title": "Website privacy notice",
+      "description": "How AxiomOrdo Ltd handles public website requests and contact enquiries.",
+      "sections": [
+        {
+          "heading": "Scope and controller",
+          "paragraphs": [
+            "AxiomOrdo Ltd is the controller for information used to operate this public corporate website and respond to enquiries. Contact sales@axiomordo.com about privacy or your information, or write to our registered office below. This is our data protection contact; no named data protection officer is stated here.",
+            "This notice covers corporate website navigation and contact email. Document Assurance trial processing has separate notices at /da/privacy and /da/cookies. AO-PDF has a separate notice at /ao-pdf/privacy/. Follow the notice for the service you use; this page does not describe customer account, billing or uploaded-document processing."
+          ]
+        },
+        {
+          "heading": "Information and purposes",
+          "paragraphs": [
+            "Your browser sends connection information when requesting a page, including IP address, requested URL, browser information and request time. Hosting and delivery providers process request metadata to deliver pages, maintain security and diagnose faults. Our basis for processing identifiable request metadata is our legitimate interest in running and securing the website.",
+            "If you email us, we receive your email address, message and information you choose to include. We use it to answer your enquiry, on the basis of our legitimate interest in handling correspondence, or to take steps at your request before a contract where applicable. Do not send confidential documents, sensitive personal information or information about other people in an initial enquiry."
+          ]
+        },
+        {
+          "heading": "Website providers and optional instrumentation",
+          "paragraphs": [
+            "The corporate website does not automatically load advertising tags, optional performance measurement or the local Trace inspector. This does not stop hosting and delivery providers from processing request metadata to operate and secure the website, and is not a promise that browser extensions or external services never collect information.",
+            "Vercel provides website hosting and delivery. Email correspondence passes through the email providers used by you and us. Information may be disclosed where required by law or necessary to investigate misuse. We do not sell enquiry information or treat an enquiry as a marketing subscription."
+          ]
+        },
+        {
+          "heading": "Earlier browser-session records",
+          "paragraphs": [
+            "Earlier versions of the corporate website loaded a local Trace inspector which recorded page paths, page titles, followed links and Trace actions in sessionStorage under axiomordo.trace.v1. This release does not load that component or collect new Trace records. Removing the component does not erase records already present in an existing tab. Clear this website’s browser storage to remove old records; closing the tab normally ends session storage, subject to browser session restoration."
+          ]
+        },
+        {
+          "heading": "Retention and international processing",
+          "paragraphs": [
+            "We retain correspondence for as long as needed to handle the enquiry and any resulting relationship, or to meet applicable legal obligations and resolve disputes. A fixed deletion period for all correspondence is not stated here. We have not yet confirmed the retention applying to every Vercel delivery/security log category, so cannot state a verified maximum for those records. Provider dashboard log visibility is not a complete retention schedule. Contact us for retention information relevant to your request.",
+            "Hosting and email providers may process information outside the United Kingdom. Contact us for provider, processing-location and applicable transfer-safeguard information for your enquiry. This notice does not assert that all processing stays in the UK."
+          ]
+        },
+        {
+          "heading": "Your rights and complaints",
+          "paragraphs": [
+            "Depending on the circumstances, you can request access, correction, erasure, restriction or portability of your personal information, and object to processing based on legitimate interests. These rights have legal conditions and exceptions. Send requests to sales@axiomordo.com; we may need enough information to verify your identity and locate the relevant record.",
+            "You can complain to the Information Commissioner’s Office at https://ico.org.uk/make-a-complaint/. You can contact us first so we can investigate. You can decline to provide information requested for an enquiry, but we may be unable to respond. We do not make decisions with legal or similarly significant effects about website visitors through automated decision-making.",
+            "Right to object: you may object to processing based on legitimate interests by contacting sales@axiomordo.com. We will assess the objection under the applicable conditions; no marketing subscription is created by using this website."
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "cookies",
+      "title": "Website cookies and browser technologies",
+      "description": "Cookies, browser storage and performance measurement on the corporate website.",
+      "sections": [
+        {
+          "heading": "Scope",
+          "paragraphs": [
+            "This page covers the public corporate website. Document Assurance trial browser behaviour is described at /da/cookies. AO-PDF is a separate application; read /ao-pdf/privacy/ before using it."
+          ]
+        },
+        {
+          "heading": "Application cookies and storage",
+          "paragraphs": [
+            "The corporate website does not automatically load advertising tags, optional performance measurement or the local Trace inspector. It does not implement login cookies, shopping-cart cookies or application persistence in localStorage or sessionStorage. This describes the current application: hosting infrastructure, browser extensions and linked services have separate behaviour.",
+            "Earlier versions loaded a local Trace inspector which stored page paths, page titles, followed links and Trace actions under sessionStorage key axiomordo.trace.v1. Disabling the component does not erase existing tab data. Use your browser’s site-storage controls to remove old records. Closing the tab normally ends session storage, subject to browser restoration behaviour."
+          ]
+        },
+        {
+          "heading": "Optional technologies and future changes",
+          "paragraphs": [
+            "No optional advertising or performance measurement is automatically enabled by these corporate pages, so they do not present an advertising-cookie acceptance banner. Browser storage used by earlier website versions is described above; no new consent-preference storage is introduced here.",
+            "Before re-enabling optional browser measurement or other technologies, we must document the purpose and applicable legal category, validate consent where required or all conditions of an applicable exception, and provide the required notice and objection or other controls. Absence of cookies alone does not determine whether a technology needs consent. We will update these notices to match any enabled functionality."
+          ]
+        },
+        {
+          "heading": "Your controls and external links",
+          "paragraphs": [
+            "You can restrict cookies and site storage in browser settings and use browser privacy controls. Disabling scripts may affect navigation and interactive pages. External services have their own notices. Email sales@axiomordo.com with browser-technology questions."
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "terms",
+      "title": "Corporate website terms of use",
+      "description": "Terms for public AxiomOrdo website browsing and informational materials.",
+      "sections": [
+        {
+          "heading": "Operator and scope",
+          "paragraphs": [
+            "This public website is operated by AxiomOrdo Ltd, a company registered in England and Wales, company number 17179868. Contact sales@axiomordo.com or write to our registered office below. These terms cover public website browsing and informational materials.",
+            "Document Assurance trial use is governed by /da/terms. AO-PDF terms are at /ao-pdf/terms/. Product purchases, subscriptions and professional engagements require their own applicable agreement. Website access does not grant a paid tier, create a customer account or appoint us as your professional adviser."
+          ]
+        },
+        {
+          "heading": "Informational content and responsibility",
+          "paragraphs": [
+            "Website material provides general information. It is not legal, regulatory, safety, certification or professional advice for a particular situation. Check original sources and obtain suitable professional review before relying on material for an operational or compliance decision. A product description is not evidence that a service is currently available, approved or suitable for your needs."
+          ]
+        },
+        {
+          "heading": "Permitted use and intellectual property",
+          "paragraphs": [
+            "You may browse and link to public pages and retain copies for your own reference. AxiomOrdo and its licensors retain rights in website text, branding and software, except where a stated licence says otherwise. Do not remove attribution or misrepresent material as approved professional advice.",
+            "Do not use the site unlawfully, attempt unauthorised access, interfere with availability or security, or distribute malicious content. Report a suspected problem to sales@axiomordo.com without accessing other people’s information."
+          ]
+        },
+        {
+          "heading": "Availability, links and liability",
+          "paragraphs": [
+            "We may update, suspend or withdraw public pages. We do not promise uninterrupted access or that all material is complete or current. External links are provided for reference; we do not control external content or availability.",
+            "Nothing in these terms excludes liability that cannot lawfully be excluded, including liability for death or personal injury caused by negligence, fraud or fraudulent misrepresentation. Mandatory statutory rights remain unaffected. These terms do not replace liability provisions agreed for a purchased service."
+          ]
+        },
+        {
+          "heading": "Law and changes",
+          "paragraphs": [
+            "These terms are governed by the law of England and Wales. Courts of England and Wales have jurisdiction, subject to mandatory consumer rights to bring proceedings elsewhere. Updated terms apply to subsequent website use. Contact sales@axiomordo.com if you need clarification."
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "accessibility",
+      "title": "Website accessibility statement",
+      "description": "Accessibility aims, current limits and a contact route for website barriers.",
+      "sections": [
+        {
+          "heading": "Scope and aim",
+          "paragraphs": [
+            "We aim to make the corporate website usable with keyboard navigation, zoom and assistive technology, working towards WCAG 2.2 Level AA. This is an improvement target, not a certification or claim of full conformance.",
+            "This statement covers the public corporate website. Document Assurance has a separate statement at /da/accessibility. AO-PDF and linked third-party services are separate surfaces; this statement does not certify their accessibility."
+          ]
+        },
+        {
+          "heading": "Current limitations",
+          "paragraphs": [
+            "A complete independent accessibility audit of the corporate website has not been completed. Keyboard, screen-reader, contrast and mobile behaviour have not been verified across every page and document. Some linked or downloaded materials may need an alternative format. We cannot currently claim that every page and downloadable document meets WCAG 2.2 AA."
+          ]
+        },
+        {
+          "heading": "Report a barrier or request a format",
+          "paragraphs": [
+            "Email sales@axiomordo.com with the page URL, the task you were trying to complete and, if comfortable, the browser or assistive technology you used. Tell us the format or adjustment that would help. Do not send sensitive information in a barrier report. We will review the issue and discuss a usable alternative; no fixed resolution time is promised."
+          ]
+        }
+      ]
+    }
+  ]
+}
