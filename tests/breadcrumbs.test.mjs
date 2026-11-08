@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { readFileSync, readdirSync, existsSync } from 'node:fs';
+import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import test from 'node:test';
 import playwright from '../apps/aopdf/node_modules/playwright/index.js';
@@ -7,6 +7,10 @@ import playwright from '../apps/aopdf/node_modules/playwright/index.js';
 const config = JSON.parse(readFileSync('vercel.json','utf8'));
 const walk = dir => readdirSync(dir,{withFileTypes:true}).sort((a,b) => a.name.localeCompare(b.name)).flatMap(e => e.isDirectory() ? walk(join(dir,e.name)) : e.name.endsWith('.html') ? [join(dir,e.name)] : []);
 function resolveRoute(path) {
+  const direct = `public${path}`;
+  if (existsSync(direct) && statSync(direct).isFile()) return direct;
+  const index = join(direct, 'index.html');
+  if (existsSync(index)) return index;
   for(const rule of config.rewrites) {
     if(rule.source === path) return `public${rule.destination}`;
     for(const token of [':path*',':slug']) {
@@ -24,6 +28,7 @@ function resolveRoute(path) {
 const candidates = new Set([
   ...walk('public/architecture-v2/routes'),
   ...walk('public/ao-pdf'),
+  'public/meriden/resources/index.html',
   ...config.rewrites.filter(r => !r.source.includes(':') && r.destination.startsWith('/')).map(r => `public${r.destination}`),
 ]);
 
