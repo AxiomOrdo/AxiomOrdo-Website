@@ -66,7 +66,7 @@ function applyCanonicalHostRedirect(url: string): string | null {
 }
 
 describe('canonical www host policy', () => {
-  it('covers root, trailing paths, and non-trailing assets before other redirects', () => {
+  it('covers canonical paths after the existing DA workspace normalization', () => {
     assert.deepEqual(canonicalHostRules(), [
       {
         source: '/',
@@ -87,7 +87,11 @@ describe('canonical www host policy', () => {
         permanent: true,
       },
     ]);
-    assert.deepEqual(config.redirects.slice(0, 3), canonicalHostRules());
+    const firstCanonical = config.redirects.indexOf(canonicalHostRules()[0]);
+    assert.deepEqual(config.redirects.slice(0, firstCanonical), [{
+      source: '/da/workspace', destination: '/da/workspace/', permanent: false,
+    }]);
+    assert.deepEqual(config.redirects.slice(firstCanonical, firstCanonical + 3), canonicalHostRules());
   });
 
   it('preserves AO-PDF path, query, and trailing semantics without host oscillation', () => {
