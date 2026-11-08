@@ -24,7 +24,7 @@ function resolveRoute(path) {
 const candidates = new Set([
   ...walk('public/architecture-v2/routes'),
   ...walk('public/ao-pdf'),
-  ...config.rewrites.filter(r => !r.source.includes(':')).map(r => `public${r.destination}`),
+  ...config.rewrites.filter(r => !r.source.includes(':') && r.destination.startsWith('/')).map(r => `public${r.destination}`),
 ]);
 
 test('every public rendered inner page has one matching initial-HTML breadcrumb trail', async t => {

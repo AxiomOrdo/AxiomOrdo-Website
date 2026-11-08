@@ -41,3 +41,5 @@ Google code-mode validation was attempted on the generated `/platforms/meriden` 
 ## Production publication candidate
 
 Packet `WEBSITES-BREADCRUMBS-PUBLISH-V1`, lifecycle PROMOTION, publishes only the breadcrumb change from each site's existing production source. AxiomOrdo uses deployed source `e90cdefeb9009cd2a2c3df4029a92460788a765c`; its company disclosures, notices, footer postprocessor and deployment configuration are preserved. The separate repair branch remains preserved and is not included by this publication. Publication authorization is the owner's instruction “publish the changes”.
+
+The Company Site Gate now runs the new breadcrumb HTML, escaping, CSP data-block and browser tests. Its path filters include the breadcrumb helper and tests. The publication checks also preserve the deployed corporate-notice and footer audits.
