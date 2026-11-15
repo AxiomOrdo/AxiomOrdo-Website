@@ -316,36 +316,24 @@ const brands: Brand[] = [
     cta: "Request SafeOps Pilot Access",
   },
 
-  // ── 9. Meriden Compliance ── Maritime SME ────────────────────────────────
+  // Meriden's current offer is maintained on its dedicated website.
   {
     key: "meriden",
     name: "Meriden Compliance",
-    tagline: "Maritime compliance without the compliance team.",
-    description:
-      "Structured ISM, MLC, and flag state compliance management for vessel operators who don't have a shore-based compliance department.",
-    color: "#1d4ed8",
-    accent: "#60a5fa",
+    tagline: "Practical AI governance for maritime teams.",
+    description: "Maritime AI governance documentation and specialist support for adapting controls into your existing safety management system.",
+    color: "#147568",
+    accent: "#d7b56d",
     href: "/meriden-compliance",
-    label: "Maritime SME",
-    hero: "Maritime compliance your crew can actually use.",
-    subline:
-      "Meriden Compliance delivers structured ISM, MLC, and flag state compliance management for vessel operators who do not have a shore-based compliance department.",
+    label: "Maritime AI governance",
+    hero: "AI governance that fits your existing SMS.",
+    subline: "Explore the current documentation and support options on the Meriden Compliance website.",
     problem: {
-      heading: "Smaller operators carry the same regulatory burden without the compliance infrastructure.",
-      body: [
-        "ISM Code, SOLAS, MLC 2006, flag state requirements, port state control — the compliance burden on a maritime operator does not scale down with the size of the fleet. A two-vessel SME carries the same documentary obligations as a large owner.",
-        "Meriden Compliance provides the structure, the checklists, the deadline tracking, and the evidence management — at a cost that makes sense for an SME operation.",
-      ],
+      heading: "Give shore teams clear boundaries for AI use.",
+      body: ["Define permitted uses, information boundaries, human review and reporting through your existing management system."],
     },
-    capabilities: [
-      { title: "ISM Code compliance", desc: "Safety Management System requirements tracked and evidenced." },
-      { title: "MLC 2006 records", desc: "Seafarer records, certificates, and MLC obligations in one place." },
-      { title: "PSC readiness", desc: "Port State Control preparation check against your vessel's current record." },
-      { title: "Deadline calendar", desc: "Survey dates, certificate renewals, and inspection windows tracked." },
-      { title: "Document control", desc: "Controlled SMS procedures with version history and crew acknowledgement." },
-      { title: "Fleet overview", desc: "Multi-vessel compliance position visible in a single dashboard." },
-    ],
-    cta: "Start Free 30-Day Trial",
+    capabilities: [],
+    cta: "Visit Meriden Compliance",
   },
 ];
 
@@ -998,258 +986,27 @@ function BrandPage({ brand }: { brand: Brand }) {
   );
 }
 function MeridenPage() {
-  const brand = brands.find((b) => b.key === "meriden")!;
-
-  const tiers = [
-    {
-      name: "Vessel",
-      price: "£149",
-      period: "/month",
-      desc: "Single vessel. Full ISM and MLC compliance management.",
-      features: [
-        "ISM Code obligation tracking",
-        "MLC 2006 record management",
-        "Certificate and survey deadline calendar",
-        "PSC readiness checker",
-        "Document control with version history",
-        "Email support",
-      ],
-    },
-    {
-      name: "Fleet",
-      price: "£349",
-      period: "/month",
-      desc: "Up to 5 vessels. Fleet-wide compliance overview.",
-      features: [
-        "Everything in Vessel",
-        "Multi-vessel dashboard",
-        "Fleet compliance position view",
-        "Comparative PSC readiness",
-        "Priority support",
-        "Onboarding included",
-      ],
-      featured: true,
-    },
-    {
-      name: "Enterprise",
-      price: "Custom",
-      period: "",
-      desc: "Larger fleets, flag state integration, or group-level requirements.",
-      features: [
-        "Unlimited vessels",
-        "Flag state and classification society integration",
-        "Dedicated account management",
-        "Custom obligation mapping",
-        "API access",
-        "SLA included",
-      ],
-    },
-  ];
-
+  const destination = "https://www.meridencompliance.com/";
+  useEffect(() => {
+    window.location.replace(destination);
+  }, []);
   return (
-    <main className="text-white" style={{ background: "#050810" }}>
-      <BrandNav brand={brand} cta="Start Free Trial" />
-
-      {/* ── Hero ── */}
-      <section className="relative min-h-screen overflow-hidden">
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "radial-gradient(ellipse 80% 60% at 60% 40%, rgba(29,78,216,0.22) 0%, transparent 70%)",
-          }}
-        />
-        <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-[#050810] to-transparent" />
-
-        <div className="relative z-10 mx-auto flex min-h-screen max-w-7xl items-center px-5 pb-16 pt-32 sm:px-8">
-          <div className="max-w-3xl">
-            <p className="motion-fade text-xs font-semibold uppercase tracking-[0.3em] text-blue-400">
-              Meriden Compliance · an AxiomOrdo company
-            </p>
-            <h1 className="motion-fade mt-5 text-5xl font-semibold tracking-[-0.04em] text-white sm:text-7xl lg:text-8xl">
-              Maritime compliance your crew can actually use.
-            </h1>
-            <p className="motion-fade mt-7 max-w-2xl text-xl leading-8 text-white/60 sm:text-2xl sm:leading-9">
-              Structured ISM, MLC, and flag state compliance management for
-              vessel operators who do not have a shore-based compliance department.
-            </p>
-            <div className="motion-fade mt-10 flex flex-col gap-4 sm:flex-row">
-              <CTA to="#pricing" isExternal accentColor="#60a5fa">
-                View Products
-              </CTA>
-              <CTA to={MERIDEN_INSIGHTS_PATH} accentColor="#60a5fa" secondary>
-                Read Insights
-              </CTA>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="border-y border-white/8 bg-white/[0.02] py-16">
-        <div className="mx-auto grid max-w-7xl gap-5 px-5 sm:grid-cols-2 sm:px-8 lg:grid-cols-4">
-          {[
-            ["Products", "Maritime AI readiness, governance packs, implementation plans, and supporting toolkits.", "#pricing"],
-            ["Services", "Readiness assessment, supported implementation, governance review, and maritime compliance consultancy.", "#services"],
-            ["Insights", "Evidence-led Meriden articles on maritime AI, QHSE, assurance, SMS, and operational accountability.", MERIDEN_INSIGHTS_PATH],
-            ["Resources", "Guides, checklists, frameworks, and free downloads for maritime compliance teams.", "/meriden"],
-          ].map(([title, desc, href]) => (
-            <Link
-              key={title}
-              to={href}
-              className="rounded-2xl border border-white/8 bg-[#050810] p-6 transition hover:border-blue-300/35"
-            >
-              <h2 className="text-xl font-semibold tracking-tight text-white">{title}</h2>
-              <p className="mt-3 text-sm leading-6 text-white/45">{desc}</p>
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      {/* ── Problem ── */}
-      <section className="mx-auto grid max-w-7xl gap-16 px-5 py-24 sm:px-8 lg:grid-cols-[1fr_1.2fr] lg:py-32">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.28em] text-blue-400">
-            The Problem
-          </p>
-          <h2 className="mt-5 text-3xl font-semibold tracking-tight text-white sm:text-5xl">
-            {brand.problem.heading}
-          </h2>
-        </div>
-        <div className="space-y-7 text-lg leading-8 text-white/55">
-          {brand.problem.body.map((para, i) => (
-            <p key={i}>{para}</p>
-          ))}
-        </div>
-      </section>
-
-      <section id="services" className="border-y border-white/8 bg-white/[0.02] py-24 sm:py-32">
-        <div className="mx-auto max-w-7xl px-5 sm:px-8">
-          <p className="text-xs font-semibold uppercase tracking-[0.28em] text-blue-400">
-            Services
-          </p>
-          <h2 className="mt-5 text-3xl font-semibold tracking-tight text-white sm:text-5xl">
-            Maritime compliance support with evidence left visible.
-          </h2>
-          <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {[
-              ["Readiness Assessment", "Placeholder for a structured assessment offer covering AI governance, PSC readiness, or SMS evidence gaps."],
-              ["Supported Implementation", "Placeholder for guided implementation support after an assessment or product purchase."],
-              ["Governance Review", "Placeholder for review of policy, tool use, data controls, verification duties, and accountability."],
-              ["Maritime Compliance Consultancy", "Placeholder for targeted ISM, QHSE, audit, investigation, and management-system support."],
-            ].map(([title, desc]) => (
-              <div key={title} className="rounded-2xl border border-white/8 bg-[#050810] p-6">
-                <h3 className="text-lg font-semibold tracking-tight text-white">{title}</h3>
-                <p className="mt-3 text-sm leading-6 text-white/45">{desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Capabilities ── */}
-      <section className="py-24 sm:py-32" style={{ background: "rgba(255,255,255,0.025)" }}>
-        <div className="mx-auto max-w-7xl px-5 sm:px-8">
-          <p className="text-xs font-semibold uppercase tracking-[0.28em] text-blue-400">
-            Capabilities
-          </p>
-          <h2 className="mt-5 text-3xl font-semibold tracking-tight text-white sm:text-5xl">
-            What Meriden Compliance delivers.
-          </h2>
-          <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {brand.capabilities.map((cap) => (
-              <div
-                key={cap.title}
-                className="rounded-2xl border border-white/8 p-7"
-                style={{ background: "rgba(255,255,255,0.03)" }}
-              >
-                <div className="mb-4 h-1 w-8 rounded-full bg-blue-400" />
-                <h3 className="text-base font-semibold text-white">{cap.title}</h3>
-                <p className="mt-2 text-sm leading-6 text-white/50">{cap.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Pricing ── */}
-      <section id="pricing" className="py-24 sm:py-32" style={{ background: "#050810" }}>
-        <div className="mx-auto max-w-7xl px-5 sm:px-8">
-          <p className="text-xs font-semibold uppercase tracking-[0.28em] text-blue-400">
-            Pricing
-          </p>
-          <h2 className="mt-5 text-3xl font-semibold tracking-tight text-white sm:text-5xl">
-            Simple, transparent pricing.
-          </h2>
-          <p className="mt-5 max-w-xl text-lg text-white/50">
-            30-day free trial, no credit card required. Cancel at any time.
-          </p>
-
-          <div className="mt-16 grid gap-6 lg:grid-cols-3">
-            {tiers.map((tier) => (
-              <div
-                key={tier.name}
-                className="flex flex-col rounded-2xl p-8"
-                style={{
-                  background: tier.featured
-                    ? "linear-gradient(135deg, rgba(29,78,216,0.25) 0%, rgba(255,255,255,0.04) 100%)"
-                    : "rgba(255,255,255,0.03)",
-                  border: tier.featured
-                    ? "1px solid rgba(96,165,250,0.4)"
-                    : "1px solid rgba(255,255,255,0.08)",
-                }}
-              >
-                {tier.featured && (
-                  <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-blue-400">
-                    Most Popular
-                  </p>
-                )}
-                <h3 className="text-xl font-semibold text-white">{tier.name}</h3>
-                <div className="mt-3 flex items-baseline gap-1">
-                  <span className="text-4xl font-bold text-white">{tier.price}</span>
-                  {tier.period && (
-                    <span className="text-white/40 text-sm">{tier.period}</span>
-                  )}
-                </div>
-                <p className="mt-3 text-sm leading-6 text-white/50">{tier.desc}</p>
-                <ul className="mt-8 flex-1 space-y-3">
-                  {tier.features.map((f) => (
-                    <li key={f} className="flex items-start gap-3 text-sm text-white/65">
-                      <span className="mt-0.5 text-blue-400">✓</span>
-                      {f}
-                    </li>
-                  ))}
-                </ul>
-                <a
-                  href="mailto:hello@axiomordo.com?subject=Meriden Compliance Trial"
-                  className="mt-8 inline-flex w-full items-center justify-center rounded-full py-3.5 text-sm font-semibold transition hover:opacity-90"
-                  style={{
-                    background: tier.featured ? "#60a5fa" : "rgba(255,255,255,0.08)",
-                    color: tier.featured ? "#000" : "#fff",
-                  }}
-                >
-                  {tier.price === "Custom" ? "Talk to us" : "Start Free Trial"}
-                </a>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── ARDS Badge ── */}
-      <div style={{ background: "#050810" }}>
-        <ARDSBadge accentColor="#60a5fa" />
+    <main className="flex min-h-screen items-center justify-center bg-[#050810] px-6 text-white">
+      <div className="max-w-xl text-center">
+        <h1 className="text-3xl font-semibold">Meriden Compliance</h1>
+        <p className="mt-5 text-lg text-white/70">
+          Maritime AI governance documentation and specialist support.
+          Visit our dedicated website for current information and enquiries.
+        </p>
+        <a href={destination} className="mt-8 inline-block rounded-full bg-[#147568] px-6 py-3 font-semibold">
+          Visit Meriden Compliance
+        </a>
       </div>
-
-      <GroupFooter brand={brand} />
     </main>
   );
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// ARDS Standard Page
-// ─────────────────────────────────────────────────────────────────────────────
-
-// ARDS has its own standalone site — /ards redirects there.
+// ARDS has its own standalone site.
 function ARDSPage() {
   useEffect(() => {
     window.location.replace(ARDS_URL);

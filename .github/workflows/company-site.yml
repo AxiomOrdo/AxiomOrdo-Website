@@ -60,6 +60,7 @@ jobs:
         working-directory: apps/aopdf
       - run: npm run build
       - run: npm run test:google-start
+      - run: node --test tests/meriden-canonical.test.mjs
       - name: Verify initial HTML breadcrumbs and safe serialization
         run: node --test tests/breadcrumbs.test.mjs tests/breadcrumb-rendering.test.mjs tests/csp-data-scripts.test.mjs
       - name: Verify breadcrumb desktop and mobile browser behavior
