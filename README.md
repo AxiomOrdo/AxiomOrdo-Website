@@ -146,3 +146,6 @@ change record. Core checks passed 1,341 tests (15 existing opt-in skips), lint,
 types and fingerprints. An isolated LibreOffice render checked an 11-page sample;
 Microsoft Word UI testing is not asserted. This backend release needs no new
 frontend deployment. Source branches remain separate from main merge-readiness.
+
+## Meriden exact-route migration
+Six verified same-purpose routes (PSC checklist, founding operator pilot, insights index, QHSE hub, false-assurance article and permit-approved article) now permanently redirect to their exact current www.meridencompliance.com pages, with trailing-slash aliases. Their legacy source pages remain preserved, but the generated group sitemap excludes redirected URLs. No wildcard, unknown-product, Shopify checkout, authentication or unrelated product routing changes are made. Test with node --test tests/meriden-canonical.test.mjs tests/meriden-migration.test.mjs after the site build. Historical Search Console PSC403 was checked live: non-www now canonicalises and returns200. Shopify locale/product404s remain separate and require evidence of an equivalent and control of that host.
