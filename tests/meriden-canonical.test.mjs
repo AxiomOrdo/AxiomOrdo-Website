@@ -11,7 +11,8 @@ test('legacy Meriden sales routes go to canonical site without intercepting insi
 });
 test('Meriden component has no obsolete subscriptions or fabricated platform claims',()=>{
  const page=source.slice(source.indexOf('function MeridenPage()'),source.indexOf('function ARDSPage()'));
- assert.ok(page.includes('https://www.meridencompliance.com/'));
+ const destination = page.match(/const destination = "([^"]+)";/)[1];
+ assert.equal(new URL(destination).href, 'https://www.meridencompliance.com/');
  for(const text of ['£149','£349','Start Free Trial','Unlimited vessels','API access','SLA included']) assert.ok(!page.includes(text),text);
  const brand=source.slice(source.indexOf('key: "meriden"'),source.indexOf('const unreleasedBrandKeys'));
  assert.ok(!brand.includes('Fleet overview'));

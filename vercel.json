@@ -3,8 +3,6 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "redirects": [
-    { "source": "/meriden-compliance", "destination": "https://www.meridencompliance.com/", "permanent": true },
-    { "source": "/meriden-compliance/", "destination": "https://www.meridencompliance.com/", "permanent": true },
     { "source": "/da/workspace", "destination": "/da/workspace/", "permanent": false },
     {
       "source": "/",
@@ -24,6 +22,8 @@
       "destination": "https://www.axiomordo.com/:path*",
       "permanent": true
     },
+    { "source": "/meriden-compliance", "destination": "https://www.meridencompliance.com/", "permanent": true },
+    { "source": "/meriden-compliance/", "destination": "https://www.meridencompliance.com/", "permanent": true },
     { "source": "/docassurance", "destination": "/da", "permanent": true },
     { "source": "/docassurance/", "destination": "/da", "permanent": true },
     { "source": "/gatezero", "destination": "https://gate-zero.tech/", "permanent": true },
