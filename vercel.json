@@ -3,6 +3,8 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "redirects": [
+    { "source": "/meriden-compliance", "destination": "https://www.meridencompliance.com/", "permanent": true },
+    { "source": "/meriden-compliance/", "destination": "https://www.meridencompliance.com/", "permanent": true },
     { "source": "/da/workspace", "destination": "/da/workspace/", "permanent": false },
     {
       "source": "/",
