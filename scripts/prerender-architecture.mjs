@@ -355,10 +355,12 @@ const routes = [...new Set([...sourceRoutes, ...explicitRoutes, ...Object.keys(l
   .filter((route) => route !== "/")
   .sort();
 
+// Exact migrated Meriden routes are redirected, not canonical group-site pages.
+const migratedMeridenPaths = new Set(["/meriden/psc-checklist", "/meriden/ai-readiness-pilot", "/meriden-compliance/insights", "/meriden-compliance/insights/maritime-qhse", "/meriden-compliance/insights/maritime-qhse/false-assurance-maritime-compliance", "/meriden-compliance/insights/maritime-qhse/why-work-should-not-start-just-because-the-permit-is-approved"]);
 const sitemapUrls = [
   "/",
   ...new Set([...sourceRoutes, ...explicitRoutes, ...Object.keys(legacyRoutes)].filter((route) => route !== "/")),
-].sort();
+].filter(route => !migratedMeridenPaths.has(route.replace(/\/$/, ""))).sort();
 const sitemapXml = [
   '<?xml version="1.0" encoding="UTF-8"?>',
   '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
