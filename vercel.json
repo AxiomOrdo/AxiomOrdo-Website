@@ -3,9 +3,6 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "redirects": [
-    { "source": "/da/account", "destination": "/da/login", "permanent": false },
-    { "source": "/da/account/", "destination": "/da/login", "permanent": false },
-    { "source": "/da/login/", "destination": "/da/login", "permanent": false },
     { "source": "/da/workspace", "destination": "/da/workspace/", "permanent": false },
     {
       "source": "/",
@@ -25,6 +22,9 @@
       "destination": "https://www.axiomordo.com/:path*",
       "permanent": true
     },
+    { "source": "/da/account", "destination": "/da/login", "permanent": false },
+    { "source": "/da/account/", "destination": "/da/login", "permanent": false },
+    { "source": "/da/login/", "destination": "/da/login", "permanent": false },
     { "source": "/meriden-compliance", "destination": "https://www.meridencompliance.com/", "permanent": true },
     { "source": "/meriden-compliance/", "destination": "https://www.meridencompliance.com/", "permanent": true },
     {"source": "/meriden/psc-checklist", "destination": "https://www.meridencompliance.com/resources/psc-self-inspection-checklist", "permanent": true},
