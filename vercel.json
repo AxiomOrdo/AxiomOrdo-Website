@@ -22,6 +22,9 @@
       "destination": "https://www.axiomordo.com/:path*",
       "permanent": true
     },
+    { "source": "/da/account", "destination": "/da/login", "permanent": false },
+    { "source": "/da/account/", "destination": "/da/login", "permanent": false },
+    { "source": "/da/login/", "destination": "/da/login", "permanent": false },
     { "source": "/meriden-compliance", "destination": "https://www.meridencompliance.com/", "permanent": true },
     { "source": "/meriden-compliance/", "destination": "https://www.meridencompliance.com/", "permanent": true },
     {"source": "/meriden/psc-checklist", "destination": "https://www.meridencompliance.com/resources/psc-self-inspection-checklist", "permanent": true},
@@ -73,6 +76,11 @@
     }
   ],
   "rewrites": [
+    { "source": "/da/login", "destination": "https://da-customer-auth-264218818430.europe-west2.run.app/da/login" },
+    { "source": "/da/auth/password", "destination": "https://da-customer-auth-264218818430.europe-west2.run.app/da/auth/password" },
+    { "source": "/da/auth/reset", "destination": "https://da-customer-auth-264218818430.europe-west2.run.app/da/auth/reset" },
+    { "source": "/da/auth/session", "destination": "https://da-customer-auth-264218818430.europe-west2.run.app/da/auth/session" },
+    { "source": "/da/auth/logout", "destination": "https://da-customer-auth-264218818430.europe-west2.run.app/da/auth/logout" },
     { "source": "/da/workspace/", "destination": "https://da-trial-67645337660.europe-west2.run.app/da/workspace/" },
     { "source": "/da", "destination": "https://da-trial-67645337660.europe-west2.run.app/da" },
     { "source": "/da/", "destination": "https://da-trial-67645337660.europe-west2.run.app/da/" },

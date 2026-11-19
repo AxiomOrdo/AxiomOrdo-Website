@@ -6,6 +6,7 @@ on:
       - "src/**"
       - "vercel.json"
       - "tests/meriden-migration.test.mjs"
+      - "tests/da-login-routing.test.mjs"
       - "apps/aopdf/app/**"
       - "apps/aopdf/components/breadcrumbs.tsx"
       - "apps/aopdf/components/legal-document-page.tsx"
@@ -28,6 +29,7 @@ on:
       - "src/**"
       - "vercel.json"
       - "tests/meriden-migration.test.mjs"
+      - "tests/da-login-routing.test.mjs"
       - "apps/aopdf/app/**"
       - "apps/aopdf/components/breadcrumbs.tsx"
       - "apps/aopdf/components/legal-document-page.tsx"
@@ -65,6 +67,7 @@ jobs:
       - run: npm run build
       - run: npm run test:google-start
       - run: node --test tests/meriden-canonical.test.mjs tests/meriden-migration.test.mjs
+      - run: node --test tests/da-login-routing.test.mjs
       - name: Verify initial HTML breadcrumbs and safe serialization
         run: node --test tests/breadcrumbs.test.mjs tests/breadcrumb-rendering.test.mjs tests/csp-data-scripts.test.mjs
       - name: Verify breadcrumb desktop and mobile browser behavior
