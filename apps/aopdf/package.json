@@ -46,7 +46,7 @@
     "pdfjs-dist": "5.4.624",
     "react": "19.3.1",
     "react-dom": "19.3.1",
-    "stripe": "22.6.2"
+    "stripe": "23.1.0"
   },
   "overrides": {
     "brace-expansion": "5.0.9",
